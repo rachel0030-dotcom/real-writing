@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REAL Writing</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--p:#5B5FFF;--pl:#EEEFFE;--g:#22C55E;--gl:#DCFCE7;--y:#F59E0B;--yl:#FEF3C7;--r:#EF4444;--bg:#F7F8FF;--bd:#E5E7EB;--tx:#1E1E2E;--sub:#6B7280;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+/* LEVEL SCREEN */
+#levelScreen{width:100%;max-width:520px;padding:36px 20px;display:flex;flex-direction:column;align-items:center;gap:0;}
+.lv-hero{text-align:center;margin-bottom:28px;}
+.lv-hero h1{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800;color:var(--p);margin-bottom:6px;}
+.lv-hero p{font-size:14px;color:var(--sub);line-height:1.6;}
+.lv-cards{width:100%;display:flex;flex-direction:column;gap:12px;}
+.lv-card{background:#fff;border-radius:18px;padding:17px 19px;border:2px solid var(--bd);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:13px;}
+.lv-card:hover,.lv-card.sel{border-color:var(--p);box-shadow:0 0 0 3px var(--pl);}
+.lv-card.sel{background:var(--pl);}
+.lv-ico{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.lv-name{font-weight:800;font-size:15px;color:var(--tx);margin-bottom:2px;}
+.lv-desc{font-size:12px;color:var(--sub);line-height:1.4;}
+.start-btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Noto Sans KR',sans-serif;font-weight:800;font-size:17px;cursor:pointer;background:var(--p);color:#fff;box-shadow:0 4px 14px rgba(91,95,255,.35);margin-top:18px;transition:all .2s;}
+.start-btn:disabled{background:#C7C8FF;box-shadow:none;cursor:not-allowed;}
+/* NAV */
+.nav{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:99;}
+.logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:1.05rem;color:var(--p);}
+.logo span{color:#FF6B35;}
+.nav-lv{font-size:12px;font-weight:700;padding:4px 10px;border-radius:12px;}
+.score-badge{background:var(--yl);color:var(--y);font-weight:700;font-size:13px;padding:5px 12px;border-radius:20px;cursor:pointer;}
+/* TABS */
+.tabs{width:100%;max-width:520px;display:flex;border-bottom:2px solid var(--bd);background:#fff;}
+.tab{flex:1;padding:11px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--sub);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.tab.on{color:var(--p);border-bottom-color:var(--p);}
+.tab.done{color:var(--g);}
+/* CONTENT */
+.pg{width:100%;max-width:520px;padding:15px 18px 110px;display:flex;flex-direction:column;gap:13px;}
+.topic-card{background:linear-gradient(135deg,#5B5FFF,#8B5CF6);border-radius:16px;padding:18px 20px;color:#fff;position:relative;overflow:hidden;}
+.topic-card::before{content:'✏️';position:absolute;right:14px;top:14px;font-size:28px;opacity:.2;}
+.ttag{font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;}
+.ttitle{font-weight:800;font-size:1.15rem;margin-bottom:4px;}
+.tsub{font-size:12px;opacity:.85;}
+.qprog{display:flex;gap:8px;align-items:center;}
+.qdot{width:30px;height:30px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--sub);transition:all .3s;}
+.qdot.on{border-color:var(--p);background:var(--pl);color:var(--p);box-shadow:0 0 0 3px var(--pl);}
+.qdot.ok{border-color:var(--g);background:var(--gl);color:var(--g);}
+.qline{flex:1;height:2px;background:var(--bd);border-radius:2px;transition:background .3s;}
+.qline.ok{background:var(--g);}
+.sc{background:#fff;border-radius:16px;padding:15px;border:1.5px solid var(--bd);display:flex;flex-direction:column;gap:10px;transition:all .3s;}
+.sc.on{border-color:var(--p);box-shadow:0 0 0 3px var(--pl);}
+.sc.off{opacity:.4;pointer-events:none;}
+.sc-h{display:flex;align-items:center;gap:9px;}
+.snum{width:27px;height:27px;border-radius:8px;background:var(--pl);color:var(--p);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.badge{font-size:11px;padding:3px 9px;border-radius:12px;font-weight:600;}
+.beng{background:#DBEAFE;color:#2563EB;}.bkor{background:var(--yl);color:#D97706;}
+textarea,input[type=text]{width:100%;border:1.5px solid var(--bd);border-radius:12px;padding:11px 13px;font-family:'Noto Sans KR',sans-serif;font-size:15px;color:var(--tx);resize:none;outline:none;line-height:1.6;background:#FAFAFA;transition:border-color .2s;}
+textarea:focus,input[type=text]:focus{border-color:var(--p);background:#fff;}
+textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
+.cc{text-align:right;font-size:12px;color:#9CA3AF;}
+.dots{display:none;align-items:center;gap:5px;padding:7px 0;}
+.dots.show{display:flex;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--p);animation:dp 1.2s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+@keyframes dp{0%,80%,100%{transform:scale(.7);opacity:.5}40%{transform:scale(1);opacity:1}}
+.fb{border-radius:12px;padding:13px 15px;font-size:14px;line-height:1.7;display:none;}
+.fb.show{display:block;animation:fu .3s ease;}
+.fb.hint{background:var(--yl);border:1.5px solid #FCD34D;color:#92400E;}
+.fb.green{background:var(--gl);border:1.5px solid #86EFAC;color:#14532D;}
+.fb.red{background:#FEF2F2;border:1.5px solid #FCA5A5;color:#7F1D1D;}
+.fb.blue{background:#EFF6FF;border:1.5px solid #BFDBFE;color:#1E40AF;}
+.fbl{font-weight:700;font-size:12px;margin-bottom:7px;}
+.corr{background:#fff;border-radius:8px;padding:9px 12px;font-weight:700;color:#166534;margin:7px 0;border-left:3px solid var(--g);font-size:15px;}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* SHADOW SUCCESS */
+.shadow-ok{display:none;position:fixed;inset:0;z-index:300;align-items:center;justify-content:center;background:rgba(0,0,0,.4);animation:fu .2s ease;}
+.shadow-ok.show{display:flex;}
+.shadow-ok-card{background:#fff;border-radius:28px;padding:40px 36px;text-align:center;animation:popBig .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popBig{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+/* BOTTOM */
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:#fff;border-top:1px solid var(--bd);padding:11px 18px 26px;z-index:100;display:none;gap:10px;}
+.btn{flex:1;padding:14px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:var(--p);color:#fff;box-shadow:0 4px 12px rgba(91,95,255,.3);transition:all .2s;}
+.btn:disabled{background:#C7C8FF;box-shadow:none;cursor:not-allowed;}
+.btn.green{background:var(--g);box-shadow:0 4px 12px rgba(34,197,94,.3);}
+.btn.orange{background:#FF6B35;box-shadow:0 4px 12px rgba(255,107,53,.3);}
+.hint-btn{padding:14px 15px;border:1.5px solid var(--p);border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:var(--p);white-space:nowrap;}
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;}
+.modal.show{display:flex;animation:fu .3s ease;}
+.mc{background:#fff;border-radius:24px;padding:28px 24px;text-align:center;max-width:300px;width:88%;animation:popBig .4s cubic-bezier(.34,1.56,.64,1);}
+/* HISTORY */
+#historyScreen{display:none;width:100%;max-width:520px;padding:16px 18px 80px;flex-direction:column;gap:13px;}
+.hist-item{background:#fff;border-radius:14px;padding:15px;border:1.5px solid var(--bd);cursor:pointer;transition:all .2s;}
+.hist-item:hover{border-color:var(--p);box-shadow:0 0 0 3px var(--pl);}
+.hist-date{font-size:12px;color:var(--sub);margin-bottom:4px;}
+.hist-topic{font-weight:700;font-size:15px;color:var(--tx);margin-bottom:6px;}
+.hist-story{font-size:13px;color:var(--sub);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+</style>
+</head>
+<body>
+
+<!-- LEVEL SELECT -->
+<div id="levelScreen">
+  <div class="lv-hero">
+    <div style="font-size:52px;margin-bottom:10px">🌟</div>
+    <h1>REAL Writing</h1>
+    <p>나의 레벨을 선택하고<br>영어 글쓰기를 시작해봐요!</p>
+  </div>
+  <div class="lv-cards">
+    <div class="lv-card" onclick="selLv(1)" id="lc1"><div class="lv-ico" style="background:#FEF3C7">🌱</div><div><div style="font-size:13px;margin-bottom:2px">⭐</div><div class="lv-name">Level 1 · 입문</div><div class="lv-desc">초등 1~2학년 · 단어 1~2개도 OK</div></div></div>
+    <div class="lv-card" onclick="selLv(2)" id="lc2"><div class="lv-ico" style="background:#DCFCE7">🌿</div><div><div style="font-size:13px;margin-bottom:2px">⭐⭐</div><div class="lv-name">Level 2 · 기초</div><div class="lv-desc">초등 3~4학년 · 짧은 한 문장</div></div></div>
+    <div class="lv-card" onclick="selLv(3)" id="lc3"><div class="lv-ico" style="background:#DBEAFE">🌳</div><div><div style="font-size:13px;margin-bottom:2px">⭐⭐⭐</div><div class="lv-name">Level 3 · 중급</div><div class="lv-desc">초등 5학년~중학생 · 2~3문장</div></div></div>
+    <div class="lv-card" onclick="selLv(4)" id="lc4"><div class="lv-ico" style="background:#F3E8FF">🎓</div><div><div style="font-size:13px;margin-bottom:2px">⭐⭐⭐⭐</div><div class="lv-name">Level 4 · 고급</div><div class="lv-desc">중3~고등학생 · 풍부한 표현</div></div></div>
+  </div>
+  <button class="start-btn" id="startBtn" disabled onclick="startApp()">레벨을 선택해주세요</button>
+  <button onclick="showHistory()" style="width:100%;padding:13px;border:1.5px solid var(--bd);border-radius:14px;font-family:'Noto Sans KR',sans-serif;font-weight:600;font-size:15px;cursor:pointer;background:#fff;color:var(--sub);margin-top:10px;">📚 학습 기록 보기</button>
+</div>
+
+<!-- HISTORY SCREEN -->
+<div id="historyScreen">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+    <button onclick="backToLevel()" style="border:none;background:none;font-size:22px;cursor:pointer;">←</button>
+    <div style="font-weight:800;font-size:18px;">📚 학습 기록</div>
+  </div>
+  <div id="histList"></div>
+</div>
+
+<!-- APP -->
+<div id="appScreen" style="display:none;width:100%;flex-direction:column;align-items:center;">
+  <nav class="nav">
+    <div class="logo">REAL<span>.</span>Writing</div>
+    <div class="nav-lv" id="navLv"></div>
+    <div class="score-badge" id="navScore" onclick="showHistory()" title="학습기록">⭐ 0점</div>
+  </nav>
+  <div class="tabs">
+    <div class="tab on" id="t1">✏️ 라이팅</div>
+    <div class="tab" id="t2">📖 글짓기</div>
+    <div class="tab" id="t3">🔤 쉐도잉</div>
+    <div class="tab" id="t4">🎤 말하기</div>
+    <div class="tab" id="t5">📝 마무리</div>
+    <div class="tab" id="t6">📊 리포트</div>
+  </div>
+
+  <!-- WRITING -->
+  <div class="pg" id="pgWrite">
+    <div class="topic-card"><div class="ttag">TODAY'S TOPIC</div><div class="ttitle" id="topicTitle"></div><div class="tsub" id="topicSub"></div></div>
+    <div class="sc" style="padding:13px 15px;">
+      <div style="font-size:13px;font-weight:700;color:var(--sub);margin-bottom:4px">진행도</div>
+      <div class="qprog"><div class="qdot on" id="qd1">1</div><div class="qline" id="ql1"></div><div class="qdot" id="qd2">2</div><div class="qline" id="ql2"></div><div class="qdot" id="qd3">3</div></div>
+      <div id="qLbl" style="font-size:13px;color:var(--sub);margin-top:4px">질문 1/3</div>
+    </div>
+    <div class="sc on" id="qCard"><div class="sc-h"><div class="snum" id="qNum">Q1</div><div style="font-weight:700;font-size:15px;color:var(--tx);flex:1" id="qTxt"></div></div><div id="lvHint" style="font-size:12px;padding:7px 11px;border-radius:8px;background:var(--pl);color:var(--p);font-weight:600;display:none;"></div></div>
+    <div class="sc on" id="engCard">
+      <div class="sc-h"><div class="snum">1</div><div style="font-weight:700;font-size:15px;flex:1">영어로 답해봐요!</div><div class="badge beng">영작</div></div>
+      <div style="font-size:13px;color:var(--sub)" id="engGuide"></div>
+      <textarea id="engIn" rows="3" placeholder="Write in English here..." oninput="document.getElementById('ec').textContent=this.value.length"></textarea>
+      <div class="cc"><span id="ec">0</span> chars</div>
+      <div class="dots" id="ld1"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="font-size:13px;color:var(--sub);margin-left:6px">첨삭하고 있어요...</span></div>
+      <div class="fb green" id="fbEng"></div>
+    </div>
+    <div class="sc" id="korCard" style="border-style:dashed;">
+      <div class="sc-h"><div class="snum" style="background:var(--yl);color:#D97706;">💡</div><div style="font-weight:700;font-size:15px;flex:1">한국어로 먼저 생각해봐요</div><div class="badge bkor">선택</div></div>
+      <div style="font-size:13px;color:var(--sub)">영어가 어려우면 한국어로 먼저 써봐요!</div>
+      <textarea id="korIn" rows="2" placeholder="한국어로 자유롭게..." oninput="document.getElementById('kc').textContent=this.value.length"></textarea>
+      <div class="cc"><span id="kc">0</span>자</div>
+      <div class="dots" id="ld0"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="font-size:13px;color:var(--sub);margin-left:6px">힌트 만드는 중...</span></div>
+      <div class="fb hint" id="fbKor"></div>
+    </div>
+    <div class="fb red" id="fbErr"></div>
+  </div>
+
+  <!-- STORY -->
+  <div class="pg" id="pgStory" style="display:none;">
+    <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid #86EFAC;border-radius:16px;padding:20px;" id="storyCard">
+      <div style="font-weight:700;color:#15803D;font-size:15px;margin-bottom:12px;">📝 오늘의 완성 글!</div>
+      <div style="font-size:16px;font-weight:600;color:#14532D;line-height:1.9;background:#fff;padding:14px 16px;border-radius:12px;border-left:4px solid var(--g);" id="storyTxt"></div>
+    </div>
+    <div class="sc"><div class="sc-h"><div class="snum" style="background:var(--yl);color:#D97706;">📚</div><div style="font-weight:700;font-size:15px;">오늘 배운 문장들</div></div><div id="sentList" style="display:flex;flex-direction:column;gap:8px;"></div></div>
+  </div>
+
+  <!-- SHADOW -->
+  <div class="pg" id="pgShadow" style="display:none;">
+    <div class="sc on"><div class="sc-h"><div class="snum">🔤</div><div style="font-weight:700;font-size:15px;">쉐도잉 연습</div></div><div style="font-size:13px;color:var(--sub)">문장을 3번 듣고 → 똑같이 따라 말해봐요!</div></div>
+    <div id="shadowWrap"></div>
+  </div>
+
+  <!-- SPEAK -->
+  <div class="pg" id="pgSpeak" style="display:none;">
+    <div class="sc" style="border-color:#FF6B35;box-shadow:0 0 0 3px #FFF0EB;"><div class="sc-h"><div class="snum" style="background:#FFF0EB;color:#FF6B35;">🎤</div><div style="font-weight:700;font-size:15px;">말하기 연습</div></div><div style="font-size:13px;color:var(--sub)">질문을 듣고 영어로 답해봐요! 단어 힌트를 참고하세요.</div></div>
+    <div id="speakWrap" class="sc" style="display:flex;flex-direction:column;gap:12px;"></div>
+    <div class="fb red" id="speakErr"></div>
+  </div>
+
+  <!-- WRAP-UP -->
+  <div class="pg" id="pgWrap" style="display:none;">
+    <div class="sc on"><div class="sc-h"><div class="snum" style="background:#FFF0EB;color:#FF6B35;">📝</div><div style="font-weight:700;font-size:15px;">오늘의 마무리 쓰기</div></div><div style="font-size:13px;color:var(--sub);line-height:1.5">오늘 배운 3문장을 기억하며 한번에 써봐요! 힌트 없이 써보세요 💪</div></div>
+    <div id="wrapRef" class="sc" style="background:#F8F8FF;"></div>
+    <div class="sc on">
+      <div style="font-size:13px;font-weight:700;color:var(--sub);margin-bottom:4px">✍️ 여기에 써봐요</div>
+      <textarea id="wrapIn" rows="6" placeholder="오늘 배운 3문장을 써봐요..."></textarea>
+      <div class="dots" id="ldWrap"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="font-size:13px;color:var(--sub);margin-left:6px">확인하고 있어요...</span></div>
+      <div class="fb green" id="fbWrap"></div>
+    </div>
+    <div class="fb red" id="fbWrapErr"></div>
+  </div>
+  <!-- REPORT -->
+  <div class="pg" id="pgReport" style="display:none;">
+    <div class="sc on" style="border-color:#8B5CF6;box-shadow:0 0 0 3px #F3E8FF;">
+      <div class="sc-h">
+        <div class="snum" style="background:#F3E8FF;color:#8B5CF6;">📊</div>
+        <div style="font-weight:700;font-size:15px;">오늘의 학습 리포트</div>
+      </div>
+      <div style="font-size:13px;color:var(--sub)">AI 선생님이 오늘 학습을 분석했어요!</div>
+    </div>
+    <div class="dots show" id="ldReport" style="justify-content:center;padding:30px 0;">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <span style="font-size:14px;color:var(--sub);margin-left:8px">AI 선생님이 분석하고 있어요...</span>
+    </div>
+    <div id="reportContent" style="display:none;flex-direction:column;gap:13px;"></div>
+  </div>
+</div>
+
+<!-- SHADOW SUCCESS OVERLAY -->
+<div class="shadow-ok" id="shadowOk">
+  <div class="shadow-ok-card">
+    <div style="font-size:72px;margin-bottom:8px" id="shadowOkIcon">⭕</div>
+    <div style="font-size:28px;font-weight:900;color:var(--g);margin-bottom:6px">잘했어요!</div>
+    <div style="font-size:16px;color:var(--sub)" id="shadowOkSub">완벽해요 🎉</div>
+  </div>
+</div>
+
+<!-- BOTTOM -->
+<div class="bottom" id="btmBar">
+  <button class="hint-btn" id="hintBtn" onclick="getHint()" style="display:none;">💡 힌트</button>
+  <button class="btn" id="mainBtn" onclick="go()"><span id="btnTxt">시작하기 →</span></button>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="mc">
+    <div style="font-size:48px;margin-bottom:8px" id="mEmoji"></div>
+    <div style="font-weight:800;font-size:20px;margin-bottom:4px" id="mTitle"></div>
+    <div style="display:flex;justify-content:center;gap:4px;margin:8px 0"><span style="font-size:22px">⭐</span><span style="font-size:22px">⭐</span><span style="font-size:22px">⭐</span></div>
+    <div style="font-size:14px;color:var(--sub);margin-bottom:16px;line-height:1.6" id="mSub"></div>
+    <button class="btn" id="mBtn" style="flex:none;width:100%;"></button>
+  </div>
+</div>
+
+<script>
+// API keys are stored securely on the server (Netlify Functions)
+
+const LVCONF={
+  1:{name:"Level 1",e:"🌱",col:"#F59E0B",bg:"#FEF3C7",guide:"알고 있는 영어 단어를 써봐요! 한 단어도 OK 😊",
+    sys:`You are a very warm English teacher for Korean Grade 1-2 students who barely know English. Accept single words. Fix only critical errors. Give extremely simple example. Use lots of emojis. Korean must be very simple.`},
+  2:{name:"Level 2",e:"🌿",col:"#22C55E",bg:"#DCFCE7",guide:"'I like ~' 같은 짧은 문장을 써봐요 ✏️",
+    sys:`You are a friendly English teacher for Korean Grade 3-4 students. Expect 1 short sentence. Correct kindly. Give simple sentence example.`},
+  3:{name:"Level 3",e:"🌳",col:"#3B82F6",bg:"#DBEAFE",guide:"2~3문장으로 이유나 예시를 들어 써봐요 ✏️",
+    sys:`You are an encouraging English teacher for Korean middle school students. Expect 2-3 sentences. Correct grammar and vocabulary. Suggest connectors.`},
+  4:{name:"Level 4",e:"🎓",col:"#8B5CF6",bg:"#F3E8FF",guide:"다양한 표현과 문장 구조를 사용해 써봐요 ✏️",
+    sys:`You are a professional English teacher for Korean high school students. Expect rich vocabulary and varied structure. Correct all issues. Suggest advanced expressions.`},
+};
+
+const TOPICS=[
+  {ko:"내가 가장 좋아하는 음식",en:"My Favorite Food",guide:"맛, 언제 먹는지, 왜 좋아하는지"},
+  {ko:"나의 가장 친한 친구",en:"My Best Friend",guide:"친구 특징, 같이하는 것, 좋은 점"},
+  {ko:"나의 주말",en:"My Weekend",guide:"무엇을 했는지, 어떠했는지, 느낌"},
+  {ko:"나의 반려동물",en:"My Pet",guide:"어떤 동물, 이름, 같이 하는 것"},
+  {ko:"내가 가보고 싶은 곳",en:"A Place I Want to Visit",guide:"어디, 왜, 무엇을 하고 싶은지"},
+  {ko:"내가 좋아하는 계절",en:"My Favorite Season",guide:"어떤 계절, 왜, 무엇을 하는지"},
+  {ko:"나의 꿈",en:"My Dream",guide:"무엇이 되고 싶은지, 왜, 어떻게"},
+  {ko:"오늘 하루",en:"My Day Today",guide:"아침/점심/저녁 무엇을 했는지"},
+];
+
+const QS={
+  "My Favorite Food":["가장 좋아하는 음식이 뭐예요?","그 음식을 언제 자주 먹어요?","그 음식이 왜 좋아요?"],
+  "My Best Friend":["가장 친한 친구 이름이 뭐예요?","그 친구와 무엇을 같이 해요?","그 친구의 어떤 점이 좋아요?"],
+  "My Weekend":["이번 주말에 무엇을 했어요?","누구랑 같이 했어요?","기분이 어땠어요?"],
+  "My Pet":["어떤 동물을 키워요?","그 동물 이름이 뭐예요?","그 동물과 무엇을 해요?"],
+  "A Place I Want to Visit":["어디에 가고 싶어요?","왜 그곳에 가고 싶어요?","거기서 무엇을 하고 싶어요?"],
+  "My Favorite Season":["어떤 계절을 제일 좋아해요?","그 계절에 무엇을 해요?","그 계절이 왜 좋아요?"],
+  "My Dream":["커서 무엇이 되고 싶어요?","왜 그 꿈을 갖게 됐어요?","그 꿈을 위해 무엇을 하고 있어요?"],
+  "My Day Today":["오늘 아침에 무엇을 했어요?","학교에서 무엇을 했어요?","오늘 가장 기억에 남는 일은 뭐예요?"],
+};
+
+let lv=null,topic=null,qs=[],score=0,qIdx=0,state='start';
+let sentences=[],storyFinal='';
+let shadowSents=[],shadowIdx=0,shadowPlays=0;
+let speakQs=[],speakIdx=0;
+let recog=null,isRec=false;
+let currentAudio=null;
+
+// ── LEVEL SELECT ──
+function selLv(n){lv=n;document.querySelectorAll('.lv-card').forEach((c,i)=>c.classList.toggle('sel',i+1===n));const b=document.getElementById('startBtn');b.disabled=false;b.textContent=`${LVCONF[n].e} Level ${n} 시작하기 →`;}
+
+function startApp(){
+  document.getElementById('levelScreen').style.display='none';
+  const app=document.getElementById('appScreen');app.style.display='flex';app.style.flexDirection='column';app.style.alignItems='center';
+  document.getElementById('btmBar').style.display='flex';
+  const c=LVCONF[lv];
+  const nl=document.getElementById('navLv');nl.textContent=`${c.e} ${c.name}`;nl.style.background=c.bg;nl.style.color=c.col;
+  document.getElementById('engGuide').textContent=c.guide;
+  document.getElementById('hintBtn').style.display='flex';
+  topic=TOPICS[Math.floor(Math.random()*TOPICS.length)];
+  qs=QS[topic.en];
+  document.getElementById('topicTitle').textContent=`"${topic.ko}"`;
+  document.getElementById('topicSub').textContent=`📌 ${topic.guide}`;
+  loadQ();
+}
+
+async function claude(sys, usr, max=700) {
+  const r = await fetch('/api/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: max,
+      system: sys,
+      messages: [{ role: 'user', content: usr }]
+    })
+  });
+  if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e?.error?.message || 'HTTP ' + r.status); }
+  return (await r.json()).content?.[0]?.text || '';
+}
+
+// ── ELEVENLABS TTS via Netlify Function ──
+async function speak(text) {
+  try {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    const r = await fetch('/api/speech', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    if (r.ok) {
+      const blob = await r.blob();
+      const url = URL.createObjectURL(blob);
+      currentAudio = new Audio(url);
+      currentAudio.play();
+      currentAudio.onended = () => { URL.revokeObjectURL(url); currentAudio = null; };
+      return;
+    }
+  } catch(e) { console.warn('TTS fallback:', e); }
+  // fallback browser TTS
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.82;
+  const doSpeak = () => {
+    const vs = window.speechSynthesis.getVoices();
+    const v = [vs.find(v=>v.name==='Samantha'), vs.find(v=>v.lang==='en-US')].find(Boolean);
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  };
+  window.speechSynthesis.getVoices().length > 0 ? doSpeak() : (window.speechSynthesis.onvoiceschanged = doSpeak);
+}
+
+function addScore(n){score+=n;document.getElementById('navScore').textContent=`⭐ ${score}점`;}
+function err(id,msg){const e=document.getElementById(id);e.innerHTML='⚠️ '+msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),5000);}
+function ld(id,on){document.getElementById(id).classList.toggle('show',on);}
+function setBtn(on,txt,cls=''){const b=document.getElementById('mainBtn');b.disabled=!on;document.getElementById('btnTxt').textContent=txt;b.className='btn '+(cls||'');}
+
+function loadQ(){
+  document.getElementById('qNum').textContent='Q'+(qIdx+1);
+  document.getElementById('qTxt').textContent=qs[qIdx];
+  document.getElementById('qLbl').textContent=`질문 ${qIdx+1}/3`;
+  for(let i=1;i<=3;i++){const d=document.getElementById('qd'+i);d.className='qdot'+(i-1<qIdx?' ok':i-1===qIdx?' on':'');}
+  if(qIdx>0)document.getElementById('ql1').classList.add('ok');
+  if(qIdx>1)document.getElementById('ql2').classList.add('ok');
+  const hints={1:["예: 'pizza' 또는 'I like pizza'","예: 'Tom'","예: 'Good!' 또는 'Very fun!'"],2:["예: 'My favorite food is pizza.'","예: 'I play soccer with Tom.'","예: 'It is very delicious!'"],3:["예: 'My favorite food is pizza because it is cheesy.'","예: 'I usually play with Tom after school.'","예: 'I like it because it tastes amazing.'"],4:["예: 'Among all foods, pizza is my all-time favorite.'","예: 'Tom and I spend most of our free time together.'","예: 'Not only does it taste great, it also brings happy memories.'"]};
+  const h=hints[lv]?.[qIdx]||'';
+  const lhEl=document.getElementById('lvHint');
+  if(h){lhEl.textContent='✏️ '+h;lhEl.style.display='block';}else lhEl.style.display='none';
+  state='start';setBtn(true,'시작하기 →');
+}
+
+async function go(){
+  if(state==='start'){state='eng';setBtn(true,'첨삭 받기 →');document.getElementById('engIn').disabled=false;document.getElementById('engIn').focus();}
+  else if(state==='eng')await submitEng();
+  else if(state==='nextQ')nextQ();
+  else if(state==='goStory')await goStory();
+  else if(state==='goShadow')goShadow();
+  else if(state==='shListen')doShadowListen();
+  else if(state==='shNext')shadowNext();
+  else if(state==='goSpeak')await goSpeak();
+  else if(state==='nextSpeak')await nextSpeak();
+  else if(state==='goWrap')goWrap();
+  else if(state==='submitWrap')await submitWrap();
+  else if(state==='finish')finish();
+}
+
+async function getHint(){
+  const kor=document.getElementById('korIn').value.trim();
+  if(kor.length<3){err('fbErr','한국어로 먼저 써봐요!');return;}
+  ld('ld0',true);document.getElementById('hintBtn').disabled=true;
+  try{
+    const r=await claude(`${LVCONF[lv].sys}\nGive ${lv<=2?'2-3 simple English words/phrases':'2-3 sentence starters'} based on Korean input.\nFormat:\nHINT:\n- [English] = [Korean]\n- [English] = [Korean]\n- [English] = [Korean]`,`Korean: "${kor}"`);
+    const raw=r.match(/HINT:\s*([\s\S]+)/)?.[1]||'';
+    const lines=raw.trim().split('\n').filter(l=>l.trim().startsWith('-')).map(l=>l.replace(/^-\s*/,'').trim());
+    const fb=document.getElementById('fbKor');
+    fb.innerHTML=`<div class="fbl">📝 영어 힌트</div>${lines.map(h=>`<div style="display:flex;gap:6px;margin-top:4px">💡 <b>${h}</b></div>`).join('')}`;
+    fb.classList.add('show');
+  }catch(e){err('fbErr',e.message);}
+  finally{ld('ld0',false);document.getElementById('hintBtn').disabled=false;}
+}
+
+async function submitEng(){
+  const eng=document.getElementById('engIn').value.trim();
+  if(!eng){err('fbErr','영어로 답을 써봐요!');return;}
+  setBtn(false,'첨삭 중...');ld('ld1',true);
+  try{
+    const kor=document.getElementById('korIn').value.trim();
+    const r=await claude(`${LVCONF[lv].sys}\nTopic:"${topic.en}". Question:"${qs[qIdx]}".\n${kor?`Korean notes:"${kor}".`:''}\nCorrect student's English. Level ${lv} appropriate.\nFormat EXACTLY:\nCORRECTED: [corrected]\nPOINTS:\n- [Korean explanation emoji, max ${lv<=2?1:2}]\nEXAMPLE: [level ${lv} model answer]\nPRAISE: [Korean emoji]`,`Student: "${eng}"`);
+    const corr=r.match(/CORRECTED:\s*(.+)/)?.[1]?.trim()||eng;
+    const pts=(r.match(/POINTS:\s*([\s\S]+?)(?=EXAMPLE:|$)/)?.[1]||'').trim().split('\n').filter(l=>l.trim().startsWith('-')).map(l=>l.replace(/^-\s*/,'').trim());
+    const ex=r.match(/EXAMPLE:\s*(.+)/)?.[1]?.trim()||'';
+    const praise=r.match(/PRAISE:\s*(.+)/)?.[1]?.trim()||'잘했어요! 👏';
+    const same=corr.toLowerCase()===eng.toLowerCase();
+    document.getElementById('fbEng').innerHTML=`<div class="fbl">✅ 첨삭 완료!</div>${same?`<div class="corr">🎉 완벽해요! "${corr}"</div>`:`<div style="font-size:12px;color:#6B7280;margin-bottom:2px">수정된 문장</div><div class="corr">${corr}</div>`}${pts.length?`<div style="font-weight:700;font-size:12px;margin-top:6px;">📌 고친 부분</div>${pts.map(p=>`<div style="display:flex;gap:6px;margin-top:3px;font-size:13px">• <span>${p}</span></div>`).join('')}`:''} ${ex?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid #86EFAC"><span style="font-size:12px;font-weight:700">💬 Level ${lv} 모범 답안</span><div style="margin-top:3px;font-size:14px;font-style:italic;color:#1E40AF">${ex}</div></div>`:''}<div style="margin-top:8px;padding-top:8px;border-top:1px solid #86EFAC;font-style:italic">${praise}</div>`;
+    document.getElementById('fbEng').classList.add('show');
+    document.getElementById('engIn').disabled=true;
+    sentences.push({eng,corr,q:qs[qIdx],ex});
+    addScore(lv*8);
+    document.getElementById('hintBtn').style.display='none';
+    if(qIdx<2){state='nextQ';setBtn(true,`다음 질문 (${qIdx+2}/3) →`);}
+    else{state='goStory';setBtn(true,'글짓기 완성하기! 📝','green');}
+  }catch(e){err('fbErr',e.message);setBtn(true,'첨삭 받기 →');}
+  finally{ld('ld1',false);}
+}
+
+function nextQ(){
+  qIdx++;
+  ['engIn','korIn'].forEach(id=>{const el=document.getElementById(id);el.value='';el.disabled=id==='engIn'?false:false;});
+  document.getElementById('ec').textContent='0';document.getElementById('kc').textContent='0';
+  ['fbEng','fbKor'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  document.getElementById('hintBtn').style.display='flex';
+  document.getElementById('engIn').disabled=false;
+  loadQ();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function goStory(){
+  setBtn(false,'생성 중...');
+  try{
+    const combined=sentences.map((s,i)=>`Q${i+1}: ${s.q} → ${s.corr}`).join('\n');
+    const r=await claude(`${LVCONF[lv].sys}\nCombine 3 answers into ONE coherent paragraph for level ${lv}. Level ${lv} style: ${lv===1?'2-3 very simple sentences':lv===2?'3-4 simple sentences':lv===3?'4-5 natural sentences with connectors':'4-6 sophisticated sentences'}.\nFormat:\nSTORY: [English]\nKOREAN: [Korean translation]`,combined);
+    storyFinal=r.match(/STORY:\s*([\s\S]+?)(?=KOREAN:|$)/)?.[1]?.trim()||sentences.map(s=>s.corr).join(' ');
+    const kor=r.match(/KOREAN:\s*([\s\S]+)/)?.[1]?.trim()||'';
+    showPg('story');
+    document.getElementById('storyTxt').textContent=storyFinal;
+    document.getElementById('sentList').innerHTML=sentences.map((s,i)=>`<div style="padding:10px 13px;background:#F8F8FF;border-radius:10px;border-left:3px solid var(--p)"><div style="font-size:12px;color:var(--sub);margin-bottom:3px">Q${i+1}. ${s.q}</div><div style="font-size:14px;font-weight:600;">${s.corr}</div>${s.ex?`<div style="font-size:12px;color:#6B7280;margin-top:3px">💬 모범: ${s.ex}</div>`:''}</div>`).join('');
+    if(kor)document.getElementById('storyCard').innerHTML+=`<div style="margin-top:12px;padding-top:12px;border-top:1px solid #86EFAC;font-size:14px;color:#166534;line-height:1.7">🇰🇷 ${kor}</div>`;
+    addScore(20);tabOn('t2');
+    state='goShadow';setBtn(true,'쉐도잉 연습 🔤');
+    showModal('📝','글짓기 완성!',`멋진 글이 완성됐어요! +20점 👏`,'쉐도잉 연습하기 🔤',()=>{hideModal();goShadow();});
+  }catch(e){err('fbErr',e.message);setBtn(true,'글짓기 완성하기! 📝','green');}
+}
+
+// ── SHADOW ──
+function goShadow(){
+  hideModal();showPg('shadow');tabOn('t3');
+  shadowSents=(storyFinal.match(/[^.!?]+[.!?]+/g)||[storyFinal]).map(s=>s.trim()).filter(Boolean);
+  shadowIdx=0;shadowPlays=0;renderShadow();
+  state='shListen';setBtn(true,'🔊 듣기 (1/3)');
+}
+
+function renderShadow(){
+  const s=shadowSents[shadowIdx];
+  document.getElementById('shadowWrap').innerHTML=`
+    <div class="sc on" style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:700;color:var(--sub)">문장 ${shadowIdx+1} / ${shadowSents.length}</div>
+        <div style="display:flex;gap:6px">${shadowSents.map((_,i)=>`<div style="width:10px;height:10px;border-radius:50%;background:${i<shadowIdx?'var(--g)':i===shadowIdx?'var(--p)':'var(--bd)'}"></div>`).join('')}</div>
+      </div>
+      <div style="font-size:17px;font-weight:700;color:var(--tx);line-height:1.8;padding:14px 16px;background:#F8F8FF;border-radius:12px;border-left:4px solid var(--p)">${s}</div>
+      <div id="shStatus" style="font-size:13px;color:var(--sub);text-align:center">🔊 버튼을 눌러 3번 들어봐요</div>
+      <div id="shMic" style="display:none;flex-direction:column;gap:10px">
+        <div style="font-size:14px;font-weight:700;color:var(--p);text-align:center">이제 따라 말해봐요! 🎤</div>
+        <button onclick="startShadowRec()" id="shMicBtn" style="width:100%;padding:13px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff">🎤 따라 말하기</button>
+        <div id="shRecRes" style="display:none;font-size:14px;padding:11px 14px;border-radius:10px;text-align:center"></div>
+      </div>
+    </div>`;
+  shadowPlays=0;
+}
+
+function removeEmoji(text) {
+  return text
+    .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')
+    .replace(/[\u{2600}-\u{27BF}]/gu, '')
+    .replace(/[\u{FE00}-\u{FE0F}]/gu, '')
+    .replace(/[\u{1F300}-\u{1F5FF}]/gu, '')
+    .replace(/[\u{1F600}-\u{1F64F}]/gu, '')
+    .replace(/[\u{1F680}-\u{1F6FF}]/gu, '')
+    .replace(/[\u{1F900}-\u{1F9FF}]/gu, '')
+    .replace(/[\u{2702}-\u{27B0}]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function doShadowListen(){
+  shadowPlays++;
+  speak(removeEmoji(shadowSents[shadowIdx]));
+  const rem=3-shadowPlays;
+  document.getElementById('shStatus').textContent=rem>0?`🔊 듣는 중... (${shadowPlays}/3번)`:'✅ 3번 다 들었어요! 따라 말해봐요 👇';
+  if(shadowPlays>=3){
+    document.getElementById('shMic').style.display='flex';
+    const isLast=shadowIdx>=shadowSents.length-1;
+    state='shNext';setBtn(true,isLast?'말하기 연습 🎤':'다음 문장 →',isLast?'orange':'');
+  }else setBtn(true,`🔊 다시 듣기 (${shadowPlays+1}/3)`);
+}
+
+function startShadowRec(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const btn=document.getElementById('shMicBtn');
+  const res=document.getElementById('shRecRes');
+  if(!SR){res.style.display='block';res.style.background='#FEF2F2';res.style.color='#991B1B';res.textContent='😢 Chrome에서만 가능해요!';return;}
+  const rec=new SR();rec.lang='en-US';rec.interimResults=false;
+  rec.onstart=()=>{btn.textContent='⏹ 녹음 중...';btn.style.background='#E53935';};
+  rec.onresult=(e)=>{
+    const said=e.results[0][0].transcript.trim();
+    const orig=removeEmoji(shadowSents[shadowIdx]).replace(/[.!?,]/g,'').toLowerCase().trim();
+    const saidClean=said.toLowerCase().replace(/[.!?,]/g,'').trim();
+    const origWords=orig.split(' ').filter(w=>w.length>2);
+    const matchCount=origWords.filter(w=>saidClean.includes(w)).length;
+    const ok=origWords.length===0?true:matchCount>=Math.max(1,Math.floor(origWords.length*0.4));
+    res.style.display='block';
+    if(ok){
+      res.style.background='var(--gl)';res.style.color='#166534';res.textContent='✅ "'+said+'" 잘했어요!';
+      addScore(10);
+      const ov=document.getElementById('shadowOk');
+      document.getElementById('shadowOkIcon').textContent='⭕';
+      document.getElementById('shadowOkSub').textContent='"'+said+'" 완벽해요! 🎉';
+      ov.classList.add('show');
+      setTimeout(()=>ov.classList.remove('show'),2000);
+    }else{
+      res.style.background='#FEF3C7';res.style.color='#92400E';res.textContent='🔄 거의 다 됐어요! 들린 말: "'+said+'" 한 번 더!';
+    }
+  };
+  
