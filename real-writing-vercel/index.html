@@ -315,17 +315,26 @@ async function claude(sys,usr,max=700){
 
 // TTS
 function removeEmoji(t){
-  return t.replace(/[\uD800-\uDFFF]/g,'').replace(/[\u2600-\u27BF]/g,'').replace(/\s+/g,' ').trim();
+  return t.replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]+/g,'').replace(/[\u2600-\u27BF]/g,'').replace(/[ ]+/g,' ').trim();
 }
 async function speak(text){
   var cl=removeEmoji(text);
+  if(!cl) return;
   try{
     if(currentAudio){currentAudio.pause();currentAudio=null;}
     const r=await fetch('/api/speech',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:cl})});
-    if(r.ok){const blob=await r.blob();const url=URL.createObjectURL(blob);currentAudio=new Audio(url);currentAudio.play();currentAudio.onended=()=>{URL.revokeObjectURL(url);currentAudio=null;};return;}
+    if(r.ok){
+      const blob=await r.blob();
+      const url=URL.createObjectURL(blob);
+      currentAudio=new Audio(url);
+      currentAudio.play();
+      currentAudio.onended=()=>{URL.revokeObjectURL(url);currentAudio=null;};
+      return;
+    }
   }catch(e){console.warn('TTS fallback:',e);}
   window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(cl);u.lang='en-US';u.rate=0.82;
+  const u=new SpeechSynthesisUtterance(cl);
+  u.lang='en-US';u.rate=0.82;
   const ds=()=>{const vs=window.speechSynthesis.getVoices();const v=vs.find(v=>v.name==='Samantha')||vs.find(v=>v.lang==='en-US');if(v)u.voice=v;window.speechSynthesis.speak(u);};
   window.speechSynthesis.getVoices().length>0?ds():(window.speechSynthesis.onvoiceschanged=ds);
 }
@@ -343,18 +352,60 @@ function loadQ(){
   if(qIdx>0)document.getElementById('ql1').classList.add('ok');
   if(qIdx>1)document.getElementById('ql2').classList.add('ok');
   var TH={
-    'My Favorite Food':{1:['ex: pizza or I like pizza','ex: I eat it every day','ex: yummy! or I love it'],2:['ex: My favorite food is pizza.','ex: I usually eat it on weekends.','ex: It is very delicious!'],3:['ex: My favorite food is pizza because it is cheesy.','ex: I usually eat it with my family.','ex: I love it because it tastes amazing.'],4:['ex: Pizza remains my all-time favorite food.','ex: I typically enjoy it on weekends.','ex: Not only does it taste great, it brings wonderful memories.']},
-    'My Best Friend':{1:['ex: Tom or My friend is Tom','ex: We play together','ex: kind or funny'],2:['ex: My best friend is Tom.','ex: We play soccer together.','ex: He is very kind and funny.'],3:['ex: My best friend and I have been close for years.','ex: We usually play soccer and games.','ex: I like him because he is always kind.'],4:['ex: My closest friend has been by my side for years.','ex: We spend most of our free time together.','ex: What I admire is his kindness and great humor.']},
-    'My Weekend':{1:['ex: played or I played','ex: with mom','ex: fun! or I was happy'],2:['ex: I played at the park on Saturday.','ex: I went with my mom.','ex: It was really fun!'],3:['ex: This weekend I went to the park and played.','ex: I went there with my mom.','ex: I felt very happy and refreshed.'],4:['ex: This weekend was eventful with family.','ex: My mom accompanied me all day.','ex: Overall it was a refreshing experience.']},
-    'My Pet':{1:['ex: dog or I have a dog','ex: name is Coco','ex: we play together'],2:['ex: I have a cute dog.','ex: Her name is Coco.','ex: We play together every day.'],3:['ex: I have an adorable dog named Coco.','ex: Her name is Coco and she is two years old.','ex: We go for walks every morning.'],4:['ex: I am the proud owner of a playful dog.','ex: She was named Coco because of her fur.','ex: We bond through walks and play sessions.']},
-    'A Place I Want to Visit':{1:['ex: Japan or I want to go to Japan','ex: I want to go there','ex: I want to eat sushi'],2:['ex: I want to visit Japan.','ex: Because it looks very fun.','ex: I want to eat sushi and see Mount Fuji.'],3:['ex: I have always wanted to visit Japan.','ex: I want to go because the culture is fascinating.','ex: I would love to eat sushi and explore the cities.'],4:['ex: Japan has long been on my travel wish list.','ex: Its blend of tradition and modernity fascinates me.','ex: I want to experience the cuisine and temples there.']},
-    'My Favorite Season':{1:['ex: summer or I like summer','ex: I swim','ex: fun or hot'],2:['ex: My favorite season is summer.','ex: I swim and play outside.','ex: I like it because it is warm and fun.'],3:['ex: My favorite season is summer because of warm weather.','ex: I usually swim and go on picnics.','ex: I love it because there are lots of activities.'],4:['ex: Summer is my favorite season of the year.','ex: I spend my days swimming and hiking.','ex: The warm weather creates endless opportunities.']},
-    'My Dream':{1:['ex: teacher or I want to be a teacher','ex: I want to help','ex: I study hard'],2:['ex: I want to be a teacher.','ex: Because I want to help children.','ex: I study hard every day.'],3:['ex: My dream is to become an English teacher.','ex: I chose this because I love helping others.','ex: I practice English every day.'],4:['ex: My goal is to become an English teacher.','ex: This dream was inspired by my love of languages.','ex: I am actively studying for this career.']},
-    'My Day Today':{1:['ex: I ate breakfast','ex: I studied','ex: it was fun'],2:['ex: I ate breakfast with my family.','ex: I studied math and played with friends.','ex: The best part was lunch with friends.'],3:['ex: This morning I had breakfast with my family.','ex: At school I studied hard and played during recess.','ex: The most memorable moment was winning a game.'],4:['ex: I started my morning with breakfast.','ex: The school day was productive and engaging.','ex: The highlight was a great talk with my teacher.']}
+    "My Favorite Food":{
+      1:["ex: pizza / I like pizza","ex: I eat it every day","ex: yummy! / I love it"],
+      2:["ex: My favorite food is pizza.","ex: I usually eat it on weekends.","ex: It is very delicious!"],
+      3:["ex: My favorite food is pizza because it is cheesy.","ex: I usually eat it with my family.","ex: I love it because it tastes amazing."],
+      4:["ex: Pizza remains my all-time favorite food.","ex: I typically enjoy it on weekends.","ex: Not only does it taste great, it brings wonderful memories."]
+    },
+    "My Best Friend":{
+      1:["ex: Tom / My friend is Tom","ex: We play together","ex: kind / funny"],
+      2:["ex: My best friend is Tom.","ex: We play soccer together.","ex: He is very kind and funny."],
+      3:["ex: My best friend and I have been close since first grade.","ex: We usually play soccer and games together.","ex: I like him because he is always kind."],
+      4:["ex: My closest friend has been by my side since elementary school.","ex: We spend most of our free time together.","ex: What I admire most is his kindness and great humor."]
+    },
+    "My Weekend":{
+      1:["ex: played / I played","ex: with mom / with dad","ex: fun! / I was happy"],
+      2:["ex: I played at the park on Saturday.","ex: I went with my mom.","ex: It was really fun!"],
+      3:["ex: This weekend I went to the park and played with my family.","ex: I went there with my mom and little brother.","ex: I felt very happy and refreshed."],
+      4:["ex: This weekend was particularly eventful as I visited the park.","ex: My mom accompanied me throughout the entire day.","ex: Overall, it was a truly refreshing experience."]
+    },
+    "My Pet":{
+      1:["ex: dog / I have a dog","ex: Coco / name is Coco","ex: play / we play"],
+      2:["ex: I have a cute dog.","ex: Her name is Coco.","ex: We play together every day."],
+      3:["ex: I have an adorable dog named Coco.","ex: Her name is Coco and she is two years old.","ex: We go for morning walks every day."],
+      4:["ex: I am the proud owner of a playful dog named Coco.","ex: She earned the name Coco because of her brown fur.","ex: We bond through daily walks and play sessions."]
+    },
+    "A Place I Want to Visit":{
+      1:["ex: Japan / I want to go to Japan","ex: I want to go there","ex: eat sushi / see temples"],
+      2:["ex: I want to visit Japan.","ex: Because it looks very interesting and fun.","ex: I want to eat sushi and see beautiful temples."],
+      3:["ex: I have always wanted to visit Japan.","ex: I want to go because the culture is so fascinating.","ex: I would love to eat sushi and explore Tokyo."],
+      4:["ex: Japan has long been at the top of my travel wish list.","ex: Its blend of tradition and modernity deeply fascinates me.","ex: I dream of experiencing the cuisine and historic temples."]
+    },
+    "My Favorite Season":{
+      1:["ex: summer / I like summer","ex: I swim / I play outside","ex: hot / fun / sunny"],
+      2:["ex: My favorite season is summer.","ex: I swim and play outside with friends.","ex: I like it because it is warm and fun."],
+      3:["ex: My favorite season is summer because of the warm weather.","ex: I usually swim and go on picnics with my family.","ex: I love it because there are so many fun activities."],
+      4:["ex: Summer is undoubtedly my favorite season of the year.","ex: I typically spend my days swimming and having picnics.","ex: The long sunny days create endless opportunities for adventure."]
+    },
+    "My Dream":{
+      1:["ex: teacher / I want to be a teacher","ex: I want to help people","ex: I study hard every day"],
+      2:["ex: I want to be a teacher.","ex: Because I want to help children learn.","ex: I study hard and practice every day."],
+      3:["ex: My dream is to become a dedicated English teacher.","ex: I chose this because I love helping others learn.","ex: I practice English every day."],
+      4:["ex: My aspiration is to become a passionate English teacher.","ex: This dream was inspired by my love of learning languages.","ex: I am actively studying to prepare for this meaningful career."]
+    },
+    "My Day Today":{
+      1:["ex: I ate breakfast","ex: I studied / I played","ex: it was fun / it was good"],
+      2:["ex: I ate breakfast with my family this morning.","ex: I studied math and played with friends at school.","ex: The best part of my day was lunch with my friends."],
+      3:["ex: This morning I had a delicious breakfast with my whole family.","ex: At school I studied hard and played during recess.","ex: The most memorable moment was winning a game in class."],
+      4:["ex: I began my morning with a nutritious breakfast and exercise.","ex: The school day was productive with engaging lessons.","ex: The highlight of my day was an inspiring conversation with my teacher."]
+    }
   };
-  var th=TH[topic.en]||{};var h=((th[lv])||[])[qIdx]||'';
+  var th=TH[topic.en]||{};
+  var h=((th[lv])||[])[qIdx]||'';
   var lhEl=document.getElementById('lvHint');
-  if(h){lhEl.textContent='✏️ '+h;lhEl.style.display='block';}else{lhEl.style.display='none';}
+  if(h){lhEl.textContent='✏️ '+h;lhEl.style.display='block';}
+  else{lhEl.style.display='none';}
     state='start';setBtn(true,'시작하기 →');
 }
 
@@ -491,10 +542,12 @@ function startShadowRec(){
     const saidC=said.toLowerCase().replace(/[.!?,]/g,'').trim();
     const oW=orig.split(' ').filter(w=>w.length>2);
     const mc=oW.filter(w=>saidC.includes(w)).length;
-    const ok=oW.length===0?true:mc>=Math.max(1,Math.floor(oW.length*0.4));
+    const ok=oW.length===0||mc>=Math.max(1,Math.floor(oW.length*0.4));
     res.style.display='block';
     if(ok){
-      res.style.background='var(--gl)';res.style.color='#166534';res.textContent='OK! "'+said+'" 잘했어요!';
+      res.style.background='var(--gl)';
+      res.style.color='#166534';
+      res.textContent='OK! "'+said+'" 잘했어요!';
       addScore(10);
       const ov=document.getElementById('shadowOk');
       document.getElementById('shadowOkIcon').textContent='⭕';
@@ -502,8 +555,11 @@ function startShadowRec(){
       ov.classList.add('show');
       setTimeout(()=>ov.classList.remove('show'),2000);
     }else{
-      res.style.background='#FEF3C7';res.style.color='#92400E';res.textContent='다시! 들린 말: "'+said+'" 한 번 더!';
+      res.style.background='#FEF3C7';
+      res.style.color='#92400E';
+      res.textContent='다시 해봐요! 들린 말: "'+said+'"';
     }
+  };
   rec.onend=()=>{btn.textContent='🎤 다시 말해보기';btn.style.background='#FF6B35';};
   rec.start();
 }
