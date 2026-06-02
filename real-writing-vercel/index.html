@@ -994,13 +994,25 @@ async function showTeacherDashboard() {
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('levelScreen').style.display = 'none';
 
-  try {
-    const snap = await db.collection('records').orderBy('timestamp', 'desc').limit(100).get();
-    const records = snap.docs.map(d => ({id: d.id, ...d.data()}));
+  // Show loading
+  document.getElementById('teacherStats').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#6B7280;">불러오는 중...</div>';
+  document.getElementById('teacherList').innerHTML = '';
 
-    // Stats
+  try {
+    const snap = await db.collection('records').orderBy('timestamp','desc').limit(200).get();
+    const records = snap.docs.map(d=>({id:d.id,...d.data()}));
+
+    const today = new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
     const students = [...new Set(records.map(r=>r.uid))].length;
-    const avgScore = records.length ? Math.round(records.reduce((a,r)=>a+r.score,0)/records.length) : 0;
+    const avgScore = records.length ? Math.round(records.reduce((a,r)=>a+(r.score||0),0)/records.length) : 0;
+    const todayCount = records.filter(r=>r.date===today).length;
+
+    // Level distribution
+    const lvCount = {1:0,2:0,3:0,4:0};
+    records.forEach(r=>{if(r.level)lvCount[r.level]=(lvCount[r.level]||0)+1;});
+    const topLevel = Object.entries(lvCount).sort((a,b)=>b[1]-a[1])[0];
+
+    // Stats grid
     document.getElementById('teacherStats').innerHTML = `
       <div style="background:#EEEFFE;border-radius:14px;padding:16px;text-align:center;">
         <div style="font-size:28px;font-weight:800;color:#5B5FFF;">${students}</div>
@@ -1015,46 +1027,128 @@ async function showTeacherDashboard() {
         <div style="font-size:13px;color:#6B7280;margin-top:4px;">평균 점수</div>
       </div>
       <div style="background:#FFF0EB;border-radius:14px;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#FF6B35;">${records.filter(r=>{const d=r.date;return d===new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'})}).length}</div>
+        <div style="font-size:28px;font-weight:800;color:#FF6B35;">${todayCount}</div>
         <div style="font-size:13px;color:#6B7280;margin-top:4px;">오늘 학습</div>
       </div>
     `;
 
+    // Level distribution bar
+    const totalRec = records.length || 1;
+    const lvColors = {1:'#F59E0B',2:'#22C55E',3:'#3B82F6',4:'#8B5CF6'};
+    const lvNames = {1:'Level 1',2:'Level 2',3:'Level 3',4:'Level 4'};
+    const lvBar = document.createElement('div');
+    lvBar.style.cssText = 'background:#fff;border-radius:14px;padding:16px;border:1.5px solid #E5E7EB;';
+    lvBar.innerHTML = `
+      <div style="font-weight:700;font-size:14px;margin-bottom:12px;">📊 레벨별 학습 분포</div>
+      ${[1,2,3,4].map(l=>`
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:600;width:52px;color:${lvColors[l]}">${lvNames[l]}</div>
+          <div style="flex:1;background:#F3F4F6;border-radius:6px;height:18px;overflow:hidden;">
+            <div style="height:100%;width:${Math.round((lvCount[l]||0)/totalRec*100)}%;background:${lvColors[l]};border-radius:6px;transition:width .5s;"></div>
+          </div>
+          <div style="font-size:12px;color:#6B7280;width:28px;text-align:right;">${lvCount[l]||0}회</div>
+        </div>
+      `).join('')}
+    `;
+    document.getElementById('teacherStats').parentNode.insertBefore(lvBar, document.getElementById('teacherList'));
+
     // Group by student
     const byStudent = {};
-    records.forEach(r => {
-      if (!byStudent[r.uid]) byStudent[r.uid] = {name:r.name,email:r.email,photo:r.photo,records:[]};
+    records.forEach(r=>{
+      if(!byStudent[r.uid]) byStudent[r.uid]={name:r.name||'학생',email:r.email||'',photo:r.photo||'',records:[]};
       byStudent[r.uid].records.push(r);
     });
 
-    document.getElementById('teacherList').innerHTML = Object.values(byStudent).map(s => `
-      <div style="background:#fff;border-radius:14px;padding:16px;border:1.5px solid #E5E7EB;cursor:pointer;" onclick="this.querySelector('.detail').style.display=this.querySelector('.detail').style.display==='none'?'block':'none'">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <img src="${s.photo||''}" width="36" height="36" style="border-radius:50%;background:#E5E7EB;" onerror="this.src=''">
-          <div>
-            <div style="font-weight:700;font-size:15px;">${s.name}</div>
-            <div style="font-size:12px;color:#6B7280;">${s.email} · ${s.records.length}회 학습</div>
-          </div>
-          <div style="margin-left:auto;background:#EEEFFE;color:#5B5FFF;font-weight:700;font-size:13px;padding:4px 10px;border-radius:10px;">
-            최고 ${Math.max(...s.records.map(r=>r.score))}점
-          </div>
-        </div>
-        <div class="detail" style="display:none;">
-          ${s.records.map(r=>`
-            <div style="padding:10px;background:#F8F8FF;border-radius:10px;margin-top:8px;border-left:3px solid #5B5FFF;">
-              <div style="font-size:12px;color:#6B7280;margin-bottom:4px;">${r.date} ${r.time} · ${r.levelName} · ${r.score}점</div>
-              <div style="font-size:13px;font-weight:600;color:#1E1E2E;margin-bottom:4px;">${r.topic}</div>
-              <div style="font-size:13px;color:#14532D;background:#DCFCE7;padding:8px 10px;border-radius:8px;line-height:1.6;">${r.story||''}</div>
-              ${r.wrapUp?`<div style="font-size:12px;color:#6B7280;margin-top:6px;">✍️ 마무리: ${r.wrapUp}</div>`:''}
+    // Student cards
+    document.getElementById('teacherList').innerHTML = Object.values(byStudent).length
+      ? Object.values(byStudent).sort((a,b)=>b.records.length-a.records.length).map((s,si)=>{
+          const avgS = Math.round(s.records.reduce((a,r)=>a+(r.score||0),0)/s.records.length);
+          const maxS = Math.max(...s.records.map(r=>r.score||0));
+          const lvDist = {};
+          s.records.forEach(r=>{if(r.level)lvDist[r.level]=(lvDist[r.level]||0)+1;});
+          const mainLv = Object.entries(lvDist).sort((a,b)=>b[1]-a[1])[0];
+          return `
+          <div style="background:#fff;border-radius:16px;border:1.5px solid #E5E7EB;overflow:hidden;">
+            <!-- Student Header -->
+            <div style="padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;background:#FAFAFA;" onclick="toggleStudent('stu${si}')">
+              <img src="${s.photo}" width="40" height="40" style="border-radius:50%;background:#E5E7EB;flex-shrink:0;" onerror="this.style.display='none'">
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:15px;color:#1E1E2E;">${s.name}</div>
+                <div style="font-size:12px;color:#6B7280;">${s.email}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+                <div style="background:#EEEFFE;color:#5B5FFF;font-weight:700;font-size:12px;padding:3px 9px;border-radius:10px;">${s.records.length}회 학습</div>
+                <div style="font-size:11px;color:#6B7280;">평균 ${avgS}점 · 최고 ${maxS}점</div>
+              </div>
             </div>
-          `).join('')}
-        </div>
-      </div>
-    `).join('') || '<div style="text-align:center;padding:30px;color:#6B7280;">아직 학습 기록이 없어요!</div>';
+            <!-- Student Detail -->
+            <div id="stu${si}" style="display:none;">
+              <!-- Mini Stats -->
+              <div style="padding:12px 16px;background:#F8F8FF;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;border-top:1px solid #E5E7EB;">
+                <div style="text-align:center;"><div style="font-size:18px;font-weight:800;color:#5B5FFF;">${s.records.length}</div><div style="font-size:11px;color:#6B7280;">학습 횟수</div></div>
+                <div style="text-align:center;"><div style="font-size:18px;font-weight:800;color:#22C55E;">${avgS}</div><div style="font-size:11px;color:#6B7280;">평균 점수</div></div>
+                <div style="text-align:center;"><div style="font-size:18px;font-weight:800;color:#FF6B35;">${mainLv?'Lv.'+mainLv[0]:'-'}</div><div style="font-size:11px;color:#6B7280;">주요 레벨</div></div>
+              </div>
+              <!-- Records -->
+              <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px;">
+                ${s.records.map(r=>{
+                  const sentences = (r.sentences||[]);
+                  const scoreColor = (r.score||0)>=60?'#22C55E':(r.score||0)>=40?'#F59E0B':'#EF4444';
+                  return `
+                  <div style="border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden;">
+                    <!-- Record Header -->
+                    <div style="padding:10px 13px;background:#F8F8FF;display:flex;align-items:center;justify-content:space-between;">
+                      <div>
+                        <div style="font-size:12px;color:#6B7280;">${r.date||''} ${r.time||''}</div>
+                        <div style="font-size:14px;font-weight:700;color:#1E1E2E;margin-top:2px;">${r.topic||''}</div>
+                      </div>
+                      <div style="display:flex;gap:6px;align-items:center;">
+                        <div style="background:#EEEFFE;color:#5B5FFF;font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600;">${r.levelName||''}</div>
+                        <div style="font-size:16px;font-weight:800;color:${scoreColor};">${r.score||0}점</div>
+                      </div>
+                    </div>
+                    <!-- Sentences -->
+                    ${sentences.length?`
+                    <div style="padding:10px 13px;">
+                      <div style="font-size:12px;font-weight:700;color:#6B7280;margin-bottom:6px;">📝 작성한 문장</div>
+                      ${sentences.map((s,i)=>`
+                        <div style="margin-bottom:6px;">
+                          <div style="font-size:11px;color:#9CA3AF;">Q${i+1}. ${s.q||''}</div>
+                          <div style="font-size:13px;color:#6B7280;text-decoration:line-through;">${s.eng||''}</div>
+                          <div style="font-size:14px;font-weight:600;color:#1E1E2E;">${s.corr||''}</div>
+                        </div>
+                      `).join('')}
+                    </div>`:''
+                    }
+                    <!-- Story -->
+                    ${r.story?`
+                    <div style="padding:10px 13px;background:#F0FDF4;border-top:1px solid #86EFAC;">
+                      <div style="font-size:12px;font-weight:700;color:#15803D;margin-bottom:4px;">완성 글</div>
+                      <div style="font-size:13px;color:#14532D;line-height:1.7;">${r.story}</div>
+                    </div>`:''}
+                    <!-- WrapUp -->
+                    ${r.wrapUp?`
+                    <div style="padding:10px 13px;border-top:1px solid #E5E7EB;">
+                      <div style="font-size:12px;font-weight:700;color:#6B7280;margin-bottom:4px;">✍️ 마무리 쓰기</div>
+                      <div style="font-size:13px;color:#1E1E2E;">${r.wrapUp}</div>
+                    </div>`:''}
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>`;
+        }).join('')
+      : '<div style="text-align:center;padding:40px;color:#6B7280;">아직 학습 기록이 없어요!</div>';
 
   } catch(e) {
-    document.getElementById('teacherList').innerHTML = '<div style="color:#EF4444;">오류: ' + e.message + '</div>';
+    console.error(e);
+    document.getElementById('teacherList').innerHTML = '<div style="color:#EF4444;padding:16px;">오류: ' + e.message + '</div>';
   }
+}
+
+function toggleStudent(id){
+  const el=document.getElementById(id);
+  if(el) el.style.display=el.style.display==='none'?'block':'none';
 }
 
 </script>
