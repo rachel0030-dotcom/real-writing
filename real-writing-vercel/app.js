@@ -23,12 +23,18 @@ auth.getRedirectResult().then(function(result) {
 });
 
 auth.onAuthStateChanged(function(user) {
+  console.log('Auth state changed:', user ? user.email : 'null');
   if (user) {
     currentUser = user;
     document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'none';
+    var ts = document.getElementById('teacherScreen');
+    if (ts) ts.style.display = 'none';
     if (TEACHER_EMAILS.includes(user.email)) {
+      console.log('Teacher detected:', user.email);
       showTeacherDashboard();
     } else {
+      console.log('Student detected:', user.email);
       var ls = document.getElementById('levelScreen');
       ls.style.display = 'flex';
       ls.style.flexDirection = 'column';
