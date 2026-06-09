@@ -238,7 +238,7 @@ function loadStudentMgmt() {
   var list = document.getElementById('studentMgmtList');
   list.innerHTML = mkDiv('text-align:center;padding:20px;color:#6B7280', '불러오는 중...');
   var lc = { 1: '#F59E0B', 2: '#22C55E', 3: '#3B82F6', 4: '#8B5CF6' };
-  db.collection('students').where('teacherUid', '==', currentUser.uid).orderBy('createdAt', 'desc').get().then(function(snap) {
+  db.collection('students').where('teacherUid', '==', currentUser.uid).get().then(function(snap) {
     if (snap.empty) { list.innerHTML = mkDiv('text-align:center;padding:30px;color:#6B7280', '등록된 학생이 없어요!'); return; }
     list.innerHTML = '';
     snap.docs.forEach(function(doc) {
