@@ -96,7 +96,6 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 .hist-topic{font-weight:700;font-size:15px;color:var(--tx);margin-bottom:6px;}
 .hist-story{font-size:13px;color:var(--sub);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
 </style>
-
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -104,17 +103,14 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 <body>
 
 <!-- LEVEL SELECT -->
-
 <div id="loginScreen" style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px;">
   <div style="font-size:56px;">🌟</div>
   <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.8rem;color:#5B5FFF;">REAL Writing</div>
-  <div style="font-size:14px;color:#6B7280;text-align:center;line-height:1.6;">AI 영어 라이팅 학습 앱</div>
+  <div style="font-size:14px;color:#6B7280;text-align:center;">AI 영어 라이팅 학습 앱</div>
   <div style="width:100%;max-width:340px;background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1.5px solid #E5E7EB;">
     <div style="font-weight:800;font-size:16px;margin-bottom:4px;">학생 로그인</div>
     <div style="font-size:13px;color:#6B7280;margin-bottom:14px;">선생님께 받은 6자리 코드를 입력하세요</div>
-    <input id="studentCodeInput" type="text" placeholder="학생 코드 입력 (예: ABC123)" maxlength="6"
-      style="width:100%;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px 14px;font-family:'Noto Sans KR',sans-serif;font-size:16px;outline:none;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:10px;box-sizing:border-box;"
-      oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')loginWithCode()">
+    <input id="studentCodeInput" type="text" placeholder="학생 코드 입력 (예: ABC123)" maxlength="6" style="width:100%;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px 14px;font-family:'Noto Sans KR',sans-serif;font-size:16px;outline:none;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:10px;box-sizing:border-box;" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')loginWithCode()">
     <button onclick="loginWithCode()" style="width:100%;padding:13px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#5B5FFF;color:#fff;">입장하기 →</button>
     <div id="codeError" style="font-size:13px;color:#EF4444;margin-top:8px;text-align:center;display:none;"></div>
   </div>
@@ -169,7 +165,7 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
   <div id="tabDashContent" style="padding:16px 18px;display:flex;flex-direction:column;gap:13px;">
     <div id="assignmentOverview"></div>
     <div id="teacherStats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
-    <div style="font-weight:700;font-size:15px;color:#1E1E2E;">학생별 학습 기록</div>
+    <div style="font-weight:700;font-size:15px;">학생별 학습 기록</div>
     <div id="teacherList" style="display:flex;flex-direction:column;gap:10px;"></div>
   </div>
   <div id="tabStudentsContent" style="padding:16px 18px;display:none;flex-direction:column;gap:13px;">
@@ -188,7 +184,6 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
     <div id="studentMgmtList" style="display:flex;flex-direction:column;gap:10px;"></div>
   </div>
 </div>
-
 <div id="appScreen" style="display:none;width:100%;flex-direction:column;align-items:center;">
   <nav class="nav">
     <div class="logo">REAL<span>.</span>Writing</div>
@@ -270,26 +265,20 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 
   <div class="pg" id="pgMemory" style="display:none;">
     <div class="sc on" style="border-color:#FF6B35;">
-      <div class="sc-h">
-        <div class="snum" style="background:#FFF0EB;color:#FF6B35;">암기</div>
-        <div style="font-weight:700;font-size:15px;">외워서 말해봐요!</div>
-      </div>
+      <div class="sc-h"><div class="snum" style="background:#FFF0EB;color:#FF6B35;">암기</div><div style="font-weight:700;font-size:15px;">외워서 말해봐요!</div></div>
       <div style="font-size:13px;color:var(--sub);">완성 글을 읽고 기억한 뒤 말해봐요!</div>
     </div>
     <div id="memReadCard" class="sc" style="display:flex;flex-direction:column;gap:12px;">
       <div style="font-size:13px;font-weight:700;color:var(--sub);">읽기</div>
-      <div id="memStoryText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;border-left:4px solid var(--g);"></div>
-      <div style="font-size:13px;color:var(--sub);text-align:center;" id="memReadStatus">천천히 읽어봐요!</div>
+      <div id="memStoryText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;"></div>
       <div style="display:flex;gap:8px;">
         <button onclick="speakMemory()" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:var(--g);color:#fff;">듣기</button>
-        <button onclick="startMemorize()" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#FF6B35;color:#fff;">외웠어요! 숨기기</button>
+        <button onclick="startMemorize()" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#FF6B35;color:#fff;">외움어요! 숨기기</button>
       </div>
     </div>
     <div id="memRecordCard" class="sc" style="display:none;flex-direction:column;gap:12px;">
       <div style="font-size:13px;font-weight:700;color:var(--sub);">외워서 말하기</div>
-      <div style="background:#F8F8FF;border-radius:12px;padding:16px;text-align:center;border:2px dashed #E5E7EB;">
-        <div style="font-size:13px;color:var(--sub);" id="memRecStatus">녹음 버튼을 눌러요!</div>
-      </div>
+      <div style="background:#F8F8FF;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:13px;color:var(--sub);" id="memRecStatus">녹음 버튼을 눌러요!</div></div>
       <button onclick="toggleMemRec()" id="memRecBtn" style="width:100%;padding:14px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;">녹음 시작</button>
       <div id="memRecResult" style="display:none;font-size:14px;padding:13px;border-radius:12px;line-height:1.7;"></div>
       <button onclick="retryMemory()" id="memRetryBtn" style="display:none;width:100%;padding:12px;border:1.5px solid #FF6B35;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:#FF6B35;">다시 해볼게요</button>
@@ -299,7 +288,6 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
       <div id="memAnswerText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;"></div>
     </div>
   </div>
-
   <!-- REPORT -->
   <div class="pg" id="pgReport" style="display:none;">
     <div class="sc on" style="border-color:#8B5CF6;box-shadow:0 0 0 3px #F3E8FF;">
@@ -478,8 +466,6 @@ async function go(){
   else if(state==='nextSpeak')await nextSpeak();
   else if(state==='goWrap')goWrap();
   else if(state==='submitWrap')await submitWrap();
-  else if(state==='goMemory')goMemory();
-  else if(state==='goMemory')goMemory();
   else if(state==='goMemory')goMemory();
   else if(state==='finish')finish();
 }
@@ -926,92 +912,76 @@ function showModal(emoji,title,sub,btnTxt,cb){
 }
 function hideModal(){document.getElementById('modal').classList.remove('show');}
 
-// ── FIREBASE CONFIG ──
-var firebaseConfig = {
-  apiKey: "AIzaSyBddgTRxwSs9fGxIc1hx78XnewPbeij8Bk",
-  authDomain: "real-writing.firebaseapp.com",
-  projectId: "real-writing",
-  storageBucket: "real-writing.firebasestorage.app",
-  messagingSenderId: "909052997133",
-  appId: "1:909052997133:web:e3e7e9ed1ece09982fef44"
-};
+var firebaseConfig={apiKey:"AIzaSyBddgTRxwSs9fGxIc1hx78XnewPbeij8Bk",authDomain:"real-writing.firebaseapp.com",projectId:"real-writing",storageBucket:"real-writing.firebasestorage.app",messagingSenderId:"909052997133",appId:"1:909052997133:web:e3e7e9ed1ece09982fef44"};
 firebase.initializeApp(firebaseConfig);
-var auth = firebase.auth();
-var db = firebase.firestore();
-var TEACHER_EMAILS = ['rachel0030@gmail.com'];
-var currentUser = null;
+var auth=firebase.auth(),db=firebase.firestore();
+var TEACHER_EMAILS=['rachel0030@gmail.com'];
+var currentUser=null;
 
-auth.getRedirectResult().catch(function(e){ console.warn('redirect:', e.message); });
+auth.getRedirectResult().catch(function(e){console.warn('redirect:',e.message);});
 
-auth.onAuthStateChanged(function(user) {
-  if (user) {
-    currentUser = user;
-    document.getElementById('loginScreen').style.display = 'none';
-    if (TEACHER_EMAILS.includes(user.email)) {
-      showTeacherDashboard();
-    } else {
-      document.getElementById('levelScreen').style.display = 'flex';
-      document.getElementById('levelScreen').style.flexDirection = 'column';
-      document.getElementById('levelScreen').style.alignItems = 'center';
+auth.onAuthStateChanged(function(user){
+  if(user){
+    currentUser=user;
+    document.getElementById('loginScreen').style.display='none';
+    if(TEACHER_EMAILS.includes(user.email)){showTeacherDashboard();}
+    else{
+      document.getElementById('levelScreen').style.display='flex';
+      document.getElementById('levelScreen').style.flexDirection='column';
+      document.getElementById('levelScreen').style.alignItems='center';
     }
-  } else {
-    currentUser = null;
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('loginScreen').style.flexDirection = 'column';
-    document.getElementById('levelScreen').style.display = 'none';
-    document.getElementById('appScreen').style.display = 'none';
-    var ts = document.getElementById('teacherScreen');
-    if(ts) ts.style.display = 'none';
+  }else{
+    currentUser=null;
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('loginScreen').style.flexDirection='column';
+    document.getElementById('levelScreen').style.display='none';
+    document.getElementById('appScreen').style.display='none';
+    var ts=document.getElementById('teacherScreen');if(ts)ts.style.display='none';
   }
 });
 
-function signInWithGoogle() {
-  var errEl = document.getElementById('loginError');
-  errEl.textContent = '구글 로그인 페이지로 이동 중...';
-  errEl.style.display = 'block';
-  var provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithRedirect(provider).catch(function(e) {
-    errEl.textContent = '로그인 실패: ' + e.message;
-  });
+function signInWithGoogle(){
+  var e=document.getElementById('loginError');
+  e.textContent='구글 로그인 페이지로 이동 중...';e.style.display='block';
+  auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()).catch(function(err){e.textContent='로그인 실패: '+err.message;});
 }
+function signOut(){auth.signOut();}
 
-function signOut() { auth.signOut(); }
-
-function loginWithCode() {
-  var code = document.getElementById('studentCodeInput').value.trim().toUpperCase();
-  var errEl = document.getElementById('codeError');
-  if (!code) { errEl.textContent = '코드를 입력해주세요!'; errEl.style.display='block'; return; }
-  errEl.textContent = '확인 중...'; errEl.style.display='block';
-  db.collection('students').where('code','==',code).limit(1).get().then(function(snap) {
-    if (snap.empty) { errEl.textContent='코드를 찾을 수 없어요. 선생님께 확인해주세요!'; return; }
-    var doc = snap.docs[0]; var data = doc.data();
-    currentUser = { uid:doc.id, displayName:data.name, email:data.code+'@student.realwriting', photoURL:'', isStudent:true, studentData:data };
-    lv = data.level||1;
+function loginWithCode(){
+  var code=document.getElementById('studentCodeInput').value.trim().toUpperCase();
+  var e=document.getElementById('codeError');
+  if(!code){e.textContent='코드를 입력해주세요!';e.style.display='block';return;}
+  e.textContent='확인 중...';e.style.display='block';
+  db.collection('students').where('code','==',code).limit(1).get().then(function(snap){
+    if(snap.empty){e.textContent='코드를 찾을 수 없어요. 선생님께 확인해주세요!';return;}
+    var doc=snap.docs[0],data=doc.data();
+    currentUser={uid:doc.id,displayName:data.name,email:data.code+'@student',photoURL:'',isStudent:true,studentData:data};
+    lv=data.level||1;
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('levelScreen').style.display='flex';
     document.getElementById('levelScreen').style.flexDirection='column';
     document.getElementById('levelScreen').style.alignItems='center';
     selLv(lv);
-  }).catch(function(e){ errEl.textContent='오류: '+e.message; });
+  }).catch(function(err){e.textContent='오류: '+err.message;});
 }
 
-function saveRecord(wrapUp) {
-  if (!currentUser) return;
-  var now = new Date();
-  var teacherUid = (currentUser.isStudent && currentUser.studentData) ? (currentUser.studentData.teacherUid||'') : currentUser.uid;
+function saveRecord(wrapUp){
+  if(!currentUser)return;
+  var now=new Date();
+  var tuid=(currentUser.isStudent&&currentUser.studentData)?(currentUser.studentData.teacherUid||''):currentUser.uid;
   db.collection('records').add({
-    uid:currentUser.uid, studentId:currentUser.uid, teacherUid:teacherUid,
-    name:currentUser.displayName||'학생', email:currentUser.email, photo:currentUser.photoURL||'',
+    uid:currentUser.uid,studentId:currentUser.uid,teacherUid:tuid,
+    name:currentUser.displayName||'학생',email:currentUser.email,photo:currentUser.photoURL||'',
     date:now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}),
     time:now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}),
     timestamp:firebase.firestore.FieldValue.serverTimestamp(),
-    level:lv, levelName:LVCONF[lv].name, topic:topic.ko, topicEn:topic.en,
+    level:lv,levelName:LVCONF[lv].name,topic:topic.ko,topicEn:topic.en,
     sentences:sentences.map(function(s){return{q:s.q,eng:s.eng,corr:s.corr};}),
-    story:storyFinal, wrapUp:wrapUp, score:score
-  }).then(function(){console.log('Saved!');}).catch(function(e){console.warn('Save:',e);});
+    story:storyFinal,wrapUp:wrapUp,score:score
+  }).then(function(){console.log('Saved!');}).catch(function(e){console.warn(e);});
 }
 
-function showTeacherDashboard() {
+function showTeacherDashboard(){
   document.getElementById('teacherScreen').style.display='flex';
   document.getElementById('teacherScreen').style.flexDirection='column';
   document.getElementById('appScreen').style.display='none';
@@ -1019,59 +989,55 @@ function showTeacherDashboard() {
   loadDashboard();
 }
 
-function showTeacherTab(tab) {
+function showTeacherTab(tab){
   document.getElementById('tabDashContent').style.display=tab==='dashboard'?'flex':'none';
   document.getElementById('tabDashContent').style.flexDirection='column';
   document.getElementById('tabStudentsContent').style.display=tab==='students'?'flex':'none';
   document.getElementById('tabStudentsContent').style.flexDirection='column';
-  document.getElementById('tabDash').style.background=tab==='dashboard'?'#5B5FFF':'#fff';
-  document.getElementById('tabDash').style.color=tab==='dashboard'?'#fff':'#6B7280';
-  document.getElementById('tabDash').style.border=tab==='dashboard'?'none':'1.5px solid #E5E7EB';
-  document.getElementById('tabStudents').style.background=tab==='students'?'#5B5FFF':'#fff';
-  document.getElementById('tabStudents').style.color=tab==='students'?'#fff':'#6B7280';
-  document.getElementById('tabStudents').style.border=tab==='students'?'none':'1.5px solid #E5E7EB';
-  if(tab==='students') loadStudentMgmt();
+  document.getElementById('tabDash').style.cssText='padding:7px 13px;border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;font-weight:700;background:'+(tab==='dashboard'?'#5B5FFF':'#fff')+';color:'+(tab==='dashboard'?'#fff':'#6B7280')+';';
+  document.getElementById('tabStudents').style.cssText='padding:7px 13px;border:1.5px solid #E5E7EB;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;font-weight:700;background:'+(tab==='students'?'#5B5FFF':'#fff')+';color:'+(tab==='students'?'#fff':'#6B7280')+';';
+  if(tab==='students')loadStudentMgmt();
 }
 
-function loadDashboard() {
+function loadDashboard(){
   document.getElementById('teacherStats').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:20px;color:#6B7280;">불러오는 중...</div>';
-  db.collection('records').orderBy('timestamp','desc').limit(200).get().then(function(snap) {
-    var records=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+  db.collection('records').orderBy('timestamp','desc').limit(200).get().then(function(snap){
+    var recs=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
     var today=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
-    var students=[...new Set(records.map(function(r){return r.uid;}))].length;
-    var avgScore=records.length?Math.round(records.reduce(function(a,r){return a+(r.score||0);},0)/records.length):0;
-    var todayCount=records.filter(function(r){return r.date===today;}).length;
+    var studs=[...new Set(recs.map(function(r){return r.uid;}))].length;
+    var avg=recs.length?Math.round(recs.reduce(function(a,r){return a+(r.score||0);},0)/recs.length):0;
+    var tod=recs.filter(function(r){return r.date===today;}).length;
     document.getElementById('teacherStats').innerHTML=
-      '<div style="background:#EEEFFE;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#5B5FFF;">'+students+'</div><div style="font-size:13px;color:#6B7280;margin-top:4px;">열 학생</div></div>'+
-      '<div style="background:#DCFCE7;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#22C55E;">'+records.length+'</div><div style="font-size:13px;color:#6B7280;margin-top:4px;">승 학습</div></div>'+
-      '<div style="background:#FEF3C7;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#F59E0B;">'+avgScore+'</div><div style="font-size:13px;color:#6B7280;margin-top:4px;">평균점</div></div>'+
-      '<div style="background:#FFF0EB;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#FF6B35;">'+todayCount+'</div><div style="font-size:13px;color:#6B7280;margin-top:4px;">오늘</div></div>';
-    return db.collection('students').where('teacherUid','==',currentUser.uid).get().then(function(stuSnap) {
-      var total=stuSnap.size;
-      var recUids=[...new Set(records.map(function(r){return r.studentId||r.uid;}))];
-      var done=stuSnap.docs.filter(function(d){return recUids.includes(d.id);}).length;
-      document.getElementById('assignmentOverview').innerHTML=total>0?
-        '<div style="background:#fff;border-radius:14px;padding:16px;border:1.5px solid #E5E7EB;">'+
-          '<div style="font-weight:700;font-size:14px;margin-bottom:12px;">과제 현황</div>'+
+      '<div style="background:#EEEFFE;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#5B5FFF;">'+studs+'</div><div style="font-size:13px;color:#6B7280;">열 학생</div></div>'+
+      '<div style="background:#DCFCE7;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#22C55E;">'+recs.length+'</div><div style="font-size:13px;color:#6B7280;">승 학습</div></div>'+
+      '<div style="background:#FEF3C7;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#F59E0B;">'+avg+'</div><div style="font-size:13px;color:#6B7280;">평균점</div></div>'+
+      '<div style="background:#FFF0EB;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#FF6B35;">'+tod+'</div><div style="font-size:13px;color:#6B7280;">오늘</div></div>';
+    db.collection('students').where('teacherUid','==',currentUser.uid).get().then(function(ss){
+      var tot=ss.size,ruids=[...new Set(recs.map(function(r){return r.studentId||r.uid;}))];
+      var done=ss.docs.filter(function(d){return ruids.includes(d.id);}).length;
+      document.getElementById('assignmentOverview').innerHTML=tot>0?
+        '<div style="background:#fff;border-radius:14px;padding:16px;border:1.5px solid #E5E7EB;margin-bottom:4px;">'+
+          '<div style="font-weight:700;font-size:14px;margin-bottom:10px;">과제 현황</div>'+
           '<div style="display:flex;gap:10px;">'+
-            '<div style="flex:1;background:#DCFCE7;border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#22C55E;">'+done+'</div><div style="font-size:12px;color:#166534;">완료</div></div>'+
-            '<div style="flex:1;background:#FEF2F2;border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#EF4444;">'+(total-done)+'</div><div style="font-size:12px;color:#991B1B;">미학습</div></div>'+
-            '<div style="flex:1;background:#EEEFFE;border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#5B5FFF;">'+total+'</div><div style="font-size:12px;color:#3730A3;">전체</div></div>'+
+            '<div style="flex:1;background:#DCFCE7;border-radius:12px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#22C55E;">'+done+'</div><div style="font-size:12px;color:#166534;">완료</div></div>'+
+            '<div style="flex:1;background:#FEF2F2;border-radius:12px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#EF4444;">'+(tot-done)+'</div><div style="font-size:12px;color:#991B1B;">미학습</div></div>'+
+            '<div style="flex:1;background:#EEEFFE;border-radius:12px;padding:12px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#5B5FFF;">'+tot+'</div><div style="font-size:12px;color:#3730A3;">전체</div></div>'+
           '</div></div>':'';
-      var byStudent={};
-      records.forEach(function(r){if(!byStudent[r.uid])byStudent[r.uid]={name:r.name||'학생',email:r.email||'',records:[]};byStudent[r.uid].records.push(r);});
-      var keys=Object.keys(byStudent);
+      var by={};
+      recs.forEach(function(r){if(!by[r.uid])by[r.uid]={name:r.name||'학생',email:r.email||'',recs:[]};by[r.uid].recs.push(r);});
+      var keys=Object.keys(by);
       if(!keys.length){document.getElementById('teacherList').innerHTML='<div style="text-align:center;padding:40px;color:#6B7280;">아직 학습 기록이 없어요!</div>';return;}
-      document.getElementById('teacherList').innerHTML=keys.map(function(uid,si){
-        var s=byStudent[uid];
-        var avgS=Math.round(s.records.reduce(function(a,r){return a+(r.score||0);},0)/s.records.length);
+      document.getElementById('teacherList').innerHTML=keys.map(function(uid,i){
+        var s=by[uid];
+        var avg2=Math.round(s.recs.reduce(function(a,r){return a+(r.score||0);},0)/s.recs.length);
+        var detail='stu'+i;
         return '<div style="background:#fff;border-radius:16px;border:1.5px solid #E5E7EB;overflow:hidden;">'+
-          '<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="toggleStudent('stu'+si+'')">'+
+          '<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="toggleStudent(''+detail+'')">'+
             '<div style="flex:1;"><div style="font-weight:700;font-size:15px;">'+s.name+'</div><div style="font-size:12px;color:#6B7280;">'+s.email+'</div></div>'+
-            '<div style="font-size:12px;color:#5B5FFF;font-weight:700;">'+s.records.length+'회 | 평균'+avgS+'점</div>'+
+            '<div style="font-size:12px;color:#5B5FFF;font-weight:700;">'+s.recs.length+'회 | 평균 '+avg2+'점</div>'+
           '</div>'+
-          '<div id="stu'+si+'" style="display:none;padding:12px 16px;border-top:1px solid #F3F4F6;">'+
-            s.records.map(function(r){
+          '<div id="'+detail+'" style="display:none;padding:12px 16px;border-top:1px solid #F3F4F6;">'+
+            s.recs.map(function(r){
               return '<div style="border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden;margin-bottom:8px;">'+
                 '<div style="padding:10px 13px;background:#F8F8FF;display:flex;justify-content:space-between;">'+
                   '<div><div style="font-size:12px;color:#6B7280;">'+(r.date||'')+' '+(r.time||'')+'</div><div style="font-size:14px;font-weight:700;">'+(r.topic||'')+'</div></div>'+
@@ -1084,7 +1050,7 @@ function loadDashboard() {
           '</div></div>';
       }).join('');
     });
-  }).catch(function(e){document.getElementById('teacherList').innerHTML='<div style="color:#EF4444;">'+e.message+'</div>';});
+  }).catch(function(e){document.getElementById('teacherList').innerHTML='<div style="color:#EF4444;">오류: '+e.message+'</div>';});
 }
 
 function toggleStudent(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'block':'none';}
@@ -1093,11 +1059,11 @@ function generateCode(){var ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',code='';for(va
 
 function addStudent(){
   var name=document.getElementById('newStudentName').value.trim();
-  var level=parseInt(document.getElementById('newStudentLevel').value);
+  var lev=parseInt(document.getElementById('newStudentLevel').value);
   if(!name){alert('학생 이름을 입력해주세요!');return;}
   var code=generateCode();
-  var lvN={1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
-  db.collection('students').add({name:name,level:level,code:code,levelName:lvN[level],teacherUid:currentUser.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp(),totalSessions:0})
+  var ln={1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
+  db.collection('students').add({name:name,level:lev,code:code,levelName:ln[lev],teacherUid:currentUser.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp(),totalSessions:0})
     .then(function(){document.getElementById('newStudentName').value='';alert(name+' 등록 완료! 코드: '+code);loadStudentMgmt();})
     .catch(function(e){alert('오류: '+e.message);});
 }
@@ -1105,14 +1071,14 @@ function addStudent(){
 function loadStudentMgmt(){
   var list=document.getElementById('studentMgmtList');
   list.innerHTML='<div style="text-align:center;padding:20px;color:#6B7280;">불러오는 중...</div>';
-  var lvC={1:'#F59E0B',2:'#22C55E',3:'#3B82F6',4:'#8B5CF6'};
   db.collection('students').where('teacherUid','==',currentUser.uid).orderBy('createdAt','desc').get().then(function(snap){
     if(snap.empty){list.innerHTML='<div style="text-align:center;padding:30px;color:#6B7280;">등록된 학생이 없어요!</div>';return;}
+    var lc={1:'#F59E0B',2:'#22C55E',3:'#3B82F6',4:'#8B5CF6'};
     list.innerHTML=snap.docs.map(function(doc){
       var s=doc.data(),sid=doc.id;
       return '<div style="background:#fff;border-radius:14px;padding:15px;border:1.5px solid #E5E7EB;">'+
         '<div style="display:flex;align-items:center;gap:10px;">'+
-          '<div style="flex:1;"><div style="font-weight:700;font-size:15px;">'+s.name+'</div><div style="font-size:12px;color:'+lvC[s.level]+';font-weight:600;">'+s.levelName+'</div></div>'+
+          '<div style="flex:1;"><div style="font-weight:700;font-size:15px;">'+s.name+'</div><div style="font-size:12px;color:'+lc[s.level]+';font-weight:600;">'+s.levelName+'</div></div>'+
           '<div style="text-align:right;"><div style="font-size:18px;font-weight:800;letter-spacing:2px;">'+s.code+'</div><div style="font-size:11px;color:#9CA3AF;">학생 코드</div></div>'+
         '</div>'+
         '<div style="margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;display:flex;gap:8px;justify-content:flex-end;">'+
@@ -1124,13 +1090,13 @@ function loadStudentMgmt(){
   }).catch(function(e){list.innerHTML='<div style="color:#EF4444;">'+e.message+'</div>';});
 }
 
-function changeLevel(sid,name,currentLv){
-  var lvN={1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
-  var newLv=prompt(name+' 학생 레벨 변경 (현재: Level '+currentLv+'). 1~4 입력:',currentLv);
-  if(!newLv||isNaN(newLv)||newLv<1||newLv>4)return;
-  var lNum=parseInt(newLv);
-  db.collection('students').doc(sid).update({level:lNum,levelName:lvN[lNum]})
-    .then(function(){alert(name+' Level '+lNum+'로 변경!');loadStudentMgmt();})
+function changeLevel(sid,name,cur){
+  var ln={1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
+  var nv=prompt(name+' 레벨 변경 (현재: '+cur+'). 1~4 입력:',cur);
+  if(!nv||isNaN(nv)||nv<1||nv>4)return;
+  var n=parseInt(nv);
+  db.collection('students').doc(sid).update({level:n,levelName:ln[n]})
+    .then(function(){alert(name+' Level '+n+'로 변경!');loadStudentMgmt();})
     .catch(function(e){alert('오류: '+e.message);});
 }
 
@@ -1139,8 +1105,7 @@ function deleteStudent(sid,name){
   db.collection('students').doc(sid).delete().then(function(){loadStudentMgmt();});
 }
 
-// ── MEMORY ──
-var memIsRec=false,memRecognition=null;
+var memIsRec=false,memRec=null;
 
 function goMemory(){
   showPg('memory');tabOn('t6');
@@ -1151,19 +1116,15 @@ function goMemory(){
   document.getElementById('memAnswerCard').style.display='none';
   document.getElementById('memRecResult').style.display='none';
   document.getElementById('memRetryBtn').style.display='none';
-  setBtn(true,'학습 완료!','green');
-  state='finish';
+  setBtn(true,'학습 완료!','green');state='finish';
   setTimeout(function(){speak(removeEmoji(storyFinal));},500);
 }
-
 function speakMemory(){speak(removeEmoji(storyFinal));}
-
 function startMemorize(){
   document.getElementById('memReadCard').style.display='none';
   document.getElementById('memRecordCard').style.display='flex';
-  document.getElementById('memRecStatus').textContent='녹음 버튼을 눌러 말해봐요!';
+  document.getElementById('memRecStatus').textContent='녹음 버튼을 눌러요!';
 }
-
 function retryMemory(){
   document.getElementById('memReadCard').style.display='flex';
   document.getElementById('memRecordCard').style.display='none';
@@ -1171,37 +1132,30 @@ function retryMemory(){
   document.getElementById('memRecResult').style.display='none';
   document.getElementById('memRetryBtn').style.display='none';
 }
-
 function toggleMemRec(){
-  if(memIsRec){if(memRecognition)memRecognition.stop();return;}
+  if(memIsRec){if(memRec)memRec.stop();return;}
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){
-    var res=document.getElementById('memRecResult');
-    res.style.background='#FEF2F2';res.style.color='#991B1B';
-    res.textContent='Chrome에서만 가능해요!';res.style.display='block';
-    document.getElementById('memAnswerCard').style.display='flex';return;
-  }
-  memRecognition=new SR();
-  memRecognition.lang='en-US';memRecognition.interimResults=false;
+  if(!SR){var r=document.getElementById('memRecResult');r.style.background='#FEF2F2';r.style.color='#991B1B';r.textContent='Chrome에서만 가능해요!';r.style.display='block';document.getElementById('memAnswerCard').style.display='flex';return;}
+  memRec=new SR();memRec.lang='en-US';memRec.interimResults=false;
   var btn=document.getElementById('memRecBtn');
-  memRecognition.onstart=function(){memIsRec=true;btn.textContent='멈추기';btn.style.background='#E53935';document.getElementById('memRecStatus').textContent='말하고 있어요...';};
-  memRecognition.onresult=function(e){
+  memRec.onstart=function(){memIsRec=true;btn.textContent='멈추기';btn.style.background='#E53935';document.getElementById('memRecStatus').textContent='말하고 있어요...';};
+  memRec.onresult=function(e){
     var said=e.results[0][0].transcript.trim();
     var orig=removeEmoji(storyFinal).toLowerCase().replace(/[.!?,]/g,'').trim();
-    var saidC=said.toLowerCase().replace(/[.!?,]/g,'').trim();
-    var oW=orig.split(' ').filter(function(w){return w.length>2;});
-    var mc=oW.filter(function(w){return saidC.includes(w);}).length;
-    var pct=oW.length?Math.round(mc/oW.length*100):0;
+    var sc=said.toLowerCase().replace(/[.!?,]/g,'').trim();
+    var ow=orig.split(' ').filter(function(w){return w.length>2;});
+    var mc=ow.filter(function(w){return sc.includes(w);}).length;
+    var pct=ow.length?Math.round(mc/ow.length*100):0;
     var res=document.getElementById('memRecResult');res.style.display='block';
-    if(pct>=70){res.style.background='var(--gl)';res.style.color='#14532D';res.innerHTML='<b>'+pct+'% 일치! 대단해요!</b><br>"'+said+'"';addScore(30);}
-    else if(pct>=40){res.style.background='var(--yl)';res.style.color='#92400E';res.innerHTML='<b>'+pct+'% 일치! 잘했어요!</b><br>"'+said+'"';document.getElementById('memRetryBtn').style.display='block';addScore(15);}
+    if(pct>=70){res.style.background='var(--gl)';res.style.color='#14532D';res.innerHTML='<b>'+pct+'% 일치!</b><br>"'+said+'"';addScore(30);}
+    else if(pct>=40){res.style.background='var(--yl)';res.style.color='#92400E';res.innerHTML='<b>'+pct+'% 일치!</b><br>"'+said+'"';document.getElementById('memRetryBtn').style.display='block';addScore(15);}
     else{res.style.background='#FEF2F2';res.style.color='#7F1D1D';res.innerHTML='<b>'+pct+'% 다시 연습!</b><br>"'+said+'"';document.getElementById('memRetryBtn').style.display='block';}
     document.getElementById('memAnswerCard').style.display='flex';
     document.getElementById('memRecStatus').textContent='완료!';
   };
-  memRecognition.onend=function(){memIsRec=false;btn.textContent='다시 녹음';btn.style.background='#FF6B35';};
-  memRecognition.onerror=function(){memIsRec=false;btn.textContent='녹음 시작';btn.style.background='#FF6B35';};
-  memRecognition.start();
+  memRec.onend=function(){memIsRec=false;btn.textContent='다시 녹음';btn.style.background='#FF6B35';};
+  memRec.onerror=function(){memIsRec=false;btn.textContent='녹음 시작';btn.style.background='#FF6B35';};
+  memRec.start();
 }
 
 </script>
