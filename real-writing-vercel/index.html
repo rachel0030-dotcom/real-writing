@@ -1433,10 +1433,7 @@ async function loadStudentMgmt() {
 
 async function changeLevel(sid, name, currentLv) {
   const lvNames = {1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
-  const newLv = prompt(name + ' 학생의 레벨을 변경해요.
-현재: Level ' + currentLv + '
-
-새 레벨 입력 (1~4):', currentLv);
+  const newLv = prompt(name + ' 학생 레벨 변경. 현재: Level ' + currentLv + '. 새 레벨 입력 (1~4):', currentLv);
   if (!newLv || isNaN(newLv) || newLv < 1 || newLv > 4) return;
   const lNum = parseInt(newLv);
   await db.collection('students').doc(sid).update({level: lNum, levelName: lvNames[lNum]});
