@@ -107,13 +107,31 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 <!-- LEVEL SELECT -->
 
 <!-- LOGIN SCREEN -->
-<div id="loginScreen" style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:20px;">
-  <div style="font-size:56px;margin-bottom:8px;">🌟</div>
+<div id="loginScreen" style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px;">
+  <div style="font-size:56px;">🌟</div>
   <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.8rem;color:#5B5FFF;">REAL Writing</div>
-  <div style="font-size:14px;color:#6B7280;text-align:center;line-height:1.6;">AI 영어 라이팅 학습 앱<br>구글 계정으로 시작하세요!</div>
-  <button onclick="signInWithGoogle()" style="display:flex;align-items:center;gap:12px;padding:14px 28px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:16px;color:#1E1E2E;box-shadow:0 2px 10px rgba(0,0,0,0.08);transition:all .2s;width:100%;max-width:300px;justify-content:center;">
-    <img src="https://www.google.com/favicon.ico" width="20" height="20">
-    Google로 시작하기
+  <div style="font-size:14px;color:#6B7280;text-align:center;line-height:1.6;">AI 영어 라이팅 학습 앱</div>
+
+  <!-- STUDENT LOGIN -->
+  <div style="width:100%;max-width:340px;background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1.5px solid #E5E7EB;">
+    <div style="font-weight:800;font-size:16px;color:#1E1E2E;margin-bottom:4px;">학생 로그인</div>
+    <div style="font-size:13px;color:#6B7280;margin-bottom:14px;">선생님께 받은 학생 코드를 입력하세요</div>
+    <input id="studentCodeInput" type="text" placeholder="학생 코드 입력 (예: ABC123)" style="width:100%;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px 14px;font-family:'Noto Sans KR',sans-serif;font-size:16px;outline:none;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:10px;" oninput="this.value=this.value.toUpperCase()">
+    <button onclick="loginWithCode()" style="width:100%;padding:13px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#5B5FFF;color:#fff;box-shadow:0 4px 12px rgba(91,95,255,.3);">입장하기 →</button>
+    <div id="codeError" style="font-size:13px;color:#EF4444;margin-top:8px;text-align:center;display:none;"></div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:340px;">
+    <div style="flex:1;height:1px;background:#E5E7EB;"></div>
+    <div style="font-size:12px;color:#9CA3AF;">선생님이세요?</div>
+    <div style="flex:1;height:1px;background:#E5E7EB;"></div>
+  </div>
+
+  <!-- TEACHER LOGIN -->
+  <button onclick="signInWithGoogle()" style="display:flex;align-items:center;gap:10px;padding:12px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;color:#6B7280;width:100%;max-width:340px;justify-content:center;">
+    <img src="https://www.google.com/favicon.ico" width="18" height="18">
+    선생님 Google 로그인
   </button>
   <div id="loginError" style="font-size:13px;color:#EF4444;display:none;"></div>
 </div>
@@ -146,14 +164,45 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 <!-- APP -->
 
 <!-- TEACHER DASHBOARD -->
-<div id="teacherScreen" style="display:none;width:100%;max-width:520px;padding:16px 18px 80px;flex-direction:column;gap:14px;">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.1rem;color:#5B5FFF;">👩‍🏫 선생님 관리자</div>
-    <button onclick="signOut()" style="padding:7px 14px;border:1.5px solid #E5E7EB;border-radius:10px;background:#fff;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;color:#6B7280;">로그아웃</button>
+<div id="teacherScreen" style="display:none;width:100%;max-width:520px;padding:0 0 80px;flex-direction:column;">
+  <!-- Teacher Nav -->
+  <div style="background:#fff;border-bottom:1px solid #E5E7EB;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;">
+    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.05rem;color:#5B5FFF;">👩‍🏫 관리자</div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="showTeacherTab('dashboard')" id="tabDash" style="padding:7px 13px;border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;font-weight:700;background:#5B5FFF;color:#fff;">현황</button>
+      <button onclick="showTeacherTab('students')" id="tabStudents" style="padding:7px 13px;border:1.5px solid #E5E7EB;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;font-weight:700;background:#fff;color:#6B7280;">학생관리</button>
+      <button onclick="signOut()" style="padding:7px 13px;border:1.5px solid #E5E7EB;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;color:#6B7280;background:#fff;">로그아웃</button>
+    </div>
   </div>
-  <div id="teacherStats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
-  <div style="font-weight:700;font-size:15px;color:#1E1E2E;margin-top:4px;">학생 학습 기록</div>
-  <div id="teacherList" style="display:flex;flex-direction:column;gap:10px;"></div>
+
+  <!-- Dashboard Tab -->
+  <div id="tabDashContent" style="padding:16px 18px;display:flex;flex-direction:column;gap:13px;">
+    <div id="teacherStats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+    <div id="assignmentOverview"></div>
+    <div style="font-weight:700;font-size:15px;color:#1E1E2E;">학생별 학습 기록</div>
+    <div id="teacherList" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+
+  <!-- Students Tab -->
+  <div id="tabStudentsContent" style="padding:16px 18px;display:none;flex-direction:column;gap:13px;">
+    <!-- Add Student -->
+    <div style="background:#fff;border-radius:16px;padding:16px;border:1.5px solid #5B5FFF;box-shadow:0 0 0 3px #EEEFFE;">
+      <div style="font-weight:700;font-size:15px;margin-bottom:12px;">학생 등록</div>
+      <input id="newStudentName" placeholder="학생 이름" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 13px;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;margin-bottom:8px;">
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <select id="newStudentLevel" style="flex:1;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 13px;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;">
+          <option value="1">Level 1 - 입문 (초등 1~2)</option>
+          <option value="2">Level 2 - 기초 (초등 3~4)</option>
+          <option value="3">Level 3 - 중급 (초등5~중등)</option>
+          <option value="4">Level 4 - 고급 (중3~고등)</option>
+        </select>
+      </div>
+      <button onclick="addStudent()" style="width:100%;padding:12px;border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#5B5FFF;color:#fff;">학생 추가</button>
+    </div>
+    <!-- Student List -->
+    <div style="font-weight:700;font-size:15px;">등록된 학생 목록</div>
+    <div id="studentMgmtList" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
 </div>
 
 <div id="appScreen" style="display:none;width:100%;flex-direction:column;align-items:center;">
@@ -233,6 +282,46 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
     </div>
     <div class="fb red" id="fbWrapErr"></div>
   </div>
+  <!-- MEMORY RECORDING -->
+  <div class="pg" id="pgMemory" style="display:none;">
+    <div class="sc on" style="border-color:#FF6B35;box-shadow:0 0 0 3px #FFF0EB;">
+      <div class="sc-h">
+        <div class="snum" style="background:#FFF0EB;color:#FF6B35;">🎬</div>
+        <div style="font-weight:700;font-size:15px;">외워서 말해봐요!</div>
+      </div>
+      <div style="font-size:13px;color:var(--sub);line-height:1.5;">완성 글을 3번 읽고 기억한 뒤 → 숨기고 → 말해봐요! 💪</div>
+    </div>
+
+    <!-- Step 1: Read -->
+    <div id="memReadCard" class="sc" style="display:flex;flex-direction:column;gap:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">📖 1단계: 읽기</div>
+      <div style="font-size:16px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;border-left:4px solid var(--g);" id="memStoryText"></div>
+      <div style="font-size:13px;color:var(--sub);text-align:center;" id="memReadStatus">위 문장을 천천히 3번 읽어봐요!</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="speakMemory()" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:var(--g);color:#fff;">🔊 들어보기</button>
+        <button onclick="startMemorize()" id="memHideBtn" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#FF6B35;color:#fff;">외웠어요! 숨기기 👁</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Recall & Record -->
+    <div id="memRecordCard" class="sc" style="display:none;flex-direction:column;gap:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">🎤 2단계: 외워서 말하기</div>
+      <div style="background:#F8F8FF;border-radius:12px;padding:16px;text-align:center;border:2px dashed #E5E7EB;">
+        <div style="font-size:32px;margin-bottom:8px;" id="memCountdown">3</div>
+        <div style="font-size:13px;color:var(--sub);" id="memRecStatus">준비되면 녹음 버튼을 눌러요!</div>
+      </div>
+      <button onclick="toggleMemRec()" id="memRecBtn" style="width:100%;padding:14px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;box-shadow:0 4px 12px rgba(255,107,53,.3);">🎤 녹음 시작</button>
+      <div id="memRecResult" style="display:none;font-size:14px;padding:13px;border-radius:12px;background:var(--gl);color:#14532D;line-height:1.7;"></div>
+      <button onclick="retryMemory()" id="memRetryBtn" style="display:none;width:100%;padding:12px;border:1.5px solid #FF6B35;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:#FF6B35;">다시 해볼게요 🔄</button>
+    </div>
+
+    <!-- Step 3: Show answer -->
+    <div id="memAnswerCard" class="sc" style="display:none;flex-direction:column;gap:10px;">
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">✅ 정답 확인</div>
+      <div style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;border-left:4px solid var(--g);" id="memAnswerText"></div>
+    </div>
+  </div>
+
   <!-- REPORT -->
   <div class="pg" id="pgReport" style="display:none;">
     <div class="sc on" style="border-color:#8B5CF6;box-shadow:0 0 0 3px #F3E8FF;">
@@ -451,6 +540,7 @@ async function go(){
   else if(state==='nextSpeak')await nextSpeak();
   else if(state==='goWrap')goWrap();
   else if(state==='submitWrap')await submitWrap();
+  else if(state==='goMemory')goMemory();
   else if(state==='finish')finish();
 }
 
@@ -671,7 +761,7 @@ function toggleMic(){
 function goWrap(){
   hideModal();showPg('wrap');tabOn('t5');
   document.getElementById('wrapRef').innerHTML=`<div style="font-size:12px;font-weight:700;color:var(--sub);margin-bottom:8px">📌 오늘 배운 문장 (참고용)</div>${sentences.map((s,i)=>`<div style="font-size:13px;color:var(--p);font-weight:600;margin-bottom:4px">Q${i+1}. ${s.q}</div><div style="font-size:14px;color:var(--tx);padding:6px 10px;background:#fff;border-radius:8px;margin-bottom:8px;border-left:3px solid var(--p)">${s.corr}</div>`).join('')}`;
-  state='submitWrap';setBtn(true,'제출하고 저장하기 💾','green');
+  state='submitWrap';setBtn(true,'제출하기 💾','green');
 }
 
 async function submitWrap(){
@@ -686,7 +776,7 @@ async function submitWrap(){
     addScore(30);
     // SAVE
     saveRecord(txt);
-    state='finish';setBtn(true,'🎊 오늘 학습 완료!','green');
+    state='goMemory';setBtn(true,'암기 훈련하기 🎬','orange');
   }catch(e){err('fbWrapErr',e.message);setBtn(true,'제출하고 저장하기 💾','green');}
   finally{ld('ldWrap',false);}
 }
@@ -878,13 +968,13 @@ NEXT: [one specific thing to practice next time, in Korean]`,
 
 // ── UI HELPERS ──
 function showPg(name){
-  ['pgWrite','pgStory','pgShadow','pgSpeak','pgWrap','pgReport'].forEach((id,i)=>{
-    document.getElementById(id).style.display=(['write','story','shadow','speak','wrap','report'][i]===name?'flex':'none');
+  ['pgWrite','pgStory','pgShadow','pgSpeak','pgWrap','pgMemory','pgReport'].forEach((id,i)=>{
+    document.getElementById(id).style.display=(['write','story','shadow','speak','wrap','memory','report'][i]===name?'flex':'none');
   });
   document.getElementById('hintBtn').style.display=(name==='write'&&qIdx<3&&state!=='goStory')?'flex':'none';
 }
 
-function tabOn(id){['t1','t2','t3','t4','t5','t6'].forEach(t=>document.getElementById(t).className='tab'+(t===id?' on':''));}
+function tabOn(id){['t1','t2','t3','t4','t5','t6','t7'].forEach(t=>{const el=document.getElementById(t);if(el)el.className='tab'+(t===id?' on':'');});}
 
 function showModal(emoji,title,sub,btnTxt,cb){
   document.getElementById('mEmoji').textContent=emoji;
@@ -961,8 +1051,11 @@ function signOut() {
 function saveRecord(wrapUp) {
   if (!currentUser) return;
   const now = new Date();
+  const teacherUid = currentUser.isStudent ? (currentUser.studentData?.teacherUid || '') : currentUser.uid;
   const rec = {
     uid: currentUser.uid,
+    studentId: currentUser.uid,
+    teacherUid: teacherUid,
     name: currentUser.displayName || '학생',
     email: currentUser.email,
     photo: currentUser.photoURL || '',
@@ -1013,6 +1106,7 @@ async function showTeacherDashboard() {
     const topLevel = Object.entries(lvCount).sort((a,b)=>b[1]-a[1])[0];
 
     // Stats grid
+    document.getElementById('assignmentOverview').innerHTML = '';
     document.getElementById('teacherStats').innerHTML = `
       <div style="background:#EEEFFE;border-radius:14px;padding:16px;text-align:center;">
         <div style="font-size:28px;font-weight:800;color:#5B5FFF;">${students}</div>
@@ -1149,6 +1243,320 @@ async function showTeacherDashboard() {
 function toggleStudent(id){
   const el=document.getElementById(id);
   if(el) el.style.display=el.style.display==='none'?'block':'none';
+}
+
+
+
+// ── STUDENT CODE LOGIN ──
+async function loginWithCode() {
+  const code = document.getElementById('studentCodeInput').value.trim().toUpperCase();
+  const errEl = document.getElementById('codeError');
+  if (!code) { errEl.textContent = '코드를 입력해주세요!'; errEl.style.display = 'block'; return; }
+
+  errEl.style.display = 'none';
+  try {
+    const snap = await db.collection('students').where('code', '==', code).limit(1).get();
+    if (snap.empty) {
+      errEl.textContent = '코드를 찾을 수 없어요. 선생님께 확인해주세요!';
+      errEl.style.display = 'block';
+      return;
+    }
+    const studentDoc = snap.docs[0];
+    const studentData = studentDoc.data();
+    // Store student info
+    currentUser = {
+      uid: studentDoc.id,
+      displayName: studentData.name,
+      email: studentData.code + '@student.realwriting',
+      photoURL: '',
+      isStudent: true,
+      studentData: studentData,
+    };
+    document.getElementById('loginScreen').style.display = 'none';
+    // Force level from teacher setting
+    lv = studentData.level || 1;
+    document.getElementById('levelScreen').style.display = 'flex';
+    document.getElementById('levelScreen').style.flexDirection = 'column';
+    document.getElementById('levelScreen').style.alignItems = 'center';
+    // Pre-select level
+    selLv(lv);
+  } catch(e) {
+    errEl.textContent = '오류: ' + e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && document.getElementById('studentCodeInput') === document.activeElement) {
+    loginWithCode();
+  }
+});
+
+// ── TEACHER TAB ──
+function showTeacherTab(tab) {
+  document.getElementById('tabDashContent').style.display = tab === 'dashboard' ? 'flex' : 'none';
+  document.getElementById('tabDashContent').style.flexDirection = 'column';
+  document.getElementById('tabStudentsContent').style.display = tab === 'students' ? 'flex' : 'none';
+  document.getElementById('tabStudentsContent').style.flexDirection = 'column';
+  document.getElementById('tabDash').style.background = tab === 'dashboard' ? '#5B5FFF' : '#fff';
+  document.getElementById('tabDash').style.color = tab === 'dashboard' ? '#fff' : '#6B7280';
+  document.getElementById('tabDash').style.border = tab === 'dashboard' ? 'none' : '1.5px solid #E5E7EB';
+  document.getElementById('tabStudents').style.background = tab === 'students' ? '#5B5FFF' : '#fff';
+  document.getElementById('tabStudents').style.color = tab === 'students' ? '#fff' : '#6B7280';
+  document.getElementById('tabStudents').style.border = tab === 'students' ? 'none' : '1.5px solid #E5E7EB';
+  if (tab === 'students') loadStudentMgmt();
+}
+
+// ── ADD STUDENT ──
+function generateCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+async function addStudent() {
+  const name = document.getElementById('newStudentName').value.trim();
+  const level = parseInt(document.getElementById('newStudentLevel').value);
+  if (!name) { alert('학생 이름을 입력해주세요!'); return; }
+
+  // Generate unique code
+  let code = generateCode();
+  // Check uniqueness
+  const existing = await db.collection('students').where('code', '==', code).get();
+  if (!existing.empty) code = generateCode() + Math.floor(Math.random()*9);
+
+  const lvNames = {1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
+  await db.collection('students').add({
+    name, level, code,
+    levelName: lvNames[level],
+    teacherUid: currentUser.uid,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    totalSessions: 0,
+    lastStudied: null,
+  });
+
+  document.getElementById('newStudentName').value = '';
+  alert(name + ' 학생이 등록됐어요!
+학생 코드: ' + code);
+  loadStudentMgmt();
+}
+
+// ── LOAD STUDENT MANAGEMENT ──
+async function loadStudentMgmt() {
+  const list = document.getElementById('studentMgmtList');
+  list.innerHTML = '<div style="text-align:center;padding:20px;color:#6B7280;">불러오는 중...</div>';
+
+  try {
+    const snap = await db.collection('students').where('teacherUid','==',currentUser.uid).orderBy('createdAt','desc').get();
+    if (snap.empty) {
+      list.innerHTML = '<div style="text-align:center;padding:30px;color:#6B7280;">등록된 학생이 없어요.<br>위에서 학생을 추가해보세요!</div>';
+      return;
+    }
+
+    // Get records for each student
+    const recSnap = await db.collection('records').where('teacherUid','==',currentUser.uid).get();
+    const recsByStudent = {};
+    recSnap.docs.forEach(d => {
+      const r = d.data();
+      if (!recsByStudent[r.studentId]) recsByStudent[r.studentId] = [];
+      recsByStudent[r.studentId].push(r);
+    });
+
+    const lvColors = {1:'#F59E0B',2:'#22C55E',3:'#3B82F6',4:'#8B5CF6'};
+    const lvBg = {1:'#FEF3C7',2:'#DCFCE7',3:'#DBEAFE',4:'#F3E8FF'};
+
+    list.innerHTML = snap.docs.map(doc => {
+      const s = doc.data();
+      const sid = doc.id;
+      const recs = recsByStudent[sid] || [];
+      const lastRec = recs[0];
+      const hasStudied = recs.length > 0;
+      const avgScore = recs.length ? Math.round(recs.reduce((a,r)=>a+(r.score||0),0)/recs.length) : 0;
+
+      return `
+      <div style="background:#fff;border-radius:14px;padding:15px;border:1.5px solid #E5E7EB;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:42px;height:42px;border-radius:12px;background:${lvBg[s.level]};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+            ${s.level==1?'🌱':s.level==2?'🌿':s.level==3?'🌳':'🎓'}
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:15px;color:#1E1E2E;">${s.name}</div>
+            <div style="font-size:12px;color:${lvColors[s.level]};font-weight:600;">${s.levelName}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:18px;font-weight:800;color:#1E1E2E;letter-spacing:2px;">${s.code}</div>
+            <div style="font-size:11px;color:#9CA3AF;">학생 코드</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;display:flex;align-items:center;gap:8px;">
+          <div style="flex:1;font-size:12px;color:#6B7280;">
+            ${hasStudied
+              ? '<span style="color:#22C55E;font-weight:700;">학습완료 '+recs.length+'회</span> · 평균 '+avgScore+'점<br><span style="color:#9CA3AF;">최근: '+(lastRec.date||'')+'</span>'
+              : '<span style="color:#EF4444;font-weight:700;">미학습</span>'
+            }
+          </div>
+          <button onclick="changeLevel('${sid}','${s.name}',${s.level})" style="padding:6px 12px;border:1.5px solid #E5E7EB;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;background:#fff;color:#6B7280;">레벨변경</button>
+          <button onclick="deleteStudent('${sid}','${s.name}')" style="padding:6px 12px;border:1.5px solid #FCA5A5;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;background:#FEF2F2;color:#EF4444;">삭제</button>
+        </div>
+      </div>`;
+    }).join('');
+
+  } catch(e) {
+    list.innerHTML = '<div style="color:#EF4444;padding:16px;">오류: ' + e.message + '</div>';
+    console.error(e);
+  }
+}
+
+async function changeLevel(sid, name, currentLv) {
+  const lvNames = {1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
+  const newLv = prompt(name + ' 학생의 레벨을 변경해요.
+현재: Level ' + currentLv + '
+
+새 레벨 입력 (1~4):', currentLv);
+  if (!newLv || isNaN(newLv) || newLv < 1 || newLv > 4) return;
+  const lNum = parseInt(newLv);
+  await db.collection('students').doc(sid).update({level: lNum, levelName: lvNames[lNum]});
+  alert(name + ' 학생 레벨이 Level ' + lNum + '로 변경됐어요!');
+  loadStudentMgmt();
+}
+
+async function deleteStudent(sid, name) {
+  if (!confirm(name + ' 학생을 삭제할까요?
+학습 기록도 함께 삭제됩니다.')) return;
+  await db.collection('students').doc(sid).delete();
+  loadStudentMgmt();
+}
+
+
+// ── MEMORY RECORDING ──
+let memRecognition = null;
+let memIsRec = false;
+let memReadCount = 0;
+
+function goMemory() {
+  showPg('memory');
+  tabOn('t6');
+  // Show story
+  document.getElementById('memStoryText').textContent = storyFinal;
+  document.getElementById('memAnswerText').textContent = storyFinal;
+  document.getElementById('memReadCard').style.display = 'flex';
+  document.getElementById('memRecordCard').style.display = 'none';
+  document.getElementById('memAnswerCard').style.display = 'none';
+  document.getElementById('memRecResult').style.display = 'none';
+  document.getElementById('memRetryBtn').style.display = 'none';
+  memReadCount = 0;
+  setBtn(true, '학습 완료! 🎊', 'green');
+  state = 'finish';
+  // Auto-read aloud
+  setTimeout(() => speak(removeEmoji(storyFinal)), 500);
+}
+
+function speakMemory() {
+  speak(removeEmoji(storyFinal));
+  memReadCount++;
+  document.getElementById('memReadStatus').textContent =
+    memReadCount >= 3 ? '3번 들었어요! 이제 외워봐요 💪' : '🔊 ' + memReadCount + '/3번 들었어요';
+}
+
+function startMemorize() {
+  document.getElementById('memReadCard').style.display = 'none';
+  document.getElementById('memRecordCard').style.display = 'flex';
+  document.getElementById('memAnswerCard').style.display = 'none';
+  // Countdown
+  let count = 3;
+  document.getElementById('memCountdown').textContent = count;
+  document.getElementById('memRecStatus').textContent = '준비 중...';
+  const timer = setInterval(() => {
+    count--;
+    document.getElementById('memCountdown').textContent = count > 0 ? count : '🎤';
+    if (count <= 0) {
+      clearInterval(timer);
+      document.getElementById('memRecStatus').textContent = '녹음 버튼을 눌러 말해봐요!';
+    }
+  }, 1000);
+}
+
+function retryMemory() {
+  document.getElementById('memReadCard').style.display = 'flex';
+  document.getElementById('memRecordCard').style.display = 'none';
+  document.getElementById('memAnswerCard').style.display = 'none';
+  document.getElementById('memRecResult').style.display = 'none';
+  document.getElementById('memRetryBtn').style.display = 'none';
+  document.getElementById('memStoryText').textContent = storyFinal;
+}
+
+function toggleMemRec() {
+  if (memIsRec) { memRecognition?.stop(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    document.getElementById('memRecResult').style.display = 'block';
+    document.getElementById('memRecResult').textContent = '😢 Chrome에서만 음성 인식이 가능해요!';
+    document.getElementById('memAnswerCard').style.display = 'flex';
+    return;
+  }
+  memRecognition = new SR();
+  memRecognition.lang = 'en-US';
+  memRecognition.interimResults = false;
+  const btn = document.getElementById('memRecBtn');
+
+  memRecognition.onstart = () => {
+    memIsRec = true;
+    btn.textContent = '⏹ 멈추기';
+    btn.style.background = '#E53935';
+    document.getElementById('memRecStatus').textContent = '말하고 있어요... 🎤';
+  };
+
+  memRecognition.onresult = async (e) => {
+    const said = e.results[0][0].transcript.trim();
+    document.getElementById('memRecStatus').textContent = '분석 중...';
+
+    // Compare with original
+    const orig = removeEmoji(storyFinal).toLowerCase().replace(/[.!?,]/g, '').trim();
+    const saidC = said.toLowerCase().replace(/[.!?,]/g, '').trim();
+    const origWords = orig.split(' ').filter(w => w.length > 2);
+    const matchCount = origWords.filter(w => saidC.includes(w)).length;
+    const pct = origWords.length ? Math.round(matchCount / origWords.length * 100) : 0;
+
+    const res = document.getElementById('memRecResult');
+    res.style.display = 'block';
+    if (pct >= 70) {
+      res.style.background = 'var(--gl)';
+      res.style.color = '#14532D';
+      res.innerHTML = '<b>🎉 대단해요! ' + pct + '% 일치!</b><br>"' + said + '"';
+      addScore(30);
+    } else if (pct >= 40) {
+      res.style.background = 'var(--yl)';
+      res.style.color = '#92400E';
+      res.innerHTML = '<b>👍 잘했어요! ' + pct + '% 일치!</b><br>"' + said + '"<br>다시 한 번 해볼까요?';
+      document.getElementById('memRetryBtn').style.display = 'block';
+      addScore(15);
+    } else {
+      res.style.background = '#FEF2F2';
+      res.style.color = '#7F1D1D';
+      res.innerHTML = '<b>💪 조금 더 연습해봐요! ' + pct + '% 일치</b><br>"' + said + '"';
+      document.getElementById('memRetryBtn').style.display = 'block';
+    }
+
+    // Show answer
+    document.getElementById('memAnswerCard').style.display = 'flex';
+    document.getElementById('memRecStatus').textContent = '완료!';
+  };
+
+  memRecognition.onend = () => {
+    memIsRec = false;
+    btn.textContent = '🎤 다시 녹음';
+    btn.style.background = '#FF6B35';
+  };
+
+  memRecognition.onerror = (e) => {
+    memIsRec = false;
+    btn.textContent = '🎤 녹음 시작';
+    btn.style.background = '#FF6B35';
+    document.getElementById('memRecStatus').textContent = '오류: ' + e.error;
+  };
+
+  memRecognition.start();
 }
 
 </script>
