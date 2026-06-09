@@ -129,16 +129,12 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
   </div>
 
   <!-- TEACHER LOGIN -->
-  <button onclick="signInWithGoogle()" style="display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:#6B7280;width:100%;max-width:340px;justify-content:center;position:relative;z-index:10;">
+  <div id="teacherLoginBtn" style="width:100%;max-width:340px;display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:#6B7280;justify-content:center;box-sizing:border-box;" ontouchstart="this.style.background='#F3F4F6'" ontouchend="doTeacherLogin()" onclick="doTeacherLogin()">
     <img src="https://www.google.com/favicon.ico" width="20" height="20">
     선생님 Google 로그인
-  </button>
-  <div id="loginError" style="font-size:13px;color:#EF4444;display:none;"></div>
+  </div>
+  <div id="loginError" style="font-size:13px;color:#5B5FFF;text-align:center;margin-top:4px;"></div>
 </div>
-<style>
-#loginScreen { position:relative; z-index:50; }
-#loginScreen button { position:relative; z-index:10; pointer-events:auto !important; }
-</style>
 
 <div id="levelScreen" style="display:none;">
   <div class="lv-hero">
@@ -1048,13 +1044,27 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
+function doTeacherLogin() {
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '구글 로그인 페이지로 이동 중...';
+  
+  const waitAndLogin = () => {
+    if (typeof firebase !== 'undefined' && typeof auth !== 'undefined') {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithRedirect(provider).catch((e) => {
+        errEl.textContent = '오류: ' + e.message;
+        errEl.style.color = '#EF4444';
+      });
+    } else {
+      errEl.textContent = 'Firebase 초기화 중... 잠시 후 다시 눌러주세요!';
+      setTimeout(waitAndLogin, 500);
+    }
+  };
+  waitAndLogin();
+}
+
 function signInWithGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  // Use redirect instead of popup - works on Safari/Mac
-  auth.signInWithRedirect(provider).catch((e) => {
-    document.getElementById('loginError').textContent = '로그인 실패: ' + e.message;
-    document.getElementById('loginError').style.display = 'block';
-  });
+  doTeacherLogin();
 }
 
 function signOut() {
