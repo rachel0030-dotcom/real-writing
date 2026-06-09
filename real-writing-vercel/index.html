@@ -1006,6 +1006,15 @@ const TEACHER_EMAILS = ['rachel0030@gmail.com'];
 let currentUser = null;
 
 // ── AUTH STATE ──
+// Handle redirect result first
+auth.getRedirectResult().then((result) => {
+  if (result && result.user) {
+    console.log('Redirect login successful:', result.user.email);
+  }
+}).catch((e) => {
+  console.warn('Redirect error:', e.message);
+});
+
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     currentUser = user;
@@ -1037,7 +1046,8 @@ auth.onAuthStateChanged(async (user) => {
 
 function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch((e) => {
+  // Use redirect instead of popup - works on Safari/Mac
+  auth.signInWithRedirect(provider).catch((e) => {
     document.getElementById('loginError').textContent = '로그인 실패: ' + e.message;
     document.getElementById('loginError').style.display = 'block';
   });
