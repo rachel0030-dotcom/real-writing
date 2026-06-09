@@ -994,8 +994,13 @@ function showTeacherTab(tab){
   document.getElementById('tabDashContent').style.flexDirection='column';
   document.getElementById('tabStudentsContent').style.display=tab==='students'?'flex':'none';
   document.getElementById('tabStudentsContent').style.flexDirection='column';
-  document.getElementById('tabDash').style.cssText='padding:7px 13px;border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;font-weight:700;background:'+(tab==='dashboard'?'#5B5FFF':'#fff')+';color:'+(tab==='dashboard'?'#fff':'#6B7280')+';';
-  document.getElementById('tabStudents').style.cssText='padding:7px 13px;border:1.5px solid #E5E7EB;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;font-weight:700;background:'+(tab==='students'?'#5B5FFF':'#fff')+';color:'+(tab==='students'?'#fff':'#6B7280')+';';
+  var td=document.getElementById('tabDash'),ts=document.getElementById('tabStudents');
+  td.style.background=tab==='dashboard'?'#5B5FFF':'#fff';
+  td.style.color=tab==='dashboard'?'#fff':'#6B7280';
+  td.style.border=tab==='dashboard'?'none':'1.5px solid #E5E7EB';
+  ts.style.background=tab==='students'?'#5B5FFF':'#fff';
+  ts.style.color=tab==='students'?'#fff':'#6B7280';
+  ts.style.border=tab==='students'?'none':'1.5px solid #E5E7EB';
   if(tab==='students')loadStudentMgmt();
 }
 
