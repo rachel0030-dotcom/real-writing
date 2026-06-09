@@ -129,12 +129,16 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
   </div>
 
   <!-- TEACHER LOGIN -->
-  <button onclick="signInWithGoogle()" style="display:flex;align-items:center;gap:10px;padding:12px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;color:#6B7280;width:100%;max-width:340px;justify-content:center;">
-    <img src="https://www.google.com/favicon.ico" width="18" height="18">
+  <button onclick="signInWithGoogle()" style="display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:#6B7280;width:100%;max-width:340px;justify-content:center;position:relative;z-index:10;">
+    <img src="https://www.google.com/favicon.ico" width="20" height="20">
     선생님 Google 로그인
   </button>
   <div id="loginError" style="font-size:13px;color:#EF4444;display:none;"></div>
 </div>
+<style>
+#loginScreen { position:relative; z-index:50; }
+#loginScreen button { position:relative; z-index:10; pointer-events:auto !important; }
+</style>
 
 <div id="levelScreen" style="display:none;">
   <div class="lv-hero">
