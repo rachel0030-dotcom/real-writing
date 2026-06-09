@@ -13,7 +13,14 @@ var db = firebase.firestore();
 var TEACHER_EMAILS = ['rachel0030@gmail.com'];
 var currentUser = null;
 
-auth.getRedirectResult().catch(function(e) { console.warn('redirect:', e.message); });
+// Handle redirect result
+auth.getRedirectResult().then(function(result) {
+  if (result && result.user) {
+    console.log('Redirect login OK:', result.user.email);
+  }
+}).catch(function(e) {
+  console.warn('redirect result:', e.message);
+});
 
 auth.onAuthStateChanged(function(user) {
   if (user) {
@@ -41,10 +48,19 @@ auth.onAuthStateChanged(function(user) {
 
 function signInWithGoogle() {
   var e = document.getElementById('loginError');
-  e.textContent = '구글 로그인 페이지로 이동 중...';
+  e.textContent = '구글 로그인 창 열리는 중...';
   e.style.display = 'block';
-  auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()).catch(function(err) {
-    e.textContent = '로그인 실패: ' + err.message;
+  var provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).then(function(result) {
+    e.style.display = 'none';
+  }).catch(function(err) {
+    // If popup blocked, try redirect
+    if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user') {
+      e.textContent = '팝업이 차단됐어요. 리디렉트로 시도 중...';
+      auth.signInWithRedirect(provider);
+    } else {
+      e.textContent = '로그인 실패: ' + err.message;
+    }
   });
 }
 
