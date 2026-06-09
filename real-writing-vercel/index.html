@@ -129,7 +129,7 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
   </div>
 
   <!-- TEACHER LOGIN -->
-  <div id="teacherLoginBtn" style="width:100%;max-width:340px;display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:#6B7280;justify-content:center;box-sizing:border-box;" ontouchstart="this.style.background='#F3F4F6'" ontouchend="doTeacherLogin()" onclick="doTeacherLogin()">
+  <div id="teacherLoginBtn" style="width:100%;max-width:340px;display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:#6B7280;justify-content:center;box-sizing:border-box;"   onclick="signInWithGoogle()">
     <img src="https://www.google.com/favicon.ico" width="20" height="20">
     선생님 Google 로그인
   </div>
@@ -1044,7 +1044,7 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-function doTeacherLogin() {
+function signInWithGoogle() {
   const errEl = document.getElementById('loginError');
   errEl.textContent = '구글 로그인 페이지로 이동 중...';
   
@@ -1064,7 +1064,7 @@ function doTeacherLogin() {
 }
 
 function signInWithGoogle() {
-  doTeacherLogin();
+  signInWithGoogle();
 }
 
 function signOut() {
@@ -1361,8 +1361,7 @@ async function addStudent() {
   });
 
   document.getElementById('newStudentName').value = '';
-  alert(name + ' 학생이 등록됐어요!
-학생 코드: ' + code);
+  alert(name + ' 학생이 등록됐어요! 학생 코드: ' + code);
   loadStudentMgmt();
 }
 
