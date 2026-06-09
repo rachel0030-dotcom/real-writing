@@ -97,7 +97,6 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 .hist-story{font-size:13px;color:var(--sub);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
 </style>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -106,34 +105,29 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 
 <!-- LEVEL SELECT -->
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen" style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px;">
   <div style="font-size:56px;">🌟</div>
   <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.8rem;color:#5B5FFF;">REAL Writing</div>
   <div style="font-size:14px;color:#6B7280;text-align:center;line-height:1.6;">AI 영어 라이팅 학습 앱</div>
-
-  <!-- STUDENT LOGIN -->
   <div style="width:100%;max-width:340px;background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1.5px solid #E5E7EB;">
-    <div style="font-weight:800;font-size:16px;color:#1E1E2E;margin-bottom:4px;">학생 로그인</div>
-    <div style="font-size:13px;color:#6B7280;margin-bottom:14px;">선생님께 받은 학생 코드를 입력하세요</div>
-    <input id="studentCodeInput" type="text" placeholder="학생 코드 입력 (예: ABC123)" style="width:100%;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px 14px;font-family:'Noto Sans KR',sans-serif;font-size:16px;outline:none;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:10px;" oninput="this.value=this.value.toUpperCase()">
-    <button onclick="loginWithCode()" style="width:100%;padding:13px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#5B5FFF;color:#fff;box-shadow:0 4px 12px rgba(91,95,255,.3);">입장하기 →</button>
+    <div style="font-weight:800;font-size:16px;margin-bottom:4px;">학생 로그인</div>
+    <div style="font-size:13px;color:#6B7280;margin-bottom:14px;">선생님께 받은 6자리 코드를 입력하세요</div>
+    <input id="studentCodeInput" type="text" placeholder="학생 코드 입력 (예: ABC123)" maxlength="6"
+      style="width:100%;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px 14px;font-family:'Noto Sans KR',sans-serif;font-size:16px;outline:none;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:10px;box-sizing:border-box;"
+      oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')loginWithCode()">
+    <button onclick="loginWithCode()" style="width:100%;padding:13px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#5B5FFF;color:#fff;">입장하기 →</button>
     <div id="codeError" style="font-size:13px;color:#EF4444;margin-top:8px;text-align:center;display:none;"></div>
   </div>
-
-  <!-- DIVIDER -->
   <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:340px;">
     <div style="flex:1;height:1px;background:#E5E7EB;"></div>
     <div style="font-size:12px;color:#9CA3AF;">선생님이세요?</div>
     <div style="flex:1;height:1px;background:#E5E7EB;"></div>
   </div>
-
-  <!-- TEACHER LOGIN -->
-  <div id="teacherLoginBtn" style="width:100%;max-width:340px;display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:#6B7280;justify-content:center;box-sizing:border-box;"   onclick="signInWithGoogle()">
-    <img src="https://www.google.com/favicon.ico" width="20" height="20">
-    선생님 Google 로그인
+  <div onclick="signInWithGoogle()" style="display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;color:#6B7280;width:100%;max-width:340px;justify-content:center;box-sizing:border-box;">
+    <img src="https://www.google.com/favicon.ico" width="20" height="20" style="pointer-events:none;">
+    <span style="pointer-events:none;">선생님 Google 로그인</span>
   </div>
-  <div id="loginError" style="font-size:13px;color:#5B5FFF;text-align:center;margin-top:4px;"></div>
+  <div id="loginError" style="font-size:13px;color:#5B5FFF;display:none;text-align:center;"></div>
 </div>
 
 <div id="levelScreen" style="display:none;">
@@ -163,43 +157,33 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 
 <!-- APP -->
 
-<!-- TEACHER DASHBOARD -->
 <div id="teacherScreen" style="display:none;width:100%;max-width:520px;padding:0 0 80px;flex-direction:column;">
-  <!-- Teacher Nav -->
   <div style="background:#fff;border-bottom:1px solid #E5E7EB;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;">
-    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.05rem;color:#5B5FFF;">👩‍🏫 관리자</div>
+    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.05rem;color:#5B5FFF;">관리자</div>
     <div style="display:flex;gap:8px;">
       <button onclick="showTeacherTab('dashboard')" id="tabDash" style="padding:7px 13px;border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;font-weight:700;background:#5B5FFF;color:#fff;">현황</button>
       <button onclick="showTeacherTab('students')" id="tabStudents" style="padding:7px 13px;border:1.5px solid #E5E7EB;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;font-weight:700;background:#fff;color:#6B7280;">학생관리</button>
       <button onclick="signOut()" style="padding:7px 13px;border:1.5px solid #E5E7EB;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;color:#6B7280;background:#fff;">로그아웃</button>
     </div>
   </div>
-
-  <!-- Dashboard Tab -->
   <div id="tabDashContent" style="padding:16px 18px;display:flex;flex-direction:column;gap:13px;">
-    <div id="teacherStats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
     <div id="assignmentOverview"></div>
+    <div id="teacherStats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
     <div style="font-weight:700;font-size:15px;color:#1E1E2E;">학생별 학습 기록</div>
     <div id="teacherList" style="display:flex;flex-direction:column;gap:10px;"></div>
   </div>
-
-  <!-- Students Tab -->
   <div id="tabStudentsContent" style="padding:16px 18px;display:none;flex-direction:column;gap:13px;">
-    <!-- Add Student -->
-    <div style="background:#fff;border-radius:16px;padding:16px;border:1.5px solid #5B5FFF;box-shadow:0 0 0 3px #EEEFFE;">
+    <div style="background:#fff;border-radius:16px;padding:16px;border:1.5px solid #5B5FFF;">
       <div style="font-weight:700;font-size:15px;margin-bottom:12px;">학생 등록</div>
-      <input id="newStudentName" placeholder="학생 이름" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 13px;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;margin-bottom:8px;">
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <select id="newStudentLevel" style="flex:1;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 13px;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;">
-          <option value="1">Level 1 - 입문 (초등 1~2)</option>
-          <option value="2">Level 2 - 기초 (초등 3~4)</option>
-          <option value="3">Level 3 - 중급 (초등5~중등)</option>
-          <option value="4">Level 4 - 고급 (중3~고등)</option>
-        </select>
-      </div>
+      <input id="newStudentName" placeholder="학생 이름" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 13px;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;margin-bottom:8px;box-sizing:border-box;">
+      <select id="newStudentLevel" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 13px;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;margin-bottom:8px;">
+        <option value="1">Level 1 - 입문 (초등 1~2)</option>
+        <option value="2">Level 2 - 기초 (초등 3~4)</option>
+        <option value="3">Level 3 - 중급 (초등5~중등)</option>
+        <option value="4">Level 4 - 고급 (중3~고등)</option>
+      </select>
       <button onclick="addStudent()" style="width:100%;padding:12px;border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#5B5FFF;color:#fff;">학생 추가</button>
     </div>
-    <!-- Student List -->
     <div style="font-weight:700;font-size:15px;">등록된 학생 목록</div>
     <div id="studentMgmtList" style="display:flex;flex-direction:column;gap:10px;"></div>
   </div>
@@ -209,15 +193,16 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
   <nav class="nav">
     <div class="logo">REAL<span>.</span>Writing</div>
     <div class="nav-lv" id="navLv"></div>
-    <div id="userAvatar" style="width:30px;height:30px;border-radius:50%;overflow:hidden;display:none;"><img id="userImg" width="30" height="30" style="border-radius:50%;"></div><div class="score-badge" id="navScore" onclick="showHistory()" title="학습기록">⭐ 0점</div>
-  <button onclick="signOut()" id="logoutBtn" style="display:none;padding:5px 10px;border:1.5px solid #E5E7EB;border-radius:8px;background:#fff;font-size:12px;cursor:pointer;color:#6B7280;font-family:'Noto Sans KR',sans-serif;">로그아웃</button></nav>
+    <div class="score-badge" id="navScore" onclick="showHistory()" title="학습기록">⭐ 0점</div>
+  </nav>
   <div class="tabs">
     <div class="tab on" id="t1">✏️ 라이팅</div>
     <div class="tab" id="t2">📖 글짓기</div>
     <div class="tab" id="t3">🔤 쉐도잉</div>
     <div class="tab" id="t4">🎤 말하기</div>
     <div class="tab" id="t5">📝 마무리</div>
-    <div class="tab" id="t6">📊 리포트</div>
+    <div class="tab" id="t6">🎬 암기</div>
+    <div class="tab" id="t7">📊 리포트</div>
   </div>
 
   <!-- WRITING -->
@@ -282,43 +267,36 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
     </div>
     <div class="fb red" id="fbWrapErr"></div>
   </div>
-  <!-- MEMORY RECORDING -->
+
   <div class="pg" id="pgMemory" style="display:none;">
-    <div class="sc on" style="border-color:#FF6B35;box-shadow:0 0 0 3px #FFF0EB;">
+    <div class="sc on" style="border-color:#FF6B35;">
       <div class="sc-h">
-        <div class="snum" style="background:#FFF0EB;color:#FF6B35;">🎬</div>
+        <div class="snum" style="background:#FFF0EB;color:#FF6B35;">암기</div>
         <div style="font-weight:700;font-size:15px;">외워서 말해봐요!</div>
       </div>
-      <div style="font-size:13px;color:var(--sub);line-height:1.5;">완성 글을 3번 읽고 기억한 뒤 → 숨기고 → 말해봐요! 💪</div>
+      <div style="font-size:13px;color:var(--sub);">완성 글을 읽고 기억한 뒤 말해봐요!</div>
     </div>
-
-    <!-- Step 1: Read -->
     <div id="memReadCard" class="sc" style="display:flex;flex-direction:column;gap:12px;">
-      <div style="font-size:13px;font-weight:700;color:var(--sub);">📖 1단계: 읽기</div>
-      <div style="font-size:16px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;border-left:4px solid var(--g);" id="memStoryText"></div>
-      <div style="font-size:13px;color:var(--sub);text-align:center;" id="memReadStatus">위 문장을 천천히 3번 읽어봐요!</div>
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">읽기</div>
+      <div id="memStoryText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;border-left:4px solid var(--g);"></div>
+      <div style="font-size:13px;color:var(--sub);text-align:center;" id="memReadStatus">천천히 읽어봐요!</div>
       <div style="display:flex;gap:8px;">
-        <button onclick="speakMemory()" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:var(--g);color:#fff;">🔊 들어보기</button>
-        <button onclick="startMemorize()" id="memHideBtn" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#FF6B35;color:#fff;">외웠어요! 숨기기 👁</button>
+        <button onclick="speakMemory()" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:var(--g);color:#fff;">듣기</button>
+        <button onclick="startMemorize()" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#FF6B35;color:#fff;">외웠어요! 숨기기</button>
       </div>
     </div>
-
-    <!-- Step 2: Recall & Record -->
     <div id="memRecordCard" class="sc" style="display:none;flex-direction:column;gap:12px;">
-      <div style="font-size:13px;font-weight:700;color:var(--sub);">🎤 2단계: 외워서 말하기</div>
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">외워서 말하기</div>
       <div style="background:#F8F8FF;border-radius:12px;padding:16px;text-align:center;border:2px dashed #E5E7EB;">
-        <div style="font-size:32px;margin-bottom:8px;" id="memCountdown">3</div>
-        <div style="font-size:13px;color:var(--sub);" id="memRecStatus">준비되면 녹음 버튼을 눌러요!</div>
+        <div style="font-size:13px;color:var(--sub);" id="memRecStatus">녹음 버튼을 눌러요!</div>
       </div>
-      <button onclick="toggleMemRec()" id="memRecBtn" style="width:100%;padding:14px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;box-shadow:0 4px 12px rgba(255,107,53,.3);">🎤 녹음 시작</button>
-      <div id="memRecResult" style="display:none;font-size:14px;padding:13px;border-radius:12px;background:var(--gl);color:#14532D;line-height:1.7;"></div>
-      <button onclick="retryMemory()" id="memRetryBtn" style="display:none;width:100%;padding:12px;border:1.5px solid #FF6B35;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:#FF6B35;">다시 해볼게요 🔄</button>
+      <button onclick="toggleMemRec()" id="memRecBtn" style="width:100%;padding:14px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;">녹음 시작</button>
+      <div id="memRecResult" style="display:none;font-size:14px;padding:13px;border-radius:12px;line-height:1.7;"></div>
+      <button onclick="retryMemory()" id="memRetryBtn" style="display:none;width:100%;padding:12px;border:1.5px solid #FF6B35;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:#FF6B35;">다시 해볼게요</button>
     </div>
-
-    <!-- Step 3: Show answer -->
     <div id="memAnswerCard" class="sc" style="display:none;flex-direction:column;gap:10px;">
-      <div style="font-size:13px;font-weight:700;color:var(--sub);">✅ 정답 확인</div>
-      <div style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;border-left:4px solid var(--g);" id="memAnswerText"></div>
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">정답 확인</div>
+      <div id="memAnswerText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;"></div>
     </div>
   </div>
 
@@ -471,54 +449,14 @@ function loadQ(){
   if(qIdx>0)document.getElementById('ql1').classList.add('ok');
   if(qIdx>1)document.getElementById('ql2').classList.add('ok');
   var TH={
-    "My Favorite Food":{
-      1:["ex: pizza / I like pizza","ex: I eat it every day","ex: yummy! / I love it"],
-      2:["ex: My favorite food is pizza.","ex: I usually eat it on weekends.","ex: It is very delicious!"],
-      3:["ex: My favorite food is pizza because it is cheesy.","ex: I usually eat it with my family.","ex: I love it because it tastes amazing."],
-      4:["ex: Pizza remains my all-time favorite food.","ex: I typically enjoy it on weekends.","ex: Not only does it taste great, it brings wonderful memories."]
-    },
-    "My Best Friend":{
-      1:["ex: Tom / My friend is Tom","ex: We play together","ex: kind / funny"],
-      2:["ex: My best friend is Tom.","ex: We play soccer together.","ex: He is very kind and funny."],
-      3:["ex: My best friend and I have been close since first grade.","ex: We usually play soccer and games together.","ex: I like him because he is always kind."],
-      4:["ex: My closest friend has been by my side since elementary school.","ex: We spend most of our free time together.","ex: What I admire most is his kindness and great humor."]
-    },
-    "My Weekend":{
-      1:["ex: played / I played","ex: with mom / with dad","ex: fun! / I was happy"],
-      2:["ex: I played at the park on Saturday.","ex: I went with my mom.","ex: It was really fun!"],
-      3:["ex: This weekend I went to the park and played with my family.","ex: I went there with my mom and little brother.","ex: I felt very happy and refreshed."],
-      4:["ex: This weekend was particularly eventful as I visited the park.","ex: My mom accompanied me throughout the entire day.","ex: Overall, it was a truly refreshing experience."]
-    },
-    "My Pet":{
-      1:["ex: dog / I have a dog","ex: Coco / name is Coco","ex: play / we play"],
-      2:["ex: I have a cute dog.","ex: Her name is Coco.","ex: We play together every day."],
-      3:["ex: I have an adorable dog named Coco.","ex: Her name is Coco and she is two years old.","ex: We go for morning walks every day."],
-      4:["ex: I am the proud owner of a playful dog named Coco.","ex: She earned the name Coco because of her brown fur.","ex: We bond through daily walks and play sessions."]
-    },
-    "A Place I Want to Visit":{
-      1:["ex: Japan / I want to go to Japan","ex: I want to go there","ex: eat sushi / see temples"],
-      2:["ex: I want to visit Japan.","ex: Because it looks very interesting and fun.","ex: I want to eat sushi and see beautiful temples."],
-      3:["ex: I have always wanted to visit Japan.","ex: I want to go because the culture is so fascinating.","ex: I would love to eat sushi and explore Tokyo."],
-      4:["ex: Japan has long been at the top of my travel wish list.","ex: Its blend of tradition and modernity deeply fascinates me.","ex: I dream of experiencing the cuisine and historic temples."]
-    },
-    "My Favorite Season":{
-      1:["ex: summer / I like summer","ex: I swim / I play outside","ex: hot / fun / sunny"],
-      2:["ex: My favorite season is summer.","ex: I swim and play outside with friends.","ex: I like it because it is warm and fun."],
-      3:["ex: My favorite season is summer because of the warm weather.","ex: I usually swim and go on picnics with my family.","ex: I love it because there are so many fun activities."],
-      4:["ex: Summer is undoubtedly my favorite season of the year.","ex: I typically spend my days swimming and having picnics.","ex: The long sunny days create endless opportunities for adventure."]
-    },
-    "My Dream":{
-      1:["ex: teacher / I want to be a teacher","ex: I want to help people","ex: I study hard every day"],
-      2:["ex: I want to be a teacher.","ex: Because I want to help children learn.","ex: I study hard and practice every day."],
-      3:["ex: My dream is to become a dedicated English teacher.","ex: I chose this because I love helping others learn.","ex: I practice English every day."],
-      4:["ex: My aspiration is to become a passionate English teacher.","ex: This dream was inspired by my love of learning languages.","ex: I am actively studying to prepare for this meaningful career."]
-    },
-    "My Day Today":{
-      1:["ex: I ate breakfast","ex: I studied / I played","ex: it was fun / it was good"],
-      2:["ex: I ate breakfast with my family this morning.","ex: I studied math and played with friends at school.","ex: The best part of my day was lunch with my friends."],
-      3:["ex: This morning I had a delicious breakfast with my whole family.","ex: At school I studied hard and played during recess.","ex: The most memorable moment was winning a game in class."],
-      4:["ex: I began my morning with a nutritious breakfast and exercise.","ex: The school day was productive with engaging lessons.","ex: The highlight of my day was an inspiring conversation with my teacher."]
-    }
+    'My Favorite Food':{1:['ex: pizza / I like pizza','ex: I eat it every day','ex: yummy! / I love it'],2:['ex: My favorite food is pizza.','ex: I usually eat it on weekends.','ex: It is very delicious!'],3:['ex: My favorite food is pizza because it is cheesy.','ex: I usually eat it with my family.','ex: I love it because it tastes amazing.'],4:['ex: Pizza remains my all-time favorite food.','ex: I typically enjoy it on weekends.','ex: Not only does it taste great, it brings wonderful memories.']},
+    'My Best Friend':{1:['ex: Tom / My friend is Tom','ex: We play together','ex: kind / funny'],2:['ex: My best friend is Tom.','ex: We play soccer together.','ex: He is very kind and funny.'],3:['ex: My best friend and I have been close for years.','ex: We usually play soccer and games.','ex: I like him because he is always kind.'],4:['ex: My closest friend has been by my side for years.','ex: We spend most of our free time together.','ex: What I admire is his kindness and great humor.']},
+    'My Weekend':{1:['ex: played / I played','ex: with mom','ex: fun! / I was happy'],2:['ex: I played at the park on Saturday.','ex: I went with my mom.','ex: It was really fun!'],3:['ex: This weekend I went to the park and played.','ex: I went there with my mom.','ex: I felt very happy and refreshed.'],4:['ex: This weekend was eventful with family.','ex: My mom accompanied me all day.','ex: Overall it was a refreshing experience.']},
+    'My Pet':{1:['ex: dog / I have a dog','ex: name is Coco','ex: we play together'],2:['ex: I have a cute dog.','ex: Her name is Coco.','ex: We play together every day.'],3:['ex: I have an adorable dog named Coco.','ex: Her name is Coco and she is two years old.','ex: We go for walks every morning.'],4:['ex: I am the proud owner of a playful dog.','ex: She was named Coco because of her fur.','ex: We bond through walks and play sessions.']},
+    'A Place I Want to Visit':{1:['ex: Japan / I want to go to Japan','ex: I want to go there','ex: eat sushi / see temples'],2:['ex: I want to visit Japan.','ex: Because it looks very fun.','ex: I want to eat sushi and see Mount Fuji.'],3:['ex: I have always wanted to visit Japan.','ex: I want to go because the culture is fascinating.','ex: I would love to eat sushi and explore Tokyo.'],4:['ex: Japan has long been on my travel wish list.','ex: Its blend of tradition and modernity fascinates me.','ex: I want to experience the cuisine and temples there.']},
+    'My Favorite Season':{1:['ex: summer / I like summer','ex: I swim','ex: fun / hot'],2:['ex: My favorite season is summer.','ex: I swim and play outside.','ex: I like it because it is warm and fun.'],3:['ex: My favorite season is summer.','ex: I usually swim and go on picnics.','ex: I love it because there are lots of activities.'],4:['ex: Summer is my favorite season of the year.','ex: I spend my days swimming and hiking.','ex: The warm weather creates endless opportunities.']},
+    'My Dream':{1:['ex: teacher / I want to be a teacher','ex: I want to help','ex: I study hard'],2:['ex: I want to be a teacher.','ex: Because I want to help children.','ex: I study hard every day.'],3:['ex: My dream is to become an English teacher.','ex: I chose this because I love helping others.','ex: I practice English every day.'],4:['ex: My goal is to become an English teacher.','ex: This dream was inspired by my love of languages.','ex: I am actively studying for this career.']},
+    'My Day Today':{1:['ex: I ate breakfast','ex: I studied','ex: it was fun'],2:['ex: I ate breakfast with my family.','ex: I studied math and played with friends.','ex: The best part was lunch with friends.'],3:['ex: This morning I had breakfast with my family.','ex: At school I studied hard and played during recess.','ex: The most memorable moment was winning a game.'],4:['ex: I started my morning with breakfast.','ex: The school day was productive and engaging.','ex: The highlight was a great talk with my teacher.']}
   };
   var th=TH[topic.en]||{};
   var h=((th[lv])||[])[qIdx]||'';
@@ -540,6 +478,8 @@ async function go(){
   else if(state==='nextSpeak')await nextSpeak();
   else if(state==='goWrap')goWrap();
   else if(state==='submitWrap')await submitWrap();
+  else if(state==='goMemory')goMemory();
+  else if(state==='goMemory')goMemory();
   else if(state==='goMemory')goMemory();
   else if(state==='finish')finish();
 }
@@ -761,7 +701,7 @@ function toggleMic(){
 function goWrap(){
   hideModal();showPg('wrap');tabOn('t5');
   document.getElementById('wrapRef').innerHTML=`<div style="font-size:12px;font-weight:700;color:var(--sub);margin-bottom:8px">📌 오늘 배운 문장 (참고용)</div>${sentences.map((s,i)=>`<div style="font-size:13px;color:var(--p);font-weight:600;margin-bottom:4px">Q${i+1}. ${s.q}</div><div style="font-size:14px;color:var(--tx);padding:6px 10px;background:#fff;border-radius:8px;margin-bottom:8px;border-left:3px solid var(--p)">${s.corr}</div>`).join('')}`;
-  state='submitWrap';setBtn(true,'제출하기 💾','green');
+  state='submitWrap';setBtn(true,'제출하고 저장하기 💾','green');
 }
 
 async function submitWrap(){
@@ -776,7 +716,7 @@ async function submitWrap(){
     addScore(30);
     // SAVE
     saveRecord(txt);
-    state='goMemory';setBtn(true,'암기 훈련하기 🎬','orange');
+    state='goMemory';setBtn(true,'암기 훈련하기','orange');
   }catch(e){err('fbWrapErr',e.message);setBtn(true,'제출하고 저장하기 💾','green');}
   finally{ld('ldWrap',false);}
 }
@@ -974,7 +914,7 @@ function showPg(name){
   document.getElementById('hintBtn').style.display=(name==='write'&&qIdx<3&&state!=='goStory')?'flex':'none';
 }
 
-function tabOn(id){['t1','t2','t3','t4','t5','t6','t7'].forEach(t=>{const el=document.getElementById(t);if(el)el.className='tab'+(t===id?' on':'');});}
+function tabOn(id){['t1','t2','t3','t4','t5','t6','t7'].forEach(t=>{var el=document.getElementById(t);if(el)el.className='tab'+(t===id?' on':'');});}
 
 function showModal(emoji,title,sub,btnTxt,cb){
   document.getElementById('mEmoji').textContent=emoji;
@@ -986,9 +926,8 @@ function showModal(emoji,title,sub,btnTxt,cb){
 }
 function hideModal(){document.getElementById('modal').classList.remove('show');}
 
-
-// ── FIREBASE ──
-const firebaseConfig = {
+// ── FIREBASE CONFIG ──
+var firebaseConfig = {
   apiKey: "AIzaSyBddgTRxwSs9fGxIc1hx78XnewPbeij8Bk",
   authDomain: "real-writing.firebaseapp.com",
   projectId: "real-writing",
@@ -997,37 +936,20 @@ const firebaseConfig = {
   appId: "1:909052997133:web:e3e7e9ed1ece09982fef44"
 };
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+var auth = firebase.auth();
+var db = firebase.firestore();
+var TEACHER_EMAILS = ['rachel0030@gmail.com'];
+var currentUser = null;
 
-// Teacher emails - add yours here
-const TEACHER_EMAILS = ['rachel0030@gmail.com'];
+auth.getRedirectResult().catch(function(e){ console.warn('redirect:', e.message); });
 
-let currentUser = null;
-
-// ── AUTH STATE ──
-// Handle redirect result first
-auth.getRedirectResult().then((result) => {
-  if (result && result.user) {
-    console.log('Redirect login successful:', result.user.email);
-  }
-}).catch((e) => {
-  console.warn('Redirect error:', e.message);
-});
-
-auth.onAuthStateChanged(async (user) => {
+auth.onAuthStateChanged(function(user) {
   if (user) {
     currentUser = user;
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('userImg').src = user.photoURL || '';
-    document.getElementById('userAvatar').style.display = 'flex';
-    document.getElementById('logoutBtn').style.display = 'block';
-
     if (TEACHER_EMAILS.includes(user.email)) {
-      // Teacher view
       showTeacherDashboard();
     } else {
-      // Student view
       document.getElementById('levelScreen').style.display = 'flex';
       document.getElementById('levelScreen').style.flexDirection = 'column';
       document.getElementById('levelScreen').style.alignItems = 'center';
@@ -1038,544 +960,247 @@ auth.onAuthStateChanged(async (user) => {
     document.getElementById('loginScreen').style.flexDirection = 'column';
     document.getElementById('levelScreen').style.display = 'none';
     document.getElementById('appScreen').style.display = 'none';
-    document.getElementById('teacherScreen').style.display = 'none';
-    document.getElementById('userAvatar').style.display = 'none';
-    document.getElementById('logoutBtn').style.display = 'none';
+    var ts = document.getElementById('teacherScreen');
+    if(ts) ts.style.display = 'none';
   }
 });
 
 function signInWithGoogle() {
-  const errEl = document.getElementById('loginError');
+  var errEl = document.getElementById('loginError');
   errEl.textContent = '구글 로그인 페이지로 이동 중...';
-  
-  const waitAndLogin = () => {
-    if (typeof firebase !== 'undefined' && typeof auth !== 'undefined') {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithRedirect(provider).catch((e) => {
-        errEl.textContent = '오류: ' + e.message;
-        errEl.style.color = '#EF4444';
-      });
-    } else {
-      errEl.textContent = 'Firebase 초기화 중... 잠시 후 다시 눌러주세요!';
-      setTimeout(waitAndLogin, 500);
-    }
-  };
-  waitAndLogin();
+  errEl.style.display = 'block';
+  var provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithRedirect(provider).catch(function(e) {
+    errEl.textContent = '로그인 실패: ' + e.message;
+  });
 }
 
-function signInWithGoogle() {
-  signInWithGoogle();
+function signOut() { auth.signOut(); }
+
+function loginWithCode() {
+  var code = document.getElementById('studentCodeInput').value.trim().toUpperCase();
+  var errEl = document.getElementById('codeError');
+  if (!code) { errEl.textContent = '코드를 입력해주세요!'; errEl.style.display='block'; return; }
+  errEl.textContent = '확인 중...'; errEl.style.display='block';
+  db.collection('students').where('code','==',code).limit(1).get().then(function(snap) {
+    if (snap.empty) { errEl.textContent='코드를 찾을 수 없어요. 선생님께 확인해주세요!'; return; }
+    var doc = snap.docs[0]; var data = doc.data();
+    currentUser = { uid:doc.id, displayName:data.name, email:data.code+'@student.realwriting', photoURL:'', isStudent:true, studentData:data };
+    lv = data.level||1;
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('levelScreen').style.display='flex';
+    document.getElementById('levelScreen').style.flexDirection='column';
+    document.getElementById('levelScreen').style.alignItems='center';
+    selLv(lv);
+  }).catch(function(e){ errEl.textContent='오류: '+e.message; });
 }
 
-function signOut() {
-  auth.signOut();
-}
-
-// ── SAVE RECORD ──
 function saveRecord(wrapUp) {
   if (!currentUser) return;
-  const now = new Date();
-  const teacherUid = currentUser.isStudent ? (currentUser.studentData?.teacherUid || '') : currentUser.uid;
-  const rec = {
-    uid: currentUser.uid,
-    studentId: currentUser.uid,
-    teacherUid: teacherUid,
-    name: currentUser.displayName || '학생',
-    email: currentUser.email,
-    photo: currentUser.photoURL || '',
-    date: now.toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric'}),
-    time: now.toLocaleTimeString('ko-KR', {hour:'2-digit',minute:'2-digit'}),
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    level: lv,
-    levelName: LVCONF[lv].name,
-    topic: topic.ko,
-    topicEn: topic.en,
-    sentences: sentences.map(s=>({q:s.q,eng:s.eng,corr:s.corr})),
-    story: storyFinal,
-    wrapUp: wrapUp,
-    score: score,
-  };
-  db.collection('records').add(rec)
-    .then(() => console.log('Saved to Firebase!'))
-    .catch(e => console.warn('Save failed:', e));
-
-  // Also save to localStorage as backup
-  const key = 'rw_' + now.getTime();
-  localStorage.setItem(key, JSON.stringify(rec));
+  var now = new Date();
+  var teacherUid = (currentUser.isStudent && currentUser.studentData) ? (currentUser.studentData.teacherUid||'') : currentUser.uid;
+  db.collection('records').add({
+    uid:currentUser.uid, studentId:currentUser.uid, teacherUid:teacherUid,
+    name:currentUser.displayName||'학생', email:currentUser.email, photo:currentUser.photoURL||'',
+    date:now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}),
+    time:now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}),
+    timestamp:firebase.firestore.FieldValue.serverTimestamp(),
+    level:lv, levelName:LVCONF[lv].name, topic:topic.ko, topicEn:topic.en,
+    sentences:sentences.map(function(s){return{q:s.q,eng:s.eng,corr:s.corr};}),
+    story:storyFinal, wrapUp:wrapUp, score:score
+  }).then(function(){console.log('Saved!');}).catch(function(e){console.warn('Save:',e);});
 }
 
-// ── TEACHER DASHBOARD ──
-async function showTeacherDashboard() {
-  document.getElementById('teacherScreen').style.display = 'flex';
-  document.getElementById('teacherScreen').style.flexDirection = 'column';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('levelScreen').style.display = 'none';
-
-  // Show loading
-  document.getElementById('teacherStats').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:#6B7280;">불러오는 중...</div>';
-  document.getElementById('teacherList').innerHTML = '';
-
-  try {
-    const snap = await db.collection('records').orderBy('timestamp','desc').limit(200).get();
-    const records = snap.docs.map(d=>({id:d.id,...d.data()}));
-
-    const today = new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
-    const students = [...new Set(records.map(r=>r.uid))].length;
-    const avgScore = records.length ? Math.round(records.reduce((a,r)=>a+(r.score||0),0)/records.length) : 0;
-    const todayCount = records.filter(r=>r.date===today).length;
-
-    // Level distribution
-    const lvCount = {1:0,2:0,3:0,4:0};
-    records.forEach(r=>{if(r.level)lvCount[r.level]=(lvCount[r.level]||0)+1;});
-    const topLevel = Object.entries(lvCount).sort((a,b)=>b[1]-a[1])[0];
-
-    // Stats grid
-    document.getElementById('assignmentOverview').innerHTML = '';
-    document.getElementById('teacherStats').innerHTML = `
-      <div style="background:#EEEFFE;border-radius:14px;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#5B5FFF;">${students}</div>
-        <div style="font-size:13px;color:#6B7280;margin-top:4px;">총 학생 수</div>
-      </div>
-      <div style="background:#DCFCE7;border-radius:14px;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#22C55E;">${records.length}</div>
-        <div style="font-size:13px;color:#6B7280;margin-top:4px;">총 학습 횟수</div>
-      </div>
-      <div style="background:#FEF3C7;border-radius:14px;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#F59E0B;">${avgScore}</div>
-        <div style="font-size:13px;color:#6B7280;margin-top:4px;">평균 점수</div>
-      </div>
-      <div style="background:#FFF0EB;border-radius:14px;padding:16px;text-align:center;">
-        <div style="font-size:28px;font-weight:800;color:#FF6B35;">${todayCount}</div>
-        <div style="font-size:13px;color:#6B7280;margin-top:4px;">오늘 학습</div>
-      </div>
-    `;
-
-    // Level distribution bar
-    const totalRec = records.length || 1;
-    const lvColors = {1:'#F59E0B',2:'#22C55E',3:'#3B82F6',4:'#8B5CF6'};
-    const lvNames = {1:'Level 1',2:'Level 2',3:'Level 3',4:'Level 4'};
-    const lvBar = document.createElement('div');
-    lvBar.style.cssText = 'background:#fff;border-radius:14px;padding:16px;border:1.5px solid #E5E7EB;';
-    lvBar.innerHTML = `
-      <div style="font-weight:700;font-size:14px;margin-bottom:12px;">📊 레벨별 학습 분포</div>
-      ${[1,2,3,4].map(l=>`
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div style="font-size:12px;font-weight:600;width:52px;color:${lvColors[l]}">${lvNames[l]}</div>
-          <div style="flex:1;background:#F3F4F6;border-radius:6px;height:18px;overflow:hidden;">
-            <div style="height:100%;width:${Math.round((lvCount[l]||0)/totalRec*100)}%;background:${lvColors[l]};border-radius:6px;transition:width .5s;"></div>
-          </div>
-          <div style="font-size:12px;color:#6B7280;width:28px;text-align:right;">${lvCount[l]||0}회</div>
-        </div>
-      `).join('')}
-    `;
-    document.getElementById('teacherStats').parentNode.insertBefore(lvBar, document.getElementById('teacherList'));
-
-    // Group by student
-    const byStudent = {};
-    records.forEach(r=>{
-      if(!byStudent[r.uid]) byStudent[r.uid]={name:r.name||'학생',email:r.email||'',photo:r.photo||'',records:[]};
-      byStudent[r.uid].records.push(r);
-    });
-
-    // Student cards
-    document.getElementById('teacherList').innerHTML = Object.values(byStudent).length
-      ? Object.values(byStudent).sort((a,b)=>b.records.length-a.records.length).map((s,si)=>{
-          const avgS = Math.round(s.records.reduce((a,r)=>a+(r.score||0),0)/s.records.length);
-          const maxS = Math.max(...s.records.map(r=>r.score||0));
-          const lvDist = {};
-          s.records.forEach(r=>{if(r.level)lvDist[r.level]=(lvDist[r.level]||0)+1;});
-          const mainLv = Object.entries(lvDist).sort((a,b)=>b[1]-a[1])[0];
-          return `
-          <div style="background:#fff;border-radius:16px;border:1.5px solid #E5E7EB;overflow:hidden;">
-            <!-- Student Header -->
-            <div style="padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;background:#FAFAFA;" onclick="toggleStudent('stu${si}')">
-              <img src="${s.photo}" width="40" height="40" style="border-radius:50%;background:#E5E7EB;flex-shrink:0;" onerror="this.style.display='none'">
-              <div style="flex:1;">
-                <div style="font-weight:700;font-size:15px;color:#1E1E2E;">${s.name}</div>
-                <div style="font-size:12px;color:#6B7280;">${s.email}</div>
-              </div>
-              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
-                <div style="background:#EEEFFE;color:#5B5FFF;font-weight:700;font-size:12px;padding:3px 9px;border-radius:10px;">${s.records.length}회 학습</div>
-                <div style="font-size:11px;color:#6B7280;">평균 ${avgS}점 · 최고 ${maxS}점</div>
-              </div>
-            </div>
-            <!-- Student Detail -->
-            <div id="stu${si}" style="display:none;">
-              <!-- Mini Stats -->
-              <div style="padding:12px 16px;background:#F8F8FF;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;border-top:1px solid #E5E7EB;">
-                <div style="text-align:center;"><div style="font-size:18px;font-weight:800;color:#5B5FFF;">${s.records.length}</div><div style="font-size:11px;color:#6B7280;">학습 횟수</div></div>
-                <div style="text-align:center;"><div style="font-size:18px;font-weight:800;color:#22C55E;">${avgS}</div><div style="font-size:11px;color:#6B7280;">평균 점수</div></div>
-                <div style="text-align:center;"><div style="font-size:18px;font-weight:800;color:#FF6B35;">${mainLv?'Lv.'+mainLv[0]:'-'}</div><div style="font-size:11px;color:#6B7280;">주요 레벨</div></div>
-              </div>
-              <!-- Records -->
-              <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px;">
-                ${s.records.map(r=>{
-                  const sentences = (r.sentences||[]);
-                  const scoreColor = (r.score||0)>=60?'#22C55E':(r.score||0)>=40?'#F59E0B':'#EF4444';
-                  return `
-                  <div style="border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden;">
-                    <!-- Record Header -->
-                    <div style="padding:10px 13px;background:#F8F8FF;display:flex;align-items:center;justify-content:space-between;">
-                      <div>
-                        <div style="font-size:12px;color:#6B7280;">${r.date||''} ${r.time||''}</div>
-                        <div style="font-size:14px;font-weight:700;color:#1E1E2E;margin-top:2px;">${r.topic||''}</div>
-                      </div>
-                      <div style="display:flex;gap:6px;align-items:center;">
-                        <div style="background:#EEEFFE;color:#5B5FFF;font-size:11px;padding:2px 8px;border-radius:8px;font-weight:600;">${r.levelName||''}</div>
-                        <div style="font-size:16px;font-weight:800;color:${scoreColor};">${r.score||0}점</div>
-                      </div>
-                    </div>
-                    <!-- Sentences -->
-                    ${sentences.length?`
-                    <div style="padding:10px 13px;">
-                      <div style="font-size:12px;font-weight:700;color:#6B7280;margin-bottom:6px;">📝 작성한 문장</div>
-                      ${sentences.map((s,i)=>`
-                        <div style="margin-bottom:6px;">
-                          <div style="font-size:11px;color:#9CA3AF;">Q${i+1}. ${s.q||''}</div>
-                          <div style="font-size:13px;color:#6B7280;text-decoration:line-through;">${s.eng||''}</div>
-                          <div style="font-size:14px;font-weight:600;color:#1E1E2E;">${s.corr||''}</div>
-                        </div>
-                      `).join('')}
-                    </div>`:''
-                    }
-                    <!-- Story -->
-                    ${r.story?`
-                    <div style="padding:10px 13px;background:#F0FDF4;border-top:1px solid #86EFAC;">
-                      <div style="font-size:12px;font-weight:700;color:#15803D;margin-bottom:4px;">완성 글</div>
-                      <div style="font-size:13px;color:#14532D;line-height:1.7;">${r.story}</div>
-                    </div>`:''}
-                    <!-- WrapUp -->
-                    ${r.wrapUp?`
-                    <div style="padding:10px 13px;border-top:1px solid #E5E7EB;">
-                      <div style="font-size:12px;font-weight:700;color:#6B7280;margin-bottom:4px;">✍️ 마무리 쓰기</div>
-                      <div style="font-size:13px;color:#1E1E2E;">${r.wrapUp}</div>
-                    </div>`:''}
-                  </div>`;
-                }).join('')}
-              </div>
-            </div>
-          </div>`;
-        }).join('')
-      : '<div style="text-align:center;padding:40px;color:#6B7280;">아직 학습 기록이 없어요!</div>';
-
-  } catch(e) {
-    console.error(e);
-    document.getElementById('teacherList').innerHTML = '<div style="color:#EF4444;padding:16px;">오류: ' + e.message + '</div>';
-  }
+function showTeacherDashboard() {
+  document.getElementById('teacherScreen').style.display='flex';
+  document.getElementById('teacherScreen').style.flexDirection='column';
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('levelScreen').style.display='none';
+  loadDashboard();
 }
 
-function toggleStudent(id){
-  const el=document.getElementById(id);
-  if(el) el.style.display=el.style.display==='none'?'block':'none';
-}
-
-
-
-// ── STUDENT CODE LOGIN ──
-async function loginWithCode() {
-  const code = document.getElementById('studentCodeInput').value.trim().toUpperCase();
-  const errEl = document.getElementById('codeError');
-  if (!code) { errEl.textContent = '코드를 입력해주세요!'; errEl.style.display = 'block'; return; }
-
-  errEl.style.display = 'none';
-  try {
-    const snap = await db.collection('students').where('code', '==', code).limit(1).get();
-    if (snap.empty) {
-      errEl.textContent = '코드를 찾을 수 없어요. 선생님께 확인해주세요!';
-      errEl.style.display = 'block';
-      return;
-    }
-    const studentDoc = snap.docs[0];
-    const studentData = studentDoc.data();
-    // Store student info
-    currentUser = {
-      uid: studentDoc.id,
-      displayName: studentData.name,
-      email: studentData.code + '@student.realwriting',
-      photoURL: '',
-      isStudent: true,
-      studentData: studentData,
-    };
-    document.getElementById('loginScreen').style.display = 'none';
-    // Force level from teacher setting
-    lv = studentData.level || 1;
-    document.getElementById('levelScreen').style.display = 'flex';
-    document.getElementById('levelScreen').style.flexDirection = 'column';
-    document.getElementById('levelScreen').style.alignItems = 'center';
-    // Pre-select level
-    selLv(lv);
-  } catch(e) {
-    errEl.textContent = '오류: ' + e.message;
-    errEl.style.display = 'block';
-  }
-}
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && document.getElementById('studentCodeInput') === document.activeElement) {
-    loginWithCode();
-  }
-});
-
-// ── TEACHER TAB ──
 function showTeacherTab(tab) {
-  document.getElementById('tabDashContent').style.display = tab === 'dashboard' ? 'flex' : 'none';
-  document.getElementById('tabDashContent').style.flexDirection = 'column';
-  document.getElementById('tabStudentsContent').style.display = tab === 'students' ? 'flex' : 'none';
-  document.getElementById('tabStudentsContent').style.flexDirection = 'column';
-  document.getElementById('tabDash').style.background = tab === 'dashboard' ? '#5B5FFF' : '#fff';
-  document.getElementById('tabDash').style.color = tab === 'dashboard' ? '#fff' : '#6B7280';
-  document.getElementById('tabDash').style.border = tab === 'dashboard' ? 'none' : '1.5px solid #E5E7EB';
-  document.getElementById('tabStudents').style.background = tab === 'students' ? '#5B5FFF' : '#fff';
-  document.getElementById('tabStudents').style.color = tab === 'students' ? '#fff' : '#6B7280';
-  document.getElementById('tabStudents').style.border = tab === 'students' ? 'none' : '1.5px solid #E5E7EB';
-  if (tab === 'students') loadStudentMgmt();
+  document.getElementById('tabDashContent').style.display=tab==='dashboard'?'flex':'none';
+  document.getElementById('tabDashContent').style.flexDirection='column';
+  document.getElementById('tabStudentsContent').style.display=tab==='students'?'flex':'none';
+  document.getElementById('tabStudentsContent').style.flexDirection='column';
+  document.getElementById('tabDash').style.background=tab==='dashboard'?'#5B5FFF':'#fff';
+  document.getElementById('tabDash').style.color=tab==='dashboard'?'#fff':'#6B7280';
+  document.getElementById('tabDash').style.border=tab==='dashboard'?'none':'1.5px solid #E5E7EB';
+  document.getElementById('tabStudents').style.background=tab==='students'?'#5B5FFF':'#fff';
+  document.getElementById('tabStudents').style.color=tab==='students'?'#fff':'#6B7280';
+  document.getElementById('tabStudents').style.border=tab==='students'?'none':'1.5px solid #E5E7EB';
+  if(tab==='students') loadStudentMgmt();
 }
 
-// ── ADD STUDENT ──
-function generateCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
-  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
-  return code;
-}
-
-async function addStudent() {
-  const name = document.getElementById('newStudentName').value.trim();
-  const level = parseInt(document.getElementById('newStudentLevel').value);
-  if (!name) { alert('학생 이름을 입력해주세요!'); return; }
-
-  // Generate unique code
-  let code = generateCode();
-  // Check uniqueness
-  const existing = await db.collection('students').where('code', '==', code).get();
-  if (!existing.empty) code = generateCode() + Math.floor(Math.random()*9);
-
-  const lvNames = {1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
-  await db.collection('students').add({
-    name, level, code,
-    levelName: lvNames[level],
-    teacherUid: currentUser.uid,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    totalSessions: 0,
-    lastStudied: null,
-  });
-
-  document.getElementById('newStudentName').value = '';
-  alert(name + ' 학생이 등록됐어요! 학생 코드: ' + code);
-  loadStudentMgmt();
-}
-
-// ── LOAD STUDENT MANAGEMENT ──
-async function loadStudentMgmt() {
-  const list = document.getElementById('studentMgmtList');
-  list.innerHTML = '<div style="text-align:center;padding:20px;color:#6B7280;">불러오는 중...</div>';
-
-  try {
-    const snap = await db.collection('students').where('teacherUid','==',currentUser.uid).orderBy('createdAt','desc').get();
-    if (snap.empty) {
-      list.innerHTML = '<div style="text-align:center;padding:30px;color:#6B7280;">등록된 학생이 없어요.<br>위에서 학생을 추가해보세요!</div>';
-      return;
-    }
-
-    // Get records for each student
-    const recSnap = await db.collection('records').where('teacherUid','==',currentUser.uid).get();
-    const recsByStudent = {};
-    recSnap.docs.forEach(d => {
-      const r = d.data();
-      if (!recsByStudent[r.studentId]) recsByStudent[r.studentId] = [];
-      recsByStudent[r.studentId].push(r);
+function loadDashboard() {
+  document.getElementById('teacherStats').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:20px;color:#6B7280;">불러오는 중...</div>';
+  db.collection('records').orderBy('timestamp','desc').limit(200).get().then(function(snap) {
+    var records=snap.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+    var today=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+    var students=[...new Set(records.map(function(r){return r.uid;}))].length;
+    var avgScore=records.length?Math.round(records.reduce(function(a,r){return a+(r.score||0);},0)/records.length):0;
+    var todayCount=records.filter(function(r){return r.date===today;}).length;
+    document.getElementById('teacherStats').innerHTML=
+      '<div style="background:#EEEFFE;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#5B5FFF;">'+students+'</div><div style="font-size:13px;color:#6B7280;margin-top:4px;">열 학생</div></div>'+
+      '<div style="background:#DCFCE7;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#22C55E;">'+records.length+'</div><div style="font-size:13px;color:#6B7280;margin-top:4px;">승 학습</div></div>'+
+      '<div style="background:#FEF3C7;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#F59E0B;">'+avgScore+'</div><div style="font-size:13px;color:#6B7280;margin-top:4px;">평균점</div></div>'+
+      '<div style="background:#FFF0EB;border-radius:14px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#FF6B35;">'+todayCount+'</div><div style="font-size:13px;color:#6B7280;margin-top:4px;">오늘</div></div>';
+    return db.collection('students').where('teacherUid','==',currentUser.uid).get().then(function(stuSnap) {
+      var total=stuSnap.size;
+      var recUids=[...new Set(records.map(function(r){return r.studentId||r.uid;}))];
+      var done=stuSnap.docs.filter(function(d){return recUids.includes(d.id);}).length;
+      document.getElementById('assignmentOverview').innerHTML=total>0?
+        '<div style="background:#fff;border-radius:14px;padding:16px;border:1.5px solid #E5E7EB;">'+
+          '<div style="font-weight:700;font-size:14px;margin-bottom:12px;">과제 현황</div>'+
+          '<div style="display:flex;gap:10px;">'+
+            '<div style="flex:1;background:#DCFCE7;border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#22C55E;">'+done+'</div><div style="font-size:12px;color:#166534;">완료</div></div>'+
+            '<div style="flex:1;background:#FEF2F2;border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#EF4444;">'+(total-done)+'</div><div style="font-size:12px;color:#991B1B;">미학습</div></div>'+
+            '<div style="flex:1;background:#EEEFFE;border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#5B5FFF;">'+total+'</div><div style="font-size:12px;color:#3730A3;">전체</div></div>'+
+          '</div></div>':'';
+      var byStudent={};
+      records.forEach(function(r){if(!byStudent[r.uid])byStudent[r.uid]={name:r.name||'학생',email:r.email||'',records:[]};byStudent[r.uid].records.push(r);});
+      var keys=Object.keys(byStudent);
+      if(!keys.length){document.getElementById('teacherList').innerHTML='<div style="text-align:center;padding:40px;color:#6B7280;">아직 학습 기록이 없어요!</div>';return;}
+      document.getElementById('teacherList').innerHTML=keys.map(function(uid,si){
+        var s=byStudent[uid];
+        var avgS=Math.round(s.records.reduce(function(a,r){return a+(r.score||0);},0)/s.records.length);
+        return '<div style="background:#fff;border-radius:16px;border:1.5px solid #E5E7EB;overflow:hidden;">'+
+          '<div style="padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="toggleStudent('stu'+si+'')">'+
+            '<div style="flex:1;"><div style="font-weight:700;font-size:15px;">'+s.name+'</div><div style="font-size:12px;color:#6B7280;">'+s.email+'</div></div>'+
+            '<div style="font-size:12px;color:#5B5FFF;font-weight:700;">'+s.records.length+'회 | 평균'+avgS+'점</div>'+
+          '</div>'+
+          '<div id="stu'+si+'" style="display:none;padding:12px 16px;border-top:1px solid #F3F4F6;">'+
+            s.records.map(function(r){
+              return '<div style="border:1.5px solid #E5E7EB;border-radius:12px;overflow:hidden;margin-bottom:8px;">'+
+                '<div style="padding:10px 13px;background:#F8F8FF;display:flex;justify-content:space-between;">'+
+                  '<div><div style="font-size:12px;color:#6B7280;">'+(r.date||'')+' '+(r.time||'')+'</div><div style="font-size:14px;font-weight:700;">'+(r.topic||'')+'</div></div>'+
+                  '<div style="font-size:16px;font-weight:800;color:#22C55E;">'+(r.score||0)+'점</div>'+
+                '</div>'+
+                (r.story?'<div style="padding:10px 13px;background:#F0FDF4;font-size:13px;color:#14532D;line-height:1.7;">'+r.story+'</div>':'')+
+                (r.wrapUp?'<div style="padding:8px 13px;border-top:1px solid #E5E7EB;font-size:13px;color:#6B7280;">'+r.wrapUp+'</div>':'')+
+              '</div>';
+            }).join('')+
+          '</div></div>';
+      }).join('');
     });
+  }).catch(function(e){document.getElementById('teacherList').innerHTML='<div style="color:#EF4444;">'+e.message+'</div>';});
+}
 
-    const lvColors = {1:'#F59E0B',2:'#22C55E',3:'#3B82F6',4:'#8B5CF6'};
-    const lvBg = {1:'#FEF3C7',2:'#DCFCE7',3:'#DBEAFE',4:'#F3E8FF'};
+function toggleStudent(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'block':'none';}
 
-    list.innerHTML = snap.docs.map(doc => {
-      const s = doc.data();
-      const sid = doc.id;
-      const recs = recsByStudent[sid] || [];
-      const lastRec = recs[0];
-      const hasStudied = recs.length > 0;
-      const avgScore = recs.length ? Math.round(recs.reduce((a,r)=>a+(r.score||0),0)/recs.length) : 0;
+function generateCode(){var ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',code='';for(var i=0;i<6;i++)code+=ch[Math.floor(Math.random()*ch.length)];return code;}
 
-      return `
-      <div style="background:#fff;border-radius:14px;padding:15px;border:1.5px solid #E5E7EB;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:42px;height:42px;border-radius:12px;background:${lvBg[s.level]};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
-            ${s.level==1?'🌱':s.level==2?'🌿':s.level==3?'🌳':'🎓'}
-          </div>
-          <div style="flex:1;">
-            <div style="font-weight:700;font-size:15px;color:#1E1E2E;">${s.name}</div>
-            <div style="font-size:12px;color:${lvColors[s.level]};font-weight:600;">${s.levelName}</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:18px;font-weight:800;color:#1E1E2E;letter-spacing:2px;">${s.code}</div>
-            <div style="font-size:11px;color:#9CA3AF;">학생 코드</div>
-          </div>
-        </div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;display:flex;align-items:center;gap:8px;">
-          <div style="flex:1;font-size:12px;color:#6B7280;">
-            ${hasStudied
-              ? '<span style="color:#22C55E;font-weight:700;">학습완료 '+recs.length+'회</span> · 평균 '+avgScore+'점<br><span style="color:#9CA3AF;">최근: '+(lastRec.date||'')+'</span>'
-              : '<span style="color:#EF4444;font-weight:700;">미학습</span>'
-            }
-          </div>
-          <button onclick="changeLevel('${sid}','${s.name}',${s.level})" style="padding:6px 12px;border:1.5px solid #E5E7EB;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;background:#fff;color:#6B7280;">레벨변경</button>
-          <button onclick="deleteStudent('${sid}','${s.name}')" style="padding:6px 12px;border:1.5px solid #FCA5A5;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;background:#FEF2F2;color:#EF4444;">삭제</button>
-        </div>
-      </div>`;
+function addStudent(){
+  var name=document.getElementById('newStudentName').value.trim();
+  var level=parseInt(document.getElementById('newStudentLevel').value);
+  if(!name){alert('학생 이름을 입력해주세요!');return;}
+  var code=generateCode();
+  var lvN={1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
+  db.collection('students').add({name:name,level:level,code:code,levelName:lvN[level],teacherUid:currentUser.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp(),totalSessions:0})
+    .then(function(){document.getElementById('newStudentName').value='';alert(name+' 등록 완료! 코드: '+code);loadStudentMgmt();})
+    .catch(function(e){alert('오류: '+e.message);});
+}
+
+function loadStudentMgmt(){
+  var list=document.getElementById('studentMgmtList');
+  list.innerHTML='<div style="text-align:center;padding:20px;color:#6B7280;">불러오는 중...</div>';
+  var lvC={1:'#F59E0B',2:'#22C55E',3:'#3B82F6',4:'#8B5CF6'};
+  db.collection('students').where('teacherUid','==',currentUser.uid).orderBy('createdAt','desc').get().then(function(snap){
+    if(snap.empty){list.innerHTML='<div style="text-align:center;padding:30px;color:#6B7280;">등록된 학생이 없어요!</div>';return;}
+    list.innerHTML=snap.docs.map(function(doc){
+      var s=doc.data(),sid=doc.id;
+      return '<div style="background:#fff;border-radius:14px;padding:15px;border:1.5px solid #E5E7EB;">'+
+        '<div style="display:flex;align-items:center;gap:10px;">'+
+          '<div style="flex:1;"><div style="font-weight:700;font-size:15px;">'+s.name+'</div><div style="font-size:12px;color:'+lvC[s.level]+';font-weight:600;">'+s.levelName+'</div></div>'+
+          '<div style="text-align:right;"><div style="font-size:18px;font-weight:800;letter-spacing:2px;">'+s.code+'</div><div style="font-size:11px;color:#9CA3AF;">학생 코드</div></div>'+
+        '</div>'+
+        '<div style="margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;display:flex;gap:8px;justify-content:flex-end;">'+
+          '<button onclick="changeLevel(''+sid+'',''+s.name+'','+s.level+')" style="padding:6px 12px;border:1.5px solid #E5E7EB;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;background:#fff;color:#6B7280;">레벨변경</button>'+
+          '<button onclick="deleteStudent(''+sid+'',''+s.name+'')" style="padding:6px 12px;border:1.5px solid #FCA5A5;border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;background:#FEF2F2;color:#EF4444;">삭제</button>'+
+        '</div>'+
+      '</div>';
     }).join('');
+  }).catch(function(e){list.innerHTML='<div style="color:#EF4444;">'+e.message+'</div>';});
+}
 
-  } catch(e) {
-    list.innerHTML = '<div style="color:#EF4444;padding:16px;">오류: ' + e.message + '</div>';
-    console.error(e);
+function changeLevel(sid,name,currentLv){
+  var lvN={1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
+  var newLv=prompt(name+' 학생 레벨 변경 (현재: Level '+currentLv+'). 1~4 입력:',currentLv);
+  if(!newLv||isNaN(newLv)||newLv<1||newLv>4)return;
+  var lNum=parseInt(newLv);
+  db.collection('students').doc(sid).update({level:lNum,levelName:lvN[lNum]})
+    .then(function(){alert(name+' Level '+lNum+'로 변경!');loadStudentMgmt();})
+    .catch(function(e){alert('오류: '+e.message);});
+}
+
+function deleteStudent(sid,name){
+  if(!confirm(name+' 학생을 삭제할까요?'))return;
+  db.collection('students').doc(sid).delete().then(function(){loadStudentMgmt();});
+}
+
+// ── MEMORY ──
+var memIsRec=false,memRecognition=null;
+
+function goMemory(){
+  showPg('memory');tabOn('t6');
+  document.getElementById('memStoryText').textContent=storyFinal;
+  document.getElementById('memAnswerText').textContent=storyFinal;
+  document.getElementById('memReadCard').style.display='flex';
+  document.getElementById('memRecordCard').style.display='none';
+  document.getElementById('memAnswerCard').style.display='none';
+  document.getElementById('memRecResult').style.display='none';
+  document.getElementById('memRetryBtn').style.display='none';
+  setBtn(true,'학습 완료!','green');
+  state='finish';
+  setTimeout(function(){speak(removeEmoji(storyFinal));},500);
+}
+
+function speakMemory(){speak(removeEmoji(storyFinal));}
+
+function startMemorize(){
+  document.getElementById('memReadCard').style.display='none';
+  document.getElementById('memRecordCard').style.display='flex';
+  document.getElementById('memRecStatus').textContent='녹음 버튼을 눌러 말해봐요!';
+}
+
+function retryMemory(){
+  document.getElementById('memReadCard').style.display='flex';
+  document.getElementById('memRecordCard').style.display='none';
+  document.getElementById('memAnswerCard').style.display='none';
+  document.getElementById('memRecResult').style.display='none';
+  document.getElementById('memRetryBtn').style.display='none';
+}
+
+function toggleMemRec(){
+  if(memIsRec){if(memRecognition)memRecognition.stop();return;}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    var res=document.getElementById('memRecResult');
+    res.style.background='#FEF2F2';res.style.color='#991B1B';
+    res.textContent='Chrome에서만 가능해요!';res.style.display='block';
+    document.getElementById('memAnswerCard').style.display='flex';return;
   }
-}
-
-async function changeLevel(sid, name, currentLv) {
-  const lvNames = {1:'Level 1 입문',2:'Level 2 기초',3:'Level 3 중급',4:'Level 4 고급'};
-  const newLv = prompt(name + ' 학생 레벨 변경. 현재: Level ' + currentLv + '. 새 레벨 입력 (1~4):', currentLv);
-  if (!newLv || isNaN(newLv) || newLv < 1 || newLv > 4) return;
-  const lNum = parseInt(newLv);
-  await db.collection('students').doc(sid).update({level: lNum, levelName: lvNames[lNum]});
-  alert(name + ' 학생 레벨이 Level ' + lNum + '로 변경됐어요!');
-  loadStudentMgmt();
-}
-
-async function deleteStudent(sid, name) {
-  if (!confirm(name + ' 학생을 삭제할까요?
-학습 기록도 함께 삭제됩니다.')) return;
-  await db.collection('students').doc(sid).delete();
-  loadStudentMgmt();
-}
-
-
-// ── MEMORY RECORDING ──
-let memRecognition = null;
-let memIsRec = false;
-let memReadCount = 0;
-
-function goMemory() {
-  showPg('memory');
-  tabOn('t6');
-  // Show story
-  document.getElementById('memStoryText').textContent = storyFinal;
-  document.getElementById('memAnswerText').textContent = storyFinal;
-  document.getElementById('memReadCard').style.display = 'flex';
-  document.getElementById('memRecordCard').style.display = 'none';
-  document.getElementById('memAnswerCard').style.display = 'none';
-  document.getElementById('memRecResult').style.display = 'none';
-  document.getElementById('memRetryBtn').style.display = 'none';
-  memReadCount = 0;
-  setBtn(true, '학습 완료! 🎊', 'green');
-  state = 'finish';
-  // Auto-read aloud
-  setTimeout(() => speak(removeEmoji(storyFinal)), 500);
-}
-
-function speakMemory() {
-  speak(removeEmoji(storyFinal));
-  memReadCount++;
-  document.getElementById('memReadStatus').textContent =
-    memReadCount >= 3 ? '3번 들었어요! 이제 외워봐요 💪' : '🔊 ' + memReadCount + '/3번 들었어요';
-}
-
-function startMemorize() {
-  document.getElementById('memReadCard').style.display = 'none';
-  document.getElementById('memRecordCard').style.display = 'flex';
-  document.getElementById('memAnswerCard').style.display = 'none';
-  // Countdown
-  let count = 3;
-  document.getElementById('memCountdown').textContent = count;
-  document.getElementById('memRecStatus').textContent = '준비 중...';
-  const timer = setInterval(() => {
-    count--;
-    document.getElementById('memCountdown').textContent = count > 0 ? count : '🎤';
-    if (count <= 0) {
-      clearInterval(timer);
-      document.getElementById('memRecStatus').textContent = '녹음 버튼을 눌러 말해봐요!';
-    }
-  }, 1000);
-}
-
-function retryMemory() {
-  document.getElementById('memReadCard').style.display = 'flex';
-  document.getElementById('memRecordCard').style.display = 'none';
-  document.getElementById('memAnswerCard').style.display = 'none';
-  document.getElementById('memRecResult').style.display = 'none';
-  document.getElementById('memRetryBtn').style.display = 'none';
-  document.getElementById('memStoryText').textContent = storyFinal;
-}
-
-function toggleMemRec() {
-  if (memIsRec) { memRecognition?.stop(); return; }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    document.getElementById('memRecResult').style.display = 'block';
-    document.getElementById('memRecResult').textContent = '😢 Chrome에서만 음성 인식이 가능해요!';
-    document.getElementById('memAnswerCard').style.display = 'flex';
-    return;
-  }
-  memRecognition = new SR();
-  memRecognition.lang = 'en-US';
-  memRecognition.interimResults = false;
-  const btn = document.getElementById('memRecBtn');
-
-  memRecognition.onstart = () => {
-    memIsRec = true;
-    btn.textContent = '⏹ 멈추기';
-    btn.style.background = '#E53935';
-    document.getElementById('memRecStatus').textContent = '말하고 있어요... 🎤';
+  memRecognition=new SR();
+  memRecognition.lang='en-US';memRecognition.interimResults=false;
+  var btn=document.getElementById('memRecBtn');
+  memRecognition.onstart=function(){memIsRec=true;btn.textContent='멈추기';btn.style.background='#E53935';document.getElementById('memRecStatus').textContent='말하고 있어요...';};
+  memRecognition.onresult=function(e){
+    var said=e.results[0][0].transcript.trim();
+    var orig=removeEmoji(storyFinal).toLowerCase().replace(/[.!?,]/g,'').trim();
+    var saidC=said.toLowerCase().replace(/[.!?,]/g,'').trim();
+    var oW=orig.split(' ').filter(function(w){return w.length>2;});
+    var mc=oW.filter(function(w){return saidC.includes(w);}).length;
+    var pct=oW.length?Math.round(mc/oW.length*100):0;
+    var res=document.getElementById('memRecResult');res.style.display='block';
+    if(pct>=70){res.style.background='var(--gl)';res.style.color='#14532D';res.innerHTML='<b>'+pct+'% 일치! 대단해요!</b><br>"'+said+'"';addScore(30);}
+    else if(pct>=40){res.style.background='var(--yl)';res.style.color='#92400E';res.innerHTML='<b>'+pct+'% 일치! 잘했어요!</b><br>"'+said+'"';document.getElementById('memRetryBtn').style.display='block';addScore(15);}
+    else{res.style.background='#FEF2F2';res.style.color='#7F1D1D';res.innerHTML='<b>'+pct+'% 다시 연습!</b><br>"'+said+'"';document.getElementById('memRetryBtn').style.display='block';}
+    document.getElementById('memAnswerCard').style.display='flex';
+    document.getElementById('memRecStatus').textContent='완료!';
   };
-
-  memRecognition.onresult = async (e) => {
-    const said = e.results[0][0].transcript.trim();
-    document.getElementById('memRecStatus').textContent = '분석 중...';
-
-    // Compare with original
-    const orig = removeEmoji(storyFinal).toLowerCase().replace(/[.!?,]/g, '').trim();
-    const saidC = said.toLowerCase().replace(/[.!?,]/g, '').trim();
-    const origWords = orig.split(' ').filter(w => w.length > 2);
-    const matchCount = origWords.filter(w => saidC.includes(w)).length;
-    const pct = origWords.length ? Math.round(matchCount / origWords.length * 100) : 0;
-
-    const res = document.getElementById('memRecResult');
-    res.style.display = 'block';
-    if (pct >= 70) {
-      res.style.background = 'var(--gl)';
-      res.style.color = '#14532D';
-      res.innerHTML = '<b>🎉 대단해요! ' + pct + '% 일치!</b><br>"' + said + '"';
-      addScore(30);
-    } else if (pct >= 40) {
-      res.style.background = 'var(--yl)';
-      res.style.color = '#92400E';
-      res.innerHTML = '<b>👍 잘했어요! ' + pct + '% 일치!</b><br>"' + said + '"<br>다시 한 번 해볼까요?';
-      document.getElementById('memRetryBtn').style.display = 'block';
-      addScore(15);
-    } else {
-      res.style.background = '#FEF2F2';
-      res.style.color = '#7F1D1D';
-      res.innerHTML = '<b>💪 조금 더 연습해봐요! ' + pct + '% 일치</b><br>"' + said + '"';
-      document.getElementById('memRetryBtn').style.display = 'block';
-    }
-
-    // Show answer
-    document.getElementById('memAnswerCard').style.display = 'flex';
-    document.getElementById('memRecStatus').textContent = '완료!';
-  };
-
-  memRecognition.onend = () => {
-    memIsRec = false;
-    btn.textContent = '🎤 다시 녹음';
-    btn.style.background = '#FF6B35';
-  };
-
-  memRecognition.onerror = (e) => {
-    memIsRec = false;
-    btn.textContent = '🎤 녹음 시작';
-    btn.style.background = '#FF6B35';
-    document.getElementById('memRecStatus').textContent = '오류: ' + e.error;
-  };
-
+  memRecognition.onend=function(){memIsRec=false;btn.textContent='다시 녹음';btn.style.background='#FF6B35';};
+  memRecognition.onerror=function(){memIsRec=false;btn.textContent='녹음 시작';btn.style.background='#FF6B35';};
   memRecognition.start();
 }
 
