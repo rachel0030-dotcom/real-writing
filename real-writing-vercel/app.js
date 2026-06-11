@@ -83,17 +83,9 @@ function loginWithCode() {
     currentUser = { uid: doc.id, displayName: data.name, email: data.code + '@student', photoURL: '', isStudent: true, studentData: data };
     lv = data.level || 1;
     document.getElementById('loginScreen').style.display = 'none';
-    var saved = checkAndRestoreProgress();
-    if (saved) {
-      // Just go to level screen - state is restored, user picks up naturally
-      var ls = document.getElementById('levelScreen');
-      ls.style.display = 'flex'; ls.style.flexDirection = 'column'; ls.style.alignItems = 'center';
-      selLv(lv);
-    } else {
-      var ls = document.getElementById('levelScreen');
-      ls.style.display = 'flex'; ls.style.flexDirection = 'column'; ls.style.alignItems = 'center';
-      selLv(lv);
-    }
+    var ls = document.getElementById('levelScreen');
+    ls.style.display = 'flex'; ls.style.flexDirection = 'column'; ls.style.alignItems = 'center';
+    selLv(lv);
   }).catch(function(err) { e.textContent = '오류: ' + err.message; });
 }
 
@@ -353,13 +345,7 @@ function toggleMemRec() {
   memRec.start();
 }
 
-// ── PROGRESS: 레벨만 기억 ──
-function saveProgress() {
-  if (!currentUser) return;
-  try { localStorage.setItem('rw_lv_' + currentUser.uid, lv); } catch(e) {}
-}
-function clearProgress() {
-  if (!currentUser) return;
-  try { localStorage.removeItem('rw_lv_' + currentUser.uid); } catch(e) {}
-}
-function checkAndRestoreProgress() { return false; }
+// Progress (disabled)
+function saveProgress(){}
+function clearProgress(){}
+function checkAndRestoreProgress(){return false;}
