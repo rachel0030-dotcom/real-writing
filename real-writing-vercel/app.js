@@ -41,8 +41,6 @@ auth.onAuthStateChanged(function(user) {
       ls.style.alignItems = 'center';
     }
   } else {
-    // 코드 로그인(학생)은 Firebase Auth를 쓰지 않으므로 무시
-    if (currentUser && currentUser.isStudent) return;
     currentUser = null;
     var login = document.getElementById('loginScreen');
     login.style.display = 'flex';
@@ -346,8 +344,3 @@ function toggleMemRec() {
   memRec.onerror = function() { memIsRec = false; btn.textContent = '녹음 시작'; btn.style.background = '#FF6B35'; };
   memRec.start();
 }
-
-// Progress (disabled)
-function saveProgress(){}
-function clearProgress(){}
-function checkAndRestoreProgress(){return false;}
