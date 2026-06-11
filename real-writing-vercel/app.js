@@ -41,6 +41,8 @@ auth.onAuthStateChanged(function(user) {
       ls.style.alignItems = 'center';
     }
   } else {
+    // 코드 로그인(학생)은 Firebase Auth를 쓰지 않으므로 무시
+    if (currentUser && currentUser.isStudent) return;
     currentUser = null;
     var login = document.getElementById('loginScreen');
     login.style.display = 'flex';
