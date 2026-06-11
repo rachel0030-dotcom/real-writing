@@ -353,60 +353,13 @@ function toggleMemRec() {
   memRec.start();
 }
 
-// ── PROGRESS SAVE/LOAD ──
+// ── PROGRESS: 레벨만 기억 ──
 function saveProgress() {
   if (!currentUser) return;
-  var progress = {
-    lv: lv,
-    topic: topic,
-    sentences: sentences,
-    storyFinal: storyFinal,
-    score: score,
-    qIdx: qIdx,
-    savedAt: new Date().toISOString()
-  };
-  try {
-    localStorage.setItem('rw_progress_' + currentUser.uid, JSON.stringify(progress));
-  } catch(e) { console.warn('Progress save:', e); }
+  try { localStorage.setItem('rw_lv_' + currentUser.uid, lv); } catch(e) {}
 }
-
-function loadProgress() {
-  if (!currentUser) return false;
-  try {
-    var saved = localStorage.getItem('rw_progress_' + currentUser.uid);
-    if (!saved) return false;
-    var p = JSON.parse(saved);
-    // Only restore if saved within 24 hours
-    var savedTime = new Date(p.savedAt).getTime();
-    if (Date.now() - savedTime > 24 * 60 * 60 * 1000) {
-      localStorage.removeItem('rw_progress_' + currentUser.uid);
-      return false;
-    }
-    return p;
-  } catch(e) { return false; }
-}
-
 function clearProgress() {
   if (!currentUser) return;
-  localStorage.removeItem('rw_progress_' + currentUser.uid);
+  try { localStorage.removeItem('rw_lv_' + currentUser.uid); } catch(e) {}
 }
-
-function checkAndRestoreProgress() {
-  var p = loadProgress();
-  if (!p) return false;
-  var topicName = (p.topic && p.topic.ko) ? p.topic.ko : '이전 학습';
-  var resume = confirm(topicName + ' 학습을 이어서 할까요?');
-  if (!resume) {
-    clearProgress();
-    return false;
-  }
-  // Restore only data variables
-  try {
-    if (p.lv) lv = p.lv;
-    if (p.topic) topic = p.topic;
-    if (p.sentences) sentences = p.sentences;
-    if (p.storyFinal) storyFinal = p.storyFinal;
-    if (p.score) score = p.score;
-  } catch(e) { console.warn('restore:', e); clearProgress(); return false; }
-  return p;
-}
+function checkAndRestoreProgress() { return false; }
