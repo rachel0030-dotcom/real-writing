@@ -83,9 +83,20 @@ function loginWithCode() {
     currentUser = { uid: doc.id, displayName: data.name, email: data.code + '@student', photoURL: '', isStudent: true, studentData: data };
     lv = data.level || 1;
     document.getElementById('loginScreen').style.display = 'none';
-    var ls = document.getElementById('levelScreen');
-    ls.style.display = 'flex'; ls.style.flexDirection = 'column'; ls.style.alignItems = 'center';
-    selLv(lv);
+    var saved = checkAndRestoreProgress();
+    if (saved && saved.storyFinal) {
+      document.getElementById('appScreen').style.cssText = 'display:flex;flex-direction:column;align-items:center;';
+      selLv(lv);
+      setTimeout(function() { showPg('wrap'); tabOn('t5'); state='wrap'; setBtn(true,'마무리 쓰기 →'); }, 100);
+    } else if (saved && saved.sentences && saved.sentences.length > 0) {
+      document.getElementById('appScreen').style.cssText = 'display:flex;flex-direction:column;align-items:center;';
+      selLv(lv);
+      setTimeout(function() { showPg('story'); tabOn('t2'); }, 100);
+    } else {
+      var ls = document.getElementById('levelScreen');
+      ls.style.display = 'flex'; ls.style.flexDirection = 'column'; ls.style.alignItems = 'center';
+      selLv(lv);
+    }
   }).catch(function(err) { e.textContent = '오류: ' + err.message; });
 }
 
@@ -343,4 +354,60 @@ function toggleMemRec() {
   memRec.onend = function() { memIsRec = false; btn.textContent = '다시 녹음'; btn.style.background = '#FF6B35'; };
   memRec.onerror = function() { memIsRec = false; btn.textContent = '녹음 시작'; btn.style.background = '#FF6B35'; };
   memRec.start();
+}
+
+// ── PROGRESS SAVE/LOAD ──
+function saveProgress() {
+  if (!currentUser) return;
+  var progress = {
+    lv: lv,
+    topic: topic,
+    sentences: sentences,
+    storyFinal: storyFinal,
+    score: score,
+    qIdx: qIdx,
+    savedAt: new Date().toISOString()
+  };
+  try {
+    localStorage.setItem('rw_progress_' + currentUser.uid, JSON.stringify(progress));
+  } catch(e) { console.warn('Progress save:', e); }
+}
+
+function loadProgress() {
+  if (!currentUser) return false;
+  try {
+    var saved = localStorage.getItem('rw_progress_' + currentUser.uid);
+    if (!saved) return false;
+    var p = JSON.parse(saved);
+    // Only restore if saved within 24 hours
+    var savedTime = new Date(p.savedAt).getTime();
+    if (Date.now() - savedTime > 24 * 60 * 60 * 1000) {
+      localStorage.removeItem('rw_progress_' + currentUser.uid);
+      return false;
+    }
+    return p;
+  } catch(e) { return false; }
+}
+
+function clearProgress() {
+  if (!currentUser) return;
+  localStorage.removeItem('rw_progress_' + currentUser.uid);
+}
+
+function checkAndRestoreProgress() {
+  var p = loadProgress();
+  if (!p) return false;
+  // Show resume dialog
+  var resume = confirm('이전에 하던 학습이 있어요!\n주제: ' + (p.topic ? p.topic.ko : '') + '\n계속 할까요?');
+  if (!resume) {
+    clearProgress();
+    return false;
+  }
+  // Restore state
+  lv = p.lv || lv;
+  topic = p.topic || topic;
+  sentences = p.sentences || [];
+  storyFinal = p.storyFinal || '';
+  score = p.score || 0;
+  return p;
 }
