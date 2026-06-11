@@ -204,7 +204,7 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 
   <!-- WRITING -->
   <div class="pg" id="pgWrite">
-    <div class="topic-card"><div class="ttag">TODAY'S TOPIC</div><div class="ttitle" id="topicTitle"></div><div class="tsub" id="topicSub"></div></div>
+    <div class="topic-card"><div class="ttag">TODAY'S TOPIC</div><div class="ttitle" id="topicTitle"></div><div style="font-size:13px;color:#5B5FFF;font-weight:600;margin-top:2px;" id="topicEn"></div><div class="tsub" id="topicSub"></div></div>
     <div class="sc" style="padding:13px 15px;">
       <div style="font-size:13px;font-weight:700;color:var(--sub);margin-bottom:4px">진행도</div>
       <div class="qprog"><div class="qdot on" id="qd1">1</div><div class="qline" id="ql1"></div><div class="qdot" id="qd2">2</div><div class="qline" id="ql2"></div><div class="qdot" id="qd3">3</div></div>
@@ -460,6 +460,100 @@ const QS={
   "My Favorite Season":["어떤 계절을 제일 좋아해요?","그 계절에 무엇을 해요?","그 계절이 왜 좋아요?"],
   "My Dream":["커서 무엇이 되고 싶어요?","왜 그 꿈을 갖게 됐어요?","그 꿈을 위해 무엇을 하고 있어요?"],
   "My Day Today":["오늘 아침에 무엇을 했어요?","학교에서 무엇을 했어요?","오늘 가장 기억에 남는 일은 뭐예요?"],
+,
+  "My Favorite Book":["내가 좋아하는 체잡은 무엇인가요?","그 체잡의 내용은 무엇인가요?","왕 체잡이 좋은 이유는 무엇인가요?"],
+  "My Morning Routine":["아침에 맨 먼저 무엇을 하나요?","아침에 어떤 음식을 먹나요?","학교 가기 전에 어떤 준비를 하나요?"],
+  "My Favorite Sport":["좋아하는 스포츠는 무엇인가요?","그 스포츠를 얼마나 자주 하나요?","그 스포츠의 어떤 점이 좋나요?"],
+  "My Room":["나의 방은 어떤 모습인가요?","방에서 주로 무엇을 하나요?","나의 방에서 가장 좋아하는 것은 무엇인가요?"],
+  "My Favorite Teacher":["가장 좋아하는 선생님은 누구인가요?","그 선생님의 수업에서 어떤 점이 좋나요?","그 선생님에게 배운 가장 중요한 것은 무엇인가요?"],
+  "My Birthday":["내 생일은 언제인가요?","생일에 보통 어떻게 보내나요?","받고 싶은 생일 선물은 무엇인가요?"],
+  "My Summer Vacation Plan":["이번 여름 방학에 어디에 가고 싶나요?","여름 방학 동안 무엇을 하고 싶나요?","여름 방학에 누구와 함께 시간을 보내고 싶나요?"],
+  "My Winter Vacation Plan":["겨울 방학 계획은 어떻게 되나요?","겨울 방학 동안 주로 무엇을 하고 싶나요?","겨울 방학 중 가장 기대되는 것은 무엇인가요?"],
+  "My Favorite Music":["어떤 종류의 음악을 좋아하나요?","좋아하는 가수나 그룹은 누구인가요?","음악을 주로 언제 듣나요?"],
+  "How I Relieve Stress":["스트레스를 받을 때 어떻게 헤소하나요?","가장 효과적인 스트레스 해소법은 무엇인가요?","스트레스를 헤소한 후 어떤 기분이 드나요?"],
+  "Something I Am Afraid Of":["가장 무서웨하는 것은 무엇인가요?","왼 그것이 무서운가요?","무서움을 어떻게 극복하려고 노력하나요?"],
+  "My Happiest Memory":["가장 행복했던 기억은 무엇인가요?","그 날 무슨 일이 있었나요?","그때 왜 그렇게 행복했나요?"],
+  "Something I Want to Learn":["앞으로 배워보고 싶은 것은 무엇인가요?","왜 그것을 배워보고 싶나요?","어떻게 배울 계획인가요?"],
+  "My Role Model":["유의 롤 모델은 누구인가요?","그 사람의 어떤 점이 예래별로 마음에 드나요?","그 사람에게서 배우고 싶은 점은 무엇인가요?"],
+  "My Favorite Seasonal Food":["계절에 따라 좋아하는 음식이 있나요?","그 음식은 어떤 맛이나요?","그 음식을 누구와 함께 먹나요?"],
+  "My Way to School":["학교에 어떻게 다니나요?","학교까지 얼마나 걸리나요?","등교길에 무엇을 하면서 가나요?"],
+  "My Favorite Color":["가장 좋아하는 색깔은 무엇인가요?","왜 그 색깔을 좋아하나요?","그 색깔의 어떤 물건을 가지고 있나요?"],
+  "My Closest Family Member":["가족 중 가장 친한 사람은 누구인가요?","그 사람과 주로 무엇을 하면서 시간을 보내나요?","그 사람이 친근하게 느께지는 이유는 무엇인가요?"],
+  "Something I Want to Challenge":["도전해보고 싶은 것이 있나요?","왜 그것에 도전하고 싶나요?","어떻게 준비할 계획인가요?"],
+  "My Strengths":["자신의 장점은 무엇인가요?","그 장점이 도움이 된 사례가 있나요?","장점을 더 발전시키기 위해 어떻게 하나요?"],
+  "My Weaknesses and Improvement":["자신의 단점은 무엇인가요?","그 단점을 어떻게 고치려고 노력하나요?","거기에서 배운 점은 무엇인가요?"],
+  "My Favorite Weather":["어떤 날씨를 가장 좋아하나요?","그 날씨에 보통 무엇을 하나요?","그 날씨가 왜 좋아하나요?"],
+  "My Favorite Animal":["가장 좋아하는 동물은 무엇인가요?","그 동물의 특징은 뉔엇인가요?","그 동물을 왜 좋아하나요?"],
+  "A Book I Recently Read":["최근에 읽은 체잡 이름은 무엇인가요?","그 체잡의 내용은 무엇인가요?","그 체잡을 읽고 느낌 점은 무엇인가요?"],
+  "My Dream House":["꾸의 집은 어때스 모습인가요?","그 집에서 뭐를 하고 싶나요?","기꾸에 하고 싶은 것은 무엇인가요?"],
+  "My Favorite Subject":["가장 좋아하는 과목은 무엇인가요?","그 과목에서 뭐가 가장 재미나요?","그 과목에서 잘하는 후 어떤 점이 도움이 되나요?"],
+  "My Least Favorite Subject":["가장 어려운 과목은 무엇인가요?","그 과목이 어로운 이유는 무엇인가요?","어떻게 그 과목을 극복하려고 노력하나요?"],
+  "My Travel Experience":["지금까지 갔던 곳 중 가장 기억에 남는 여행지는 어딘가요?","그곳에서 무엇을 했나요?","그 여행에서 가장 기억에 남는 것은 무엇인가요?"],
+  "My Favorite TV Show":["좋아하는 TV 프로그램은 무엇인가요?","그 프로그램은 어떤 내용인가요?","왜 그 프로그램을 취좋아하나요?"],
+  "How I Manage My Allowance":["한 달에 용돈을 얼마나 받나요?","용돈을 주로 어떤 곳에 쓰나요?","저축도 하나요?"],
+  "My Favorite Snack":["가장 좋아하는 간식은 무엇인가요?","그 간식을 주로 언제 먹나요?","그 간식의 어떤 점이 맛있나요?"],
+  "My School Lunch":["학교 급식에서 가장 좋아하는 메뉴는 무엇인가요?","급식을 누구와 함께 먹나요?","학교 급식에서 어떤 점이 좋나요?"],
+  "A Movie I Recently Watched":["최근에 본 영화 제목은 무엇인가요?","그 영화의 내용은 무엇인가요?","그 영화를 보고 느낌 점은 무엇인가요?"],
+  "How I Study English":["영어를 어떻게 공부하나요?","가장 도움이 되는 영어 공부 방법은 무엇인가요?","영어 공부에서 가장 어려운 부분은 무엇인가요?"],
+  "A Historical Figure I Admire":["존경하는 역사적 인물은 누구인가요?","그 사람은 어떤 업적을 남겼나요?","그 사람에게서 어떤 점을 배우고 싶나요?"],
+  "My Friendships":["친한 친구가 몇 명이나 있나요?","친구들과 보통 무엇을 하면서 시간을 보내나요?","좋은 친구랑의 특징은 무엇이라고 생각하나요?"],
+  "A Mistake I Made":["과거에 한 실수 중 기억에 남는 것은 무엇인가요?","그 실수로 어떤 일이 생겼나요?","그 실수에서 뭐를 배웠나요?"],
+  "Things I Am Grateful For":["감사한 일들이 띌가요?","가장 감사하는 것은 무엇인가요?","감사하는 마음을 어떻게 표현하나요?"],
+  "My Favorite Holiday":["가장 좋아하는 명절은 무엇인가요?","그 명절에 보통 어떻게 보내나요?","그 명절에 먹는 특별한 음식이 있나요?"],
+  "My Healthy Eating Habits":["건강을 위해 어떤 음식을 먹나요?","얼마나 자주 대습을 먹나요?","걸강한 식습관을 유지하는 것이 엄마나 어렵나요?"],
+  "A Part-time Job I Want to Try":["해보고 싶은 아르바이트는 무엇인가요?","왜 그 시다를 해보고 싶나요?","그 일에서 뭐를 배울 수 있다고 생각하나요?"],
+  "My Smartphone Habits":["하루에 파드폰을 얼마나 사용하나요?","파드폰으로 주로 무엇을 하나요?","파드폰 사용의 어떤 점이 좋고 나쁜가요?"],
+  "My Favorite YouTube Channel":["좋아하는 유튜브 채널은 무엇인가요?","그 채널에서는 주로 어떤 내용을 다나요?","그 채널에서 가장 재미있었던 콘텐츠는 무엇인가요?"],
+  "My Efforts to Protect the Environment":["환경을 위해 어떤 노력을 하나요?","그 노력이 왜 중요하다고 생각하나요?","더 검간한 환경을 위해 묶을 수 있나요?"],
+  "My Favorite Athlete":["좋아하는 운동 선수는 누구인가요?","그 선수는 어떤 종목에서 활동하나요?","그 선수를 왜 존경하나요?"],
+  "My Sleep Habits":["보통 몇 시에 잠자리에 드나요?","하루에 얼마나 자나요?","충분한 수면이 왜 중요하다고 생각하나요?"],
+  "My Fashion Style":["자신의 패션 스타일은 어때거나요?","평소에 어떤 옵을 즐겨 입나요?","프패션이 자신감에 어떤 영향을 미치나요?"],
+  "My Dream City to Live In":["장래에 살고 싶은 도시는 어딘가요?","그 도시의 어떤 점이 마음에 드나요?","그곳에서 뭐를 하며 살고 싶나요?"],
+  "A Kind Act I Experienced":["남들이 한 친절한 행동에 감동받은 적이 있나요?","그때 어떤 일이 있었나요?","그 경험에서 뭐를 느껋나요?"],
+  "My Most Difficult Moment":["지금까지 가장 힘들었던 순간은 언제였나요?","그때 어떤 일이 있었나요?","그 험든 순간을 어떻게 극복했나요?"],
+  "My Favorite Game":["가장 좋아하는 게임은 무엇인가요?","그 게임을 어떻게 하는지 설명해주세요!","그 게임의 어떤 점이 재미있나요?"],
+  "My Social Media Use":["주로 어떤 소셜미디어를 사용하나요?","얼마나 자주 사용하나요?","소셜미디어의 정실한 이점과 단점은 무엇인가요?"],
+  "My Favorite Plant or Flower":["가장 좋아하는 식물이나 꽃은 무엇인가요?","그 식물의 특징은 무엇인가요?","그 식물을 왜 좋아하나요?"],
+  "My School Club Activity":["어떤 동아리에 활동하나요?","그 동아리에서 주로 뭐를 하나요?","그 동아리 활동에서 어떤 점이 좋나요?"],
+  "My Favorite Korean Food":["가장 좋아하는 한국 음식은 무엇인가요?","그 음식은 어떤 맛인가요?","그 음식을 얼마나 자주 먹나요?"],
+  "My Foreign Language Learning":["어떤 외국어를 공부하나요?","그 언어를 왜 배우고 싶었나요?","그 언어를 배울 때 가장 어려운 부분은 무엇인가요?"],
+  "My Favorite Character":["가장 좋아하는 캐릭터는 누구인가요?","그 캐릭터는 어떤 작품에 나오나요?","그 캐릭터를 왜 좋아하나요?"],
+  "My Travel Bucket List":["꽔등 가고 싶은 나라나 도시는 어딘인가요?","그 장소들에서 무엇을 하고 싶나요?","그 여행을 위해 어떻게 준비하나요?"],
+  "My Favorite Day of the Week":["일주일 중 가장 좋아하는 요일은 때인가요?","그 요일에 보통 무엇을 하나요?","왜 그 요일을 가장 좋아하나요?"],
+  "My School Field Trip":["가장 기억에 남는 수학여행은 어디였나요?","그곳에서 무엇을 했나요?","그 수학여행에서 가장 인상 깊았던 것은 무엇인가요?"],
+  "A Quote That Inspires Me":["좋아하는 명언이나 말이 있나요?","그 말이 왜 마음에 드나요?","그 말이 살아가는 데 어떻게 도움이 되나요?"],
+  "My Cooking Experience":["지금까지 요리를 해본 적이 있나요?","어떤 음식을 만들었나요?","그 요리 경험에서 뭐를 배웠나요?"],
+  "If I Could Do Volunteer Work":["만약 봉사활동을 한다면 어떤 일을 하고 싶나요?","왜 그 봉사를 하고 싶나요?","그 봉사를 통해 세상에 어떤 도움이 될 수 있을까요?"],
+  "My Online Class Experience":["온라인 수업을 들어본 적이 있나요?","온라인 수업의 어떤 점이 좋았나요?","온라인 수업에서 가장 어려운 점은 무엇인가요?"],
+  "My Favorite Brand":["가장 좋아하는 브랜드는 무엇인가요?","그 브랜드의 어떤 제품을 좋아하나요?","그 브랜드를 왜 신룂하나요?"],
+  "My Reading Habits":["얼마나 자주 체잡을 읽나요?","주로 어떤 종류의 체잡을 읽나요?","독서가 재미있는 이유는 무엇인가요?"],
+  "Activities I Love in My Favorite Weather":["어떤 날씨를 가장 좋아하나요?","그 날씨에 보통 무엇을 하나요?","그 날씨와 활동이 즐거운 이유는 무엇인가요?"],
+  "My School Friends":["학교에 친요운 친구들이 몇 명이나 있나요?","그들과 주로 무엇을 하면서 시간을 보내나요?","학교 친구들이 안준다면 어떤 점이 좋나요?"],
+  "My Favorite Dessert":["가장 좋아하는 디저트는 무엇인가요?","그 디저트를 주로 언제 먹나요?","그 디저트를 왜 좋아하나요?"],
+  "My Ideal Partner":["이상적인 연인의 조건은 무엇인가요?","어떤 성격을 가진 사람이 좋나요?","함께 하고 싶은 것들은 무엇인가요?"],
+  "My Parents I Admire":["부모님을 존경하는 이유는 무엇인가요?","부모님이 어떤 가르침을 주셨나요?","부모님처럼 닮고 싶은 점은 무엇인가요?"],
+  "My Earliest Memory":["가장 오래된 어린 시절 기억은 무엇인가요?","그 기억이 대략 몇 살 때인가요?","왜 그 기억이 아직도 선명하게 남나요?"],
+  "My Favorite Park or Place":["자주 가는 코이나 좋아하는 장소는 어딘가요?","그곳에서 보통 무엇을 하나요?","그 장소에 얼마나 자주 가나요?"],
+  "Korean Traditional Culture I Like":["좋아하는 한국 전통 문화는 무엇인가요?","그 문화의 특징은 무엇인가요?","그 문화에 대해 자바롭게 생각하는 이유는 무엇인가요?"],
+  "My Top 3 Dream Destinations":["꽔등 가고 싶은 여행지 TOP 3는 어딘가요?","그중 가장 가고 싶은 곳은 어딘가요?","그 여행지들에서 무엇을 하고 싶나요?"],
+  "If I Had a Superpower":["만약 특수한 능력이 생긴다면 어떤 것을 갖고 싶나요?","그 능력으로 무엇을 하고 싶나요?","그 능력을 어떻게 사용될 것인가요?"],
+  "My Favorite Holiday Food":["명절에 먹는 음식 중 가장 좋아하는 것은 무엇인가요?","그 음식을 보통 누가 만드나요?","그 명절 음식에 대한 특별한 기억이 있나요?"],
+  "Internet Trends I Like":["요즘 좋아하는 인터넷 유행이나 밀은 무엇인가요?","그것이 왜 재미있나요?","친구들과 그것에 대해 어떻게 이야기하나요?"],
+  "My Most Fun Class at School":["학교에서 가장 재미있는 수업은 무엇인가요?","그 수업에서 뭐를 주로 하나요?","그 수업이 재미있는 이유는 무엇인가요?"],
+  "A Country I Want to Live in the Future":["장래에 살고 싶은 나라는 어딘가요?","그 나라의 어떤 점이 마음에 드나요?","그곳에서 어떤 일을 하며 살고 싶나요?"],
+  "My Favorite Seasonal Activity":["어떤 계절에 하는 활동을 좋아하나요?","그 활동을 보통 누구와 하나요?","그 활동이 즐거운 이유는 무엇인가요?"],
+  "My Favorite Korean Singer":["좋아하는 한국 가수나 그룹은 누구인가요?","그들의 음악 주 장르는 무엇인가요?","그들의 어떤 노래를 가장 좋아하나요?"],
+  "My Favorite School Lunch Menu":["학교 급식 메뉴 중 가장 좋아하는 것은 무엇인가요?","그 메뉴의 맛은 어때나요?","그 메뉴가 나오는 날 얼마나 기대되나요?"],
+  "Something I Want to Say in English":["영어로 꾸꼾 말하고 싶은 것은 무엇인가요?","그 말을 어떻게 또 얰습하나요?","영어가 능숫해지면 어떤 이점이 있을가요?"]
+,
+  "My Family":["우리 가족은 몇 명인가요?","가족과 주로 무엇을 하면서 시간을 보내나요?","가족 중 가장 마음에 드는 사람은 누구인가요?"],
+  "My School":["지금 다니는 학교 이름은 무엇인가요?","학교에서 가장 좋아하는 과목은 무엇인가요?","학교에서 가장 즐각운 시간은 언제인가요?"],
+  "My Hobby":["좋아하는 취미는 무엇인가요?","그 취미를 여제 시작했나요?","취미에서 가장 재미있는 점은 무엇인가요?"],
+  "My Favorite Movie":["좋아하는 영화 제목은 무엇인가요?","그 영화의 내용을 간단히 설명해볼글요?","그 영화를 왜 좋아하나요?"],
+  "My Health and Exercise":["건강을 위해 어떤 운동을 하나요?","얼마나 자주 운동하나요?","건강한 식습관을 위해 또 나시는 노력은 무엇인가요?"],
+  "My Future Job":["장래희망은 무엇인가요?","그 직업을 왜 원하나요?","그 꾸을 이루기 위해 지금 어떻게 노력하나요?"],
+  "A Special Day":["가장 특별했던 날은 언제였나요?","그날 무슨 일이 있었나요?","그날이 왜 특별하다고 느껴나요?"],
+  "My Favorite Restaurant":["좋아하는 음식점 이름은 무엇인가요?","그곳에서 주로 어떤 음식을 먹나요?","그 음식점에서 가장 맛있는 메뉴는 무엇인가요?"]
 };
 
 let lv=null,topic=null,qs=[],score=0,qIdx=0,state='start';
@@ -482,7 +576,9 @@ function startApp(){
   document.getElementById('hintBtn').style.display='flex';
   topic=TOPICS[Math.floor(Math.random()*TOPICS.length)];
   qs=QS[topic.en];
-  document.getElementById('topicTitle').textContent=`"${topic.ko}"`;
+  // Fallback if no QS
+  if(!qs || qs.length===0) qs=[topic.ko+' Q1',topic.ko+' Q2',topic.ko+' Q3'];
+  document.getElementById('topicTitle').textContent=`"${topic.ko}"`;document.getElementById('topicEn').textContent=topic.en;
   document.getElementById('topicSub').textContent=`📌 ${topic.guide}`;
   loadQ();
 }
