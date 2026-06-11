@@ -505,7 +505,7 @@ async function submitEng(){
     sentences.push({eng,corr,q:qs[qIdx],ex});
     addScore(lv*8);
     document.getElementById('hintBtn').style.display='none';
-    if(qIdx<2){state='nextQ';setBtn(true,`다음 질문 (${qIdx+2}/3) →`);}
+    if(qIdx<2){state='nextQ';setBtn(true,`다음 질문 (${qIdx+2}/3) →`);if(typeof saveProgress==='function')saveProgress();}
     else{state='goStory';setBtn(true,'글짓기 완성하기! 📝','green');}
   }catch(e){err('fbErr',e.message);setBtn(true,'첨삭 받기 →');}
   finally{ld('ld1',false);}
@@ -688,6 +688,7 @@ function toggleMic(){
 // ── WRAP-UP ──
 function goWrap(){
   hideModal();showPg('wrap');tabOn('t5');
+  if(typeof saveProgress==='function')saveProgress();
   document.getElementById('wrapRef').innerHTML=`<div style="font-size:12px;font-weight:700;color:var(--sub);margin-bottom:8px">📌 오늘 배운 문장 (참고용)</div>${sentences.map((s,i)=>`<div style="font-size:13px;color:var(--p);font-weight:600;margin-bottom:4px">Q${i+1}. ${s.q}</div><div style="font-size:14px;color:var(--tx);padding:6px 10px;background:#fff;border-radius:8px;margin-bottom:8px;border-left:3px solid var(--p)">${s.corr}</div>`).join('')}`;
   state='submitWrap';setBtn(true,'제출하고 저장하기 💾','green');
 }
@@ -704,7 +705,7 @@ async function submitWrap(){
     addScore(30);
     // SAVE
     saveRecord(txt);
-    state='goMemory';setBtn(true,'암기 훈련하기','orange');
+    state='goMemory';setBtn(true,'암기 훈련하기','orange');if(typeof clearProgress==='function')clearProgress();
   }catch(e){err('fbWrapErr',e.message);setBtn(true,'제출하고 저장하기 💾','green');}
   finally{ld('ldWrap',false);}
 }
