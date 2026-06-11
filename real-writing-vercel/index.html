@@ -567,7 +567,6 @@ var currentAudio=null;
 function selLv(n){lv=n;document.querySelectorAll('.lv-card').forEach((c,i)=>c.classList.toggle('sel',i+1===n));const b=document.getElementById('startBtn');b.disabled=false;b.textContent=`${LVCONF[n].e} Level ${n} 시작하기 →`;}
 
 function startApp(){
-  alert('startApp 호출됨! lv='+lv);
   document.getElementById('levelScreen').style.display='none';
   const app=document.getElementById('appScreen');app.style.display='flex';app.style.flexDirection='column';app.style.alignItems='center';
   document.getElementById('btmBar').style.display='flex';
