@@ -556,12 +556,12 @@ const QS={
   "My Favorite Restaurant":["좋아하는 음식점 이름은 무엇인가요?","그곳에서 주로 어떤 음식을 먹나요?","그 음식점에서 가장 맛있는 메뉴는 무엇인가요?"]
 };
 
-let lv=null,topic=null,qs=[],score=0,qIdx=0,state='start';
-let sentences=[],storyFinal='';
-let shadowSents=[],shadowIdx=0,shadowPlays=0;
+var lv=null,topic=null,qs=[],score=0,qIdx=0,state='start';
+var sentences=[],storyFinal='';
+var shadowSents=[],shadowIdx=0,shadowPlays=0;
 let speakQs=[],speakIdx=0;
 let recog=null,isRec=false;
-let currentAudio=null;
+var currentAudio=null;
 
 // ── LEVEL SELECT ──
 function selLv(n){lv=n;document.querySelectorAll('.lv-card').forEach((c,i)=>c.classList.toggle('sel',i+1===n));const b=document.getElementById('startBtn');b.disabled=false;b.textContent=`${LVCONF[n].e} Level ${n} 시작하기 →`;}
