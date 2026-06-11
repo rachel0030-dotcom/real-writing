@@ -84,14 +84,11 @@ function loginWithCode() {
     lv = data.level || 1;
     document.getElementById('loginScreen').style.display = 'none';
     var saved = checkAndRestoreProgress();
-    if (saved && saved.storyFinal) {
-      document.getElementById('appScreen').style.cssText = 'display:flex;flex-direction:column;align-items:center;';
+    if (saved) {
+      // Just go to level screen - state is restored, user picks up naturally
+      var ls = document.getElementById('levelScreen');
+      ls.style.display = 'flex'; ls.style.flexDirection = 'column'; ls.style.alignItems = 'center';
       selLv(lv);
-      setTimeout(function() { showPg('wrap'); tabOn('t5'); state='wrap'; setBtn(true,'마무리 쓰기 →'); }, 100);
-    } else if (saved && saved.sentences && saved.sentences.length > 0) {
-      document.getElementById('appScreen').style.cssText = 'display:flex;flex-direction:column;align-items:center;';
-      selLv(lv);
-      setTimeout(function() { showPg('story'); tabOn('t2'); }, 100);
     } else {
       var ls = document.getElementById('levelScreen');
       ls.style.display = 'flex'; ls.style.flexDirection = 'column'; ls.style.alignItems = 'center';
@@ -397,17 +394,19 @@ function clearProgress() {
 function checkAndRestoreProgress() {
   var p = loadProgress();
   if (!p) return false;
-  // Show resume dialog
-  var resume = confirm('이전에 하던 학습이 있어요!\n주제: ' + (p.topic ? p.topic.ko : '') + '\n계속 할까요?');
+  var topicName = (p.topic && p.topic.ko) ? p.topic.ko : '이전 학습';
+  var resume = confirm(topicName + ' 학습을 이어서 할까요?');
   if (!resume) {
     clearProgress();
     return false;
   }
-  // Restore state
-  lv = p.lv || lv;
-  topic = p.topic || topic;
-  sentences = p.sentences || [];
-  storyFinal = p.storyFinal || '';
-  score = p.score || 0;
+  // Restore only data variables
+  try {
+    if (p.lv) lv = p.lv;
+    if (p.topic) topic = p.topic;
+    if (p.sentences) sentences = p.sentences;
+    if (p.storyFinal) storyFinal = p.storyFinal;
+    if (p.score) score = p.score;
+  } catch(e) { console.warn('restore:', e); clearProgress(); return false; }
   return p;
 }
