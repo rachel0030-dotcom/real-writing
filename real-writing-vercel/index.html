@@ -975,7 +975,7 @@ async function submitWrap(){
   setBtn(false,'확인 중...');ld('ldWrap',true);
   try{
     const r=await claude(`${LVCONF[lv].sys}\nThe student practiced 3 sentences today. They are now writing all 3 from memory.\nOriginal corrected sentences:\n${sentences.map((s,i)=>`${i+1}. ${s.corr}`).join('\n')}\nCheck their writing, give encouraging feedback in Korean, note what they remembered well and what to improve.`,`학생이 쓴 마무리: "${txt}"`);
-    document.getElementById('fbWrap').innerHTML=`<div class="fbl">✅ 마무리 확인!</div><div style="margin-bottom:8px">${r.trim()}</div><button onclick="goMemory()" style="width:100%;margin-top:10px;padding:13px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;">🎬 암기 훈련하러 가기 →</button>`;
+    document.getElementById('fbWrap').innerHTML=`<div class="fbl">✅ 마무리 확인!</div><div style="margin-bottom:8px">${r.trim()}</div><button onclick="try{goMemory()}catch(e){alert('오류: '+e.message)}" style="width:100%;margin-top:10px;padding:13px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;">🎬 암기 훈련하러 가기 →</button>`;
     document.getElementById('fbWrap').classList.add('show');
     document.getElementById('wrapIn').disabled=true;
     addScore(30);
@@ -1191,6 +1191,71 @@ function showModal(emoji,title,sub,btnTxt,cb){
 }
 function hideModal(){document.getElementById('modal').classList.remove('show');}
 </script>
-<script src="/app.js"></script>
+<script src="/app.js">
+// Memory
+var memIsRec = false, memRec = null;
+
+function goMemory() {
+  try {
+    showPg('memory'); tabOn('t6');
+    document.getElementById('memStoryText').textContent = storyFinal || '';
+    document.getElementById('memAnswerText').textContent = storyFinal || '';
+    document.getElementById('memReadCard').style.display = 'flex';
+    document.getElementById('memRecordCard').style.display = 'none';
+    document.getElementById('memAnswerCard').style.display = 'none';
+    document.getElementById('memRecResult').style.display = 'none';
+    document.getElementById('memRetryBtn').style.display = 'none';
+    setTimeout(function() { try { speak(removeEmoji(storyFinal||'')); } catch(e2){ console.warn('speak err', e2); } }, 500);
+  } catch (e) {
+    console.error('goMemory error:', e);
+  } finally {
+    setBtn(true, '학습 완료!', 'green'); state = 'finish';
+  }
+}
+function speakMemory() { speak(removeEmoji(storyFinal)); }
+function startMemorize() {
+  document.getElementById('memReadCard').style.display = 'none';
+  document.getElementById('memRecordCard').style.display = 'flex';
+  document.getElementById('memRecStatus').textContent = '녹음 버튼을 눌러요!';
+}
+function retryMemory() {
+  document.getElementById('memReadCard').style.display = 'flex';
+  document.getElementById('memRecordCard').style.display = 'none';
+  document.getElementById('memAnswerCard').style.display = 'none';
+  document.getElementById('memRecResult').style.display = 'none';
+  document.getElementById('memRetryBtn').style.display = 'none';
+}
+function toggleMemRec() {
+  if (memIsRec) { if (memRec) memRec.stop(); return; }
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    var r = document.getElementById('memRecResult');
+    r.style.background = '#FEF2F2'; r.style.color = '#991B1B';
+    r.textContent = 'Chrome에서만 가능해요!'; r.style.display = 'block';
+    document.getElementById('memAnswerCard').style.display = 'flex'; return;
+  }
+  memRec = new SR(); memRec.lang = 'en-US'; memRec.interimResults = false;
+  var btn = document.getElementById('memRecBtn');
+  memRec.onstart = function() { memIsRec = true; btn.textContent = '멈추기'; btn.style.background = '#E53935'; document.getElementById('memRecStatus').textContent = '말하고 있어요...'; };
+  memRec.onresult = function(e) {
+    var said = e.results[0][0].transcript.trim();
+    var orig = removeEmoji(storyFinal).toLowerCase().replace(/[.!?,]/g, '').trim();
+    var sc = said.toLowerCase().replace(/[.!?,]/g, '').trim();
+    var ow = orig.split(' ').filter(function(w) { return w.length > 2; });
+    var mc = ow.filter(function(w) { return sc.includes(w); }).length;
+    var pct = ow.length ? Math.round(mc / ow.length * 100) : 0;
+    var res = document.getElementById('memRecResult'); res.style.display = 'block';
+    if (pct >= 70) { res.style.background = 'var(--gl)'; res.style.color = '#14532D'; res.innerHTML = '<b>' + pct + '% 일치! 대단해요!</b><br>"' + said + '"'; addScore(30); }
+    else if (pct >= 40) { res.style.background = 'var(--yl)'; res.style.color = '#92400E'; res.innerHTML = '<b>' + pct + '% 일치!</b><br>"' + said + '"'; document.getElementById('memRetryBtn').style.display = 'block'; addScore(15); }
+    else { res.style.background = '#FEF2F2'; res.style.color = '#7F1D1D'; res.innerHTML = '<b>' + pct + '% 다시 연습!</b><br>"' + said + '"'; document.getElementById('memRetryBtn').style.display = 'block'; }
+    document.getElementById('memAnswerCard').style.display = 'flex';
+    document.getElementById('memRecStatus').textContent = '완료!';
+  };
+  memRec.onend = function() { memIsRec = false; btn.textContent = '다시 녹음'; btn.style.background = '#FF6B35'; };
+  memRec.onerror = function() { memIsRec = false; btn.textContent = '녹음 시작'; btn.style.background = '#FF6B35'; };
+  memRec.start();
+}
+
+</script>
 </body>
 </html>
