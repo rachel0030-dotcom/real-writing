@@ -289,6 +289,7 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
       <div style="font-size:13px;font-weight:700;color:var(--sub);">정답 확인</div>
       <div id="memAnswerText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;"></div>
     </div>
+    <button onclick="state='finish';go();" style="width:100%;padding:14px;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;background:var(--p);color:#fff;">📊 리포트 보러 가기 →</button>
   </div>
   <!-- REPORT -->
   <div class="pg" id="pgReport" style="display:none;">
@@ -974,7 +975,7 @@ async function submitWrap(){
   setBtn(false,'확인 중...');ld('ldWrap',true);
   try{
     const r=await claude(`${LVCONF[lv].sys}\nThe student practiced 3 sentences today. They are now writing all 3 from memory.\nOriginal corrected sentences:\n${sentences.map((s,i)=>`${i+1}. ${s.corr}`).join('\n')}\nCheck their writing, give encouraging feedback in Korean, note what they remembered well and what to improve.`,`학생이 쓴 마무리: "${txt}"`);
-    document.getElementById('fbWrap').innerHTML=`<div class="fbl">✅ 마무리 확인!</div><div style="margin-bottom:8px">${r.trim()}</div>`;
+    document.getElementById('fbWrap').innerHTML=`<div class="fbl">✅ 마무리 확인!</div><div style="margin-bottom:8px">${r.trim()}</div><button onclick="goMemory()" style="width:100%;margin-top:10px;padding:13px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;">🎬 암기 훈련하러 가기 →</button>`;
     document.getElementById('fbWrap').classList.add('show');
     document.getElementById('wrapIn').disabled=true;
     addScore(30);
@@ -1058,7 +1059,7 @@ function finish(){
 }
 
 async function goReport(){
-  showPg('report');tabOn('t6');
+  showPg('report');tabOn('t7');
   document.getElementById('ldReport').classList.add('show');
   document.getElementById('reportContent').style.display='none';
   try{
