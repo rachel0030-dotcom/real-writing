@@ -96,39 +96,11 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 .hist-topic{font-weight:700;font-size:15px;color:var(--tx);margin-bottom:6px;}
 .hist-story{font-size:13px;color:var(--sub);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
 </style>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
 <!-- LEVEL SELECT -->
-
-<div id="loginScreen" style="width:100%;max-width:520px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px;">
-  <div style="font-size:56px;">🌟</div>
-  <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.8rem;color:#5B5FFF;">REAL Writing</div>
-  <div style="font-size:14px;color:#6B7280;text-align:center;">AI 영어 라이팅 학습 앱</div>
-  <div style="width:100%;max-width:340px;background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1.5px solid #E5E7EB;">
-    <div style="font-weight:800;font-size:16px;margin-bottom:4px;">학생 로그인</div>
-    <div style="font-size:13px;color:#6B7280;margin-bottom:14px;">선생님께 받은 6자리 코드를 입력하세요</div>
-    <input id="studentCodeInput" type="text" placeholder="학생 코드 입력 (예: ABC123)" maxlength="6"
-      style="width:100%;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px 14px;font-size:16px;outline:none;text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:10px;box-sizing:border-box;"
-      oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')loginWithCode()">
-    <button onclick="loginWithCode()" style="width:100%;padding:13px;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;background:#5B5FFF;color:#fff;">입장하기 →</button>
-    <div id="codeError" style="font-size:13px;color:#EF4444;margin-top:8px;text-align:center;display:none;"></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:10px;width:100%;max-width:340px;">
-    <div style="flex:1;height:1px;background:#E5E7EB;"></div>
-    <div style="font-size:12px;color:#9CA3AF;">선생님이세요?</div>
-    <div style="flex:1;height:1px;background:#E5E7EB;"></div>
-  </div>
-  <div onclick="signInWithGoogle()" style="display:flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #E5E7EB;border-radius:14px;background:#fff;cursor:pointer;font-weight:700;font-size:15px;color:#6B7280;width:100%;max-width:340px;justify-content:center;box-sizing:border-box;">
-    <img src="https://www.google.com/favicon.ico" width="20" height="20" style="pointer-events:none;">
-    <span style="pointer-events:none;">선생님 Google 로그인</span>
-  </div>
-  <div id="loginError" style="font-size:13px;color:#5B5FFF;display:none;text-align:center;"></div>
-</div>
-<div id="levelScreen" style="display:none;">
+<div id="levelScreen">
   <div class="lv-hero">
     <div style="font-size:52px;margin-bottom:10px">🌟</div>
     <h1>REAL Writing</h1>
@@ -154,38 +126,6 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 </div>
 
 <!-- APP -->
-
-<div id="teacherScreen" style="display:none;width:100%;max-width:520px;padding:0 0 80px;flex-direction:column;">
-  <div style="background:#fff;border-bottom:1px solid #E5E7EB;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;">
-    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.05rem;color:#5B5FFF;">관리자</div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="showTeacherTab('dashboard')" id="tabDash" style="padding:7px 13px;border:none;border-radius:10px;font-size:13px;cursor:pointer;font-weight:700;background:#5B5FFF;color:#fff;">현황</button>
-      <button onclick="showTeacherTab('students')" id="tabStudents" style="padding:7px 13px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:13px;cursor:pointer;font-weight:700;background:#fff;color:#6B7280;">학생관리</button>
-      <button onclick="signOut()" style="padding:7px 13px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:13px;cursor:pointer;color:#6B7280;background:#fff;">로그아웃</button>
-    </div>
-  </div>
-  <div id="tabDashContent" style="padding:16px 18px;display:flex;flex-direction:column;gap:13px;">
-    <div id="assignmentOverview"></div>
-    <div id="teacherStats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
-    <div style="font-weight:700;font-size:15px;">학생별 학습 기록</div>
-    <div id="teacherList" style="display:flex;flex-direction:column;gap:10px;"></div>
-  </div>
-  <div id="tabStudentsContent" style="padding:16px 18px;display:none;flex-direction:column;gap:13px;">
-    <div style="background:#fff;border-radius:16px;padding:16px;border:1.5px solid #5B5FFF;">
-      <div style="font-weight:700;font-size:15px;margin-bottom:12px;">학생 등록</div>
-      <input id="newStudentName" placeholder="학생 이름" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 13px;font-size:14px;outline:none;margin-bottom:8px;box-sizing:border-box;">
-      <select id="newStudentLevel" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 13px;font-size:14px;outline:none;margin-bottom:8px;">
-        <option value="1">Level 1 - 입문 (초등 1~2)</option>
-        <option value="2">Level 2 - 기초 (초등 3~4)</option>
-        <option value="3">Level 3 - 중급 (초등5~중등)</option>
-        <option value="4">Level 4 - 고급 (중3~고등)</option>
-      </select>
-      <button onclick="addStudent()" style="width:100%;padding:12px;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:#5B5FFF;color:#fff;">학생 추가</button>
-    </div>
-    <div style="font-weight:700;font-size:15px;">등록된 학생 목록</div>
-    <div id="studentMgmtList" style="display:flex;flex-direction:column;gap:10px;"></div>
-  </div>
-</div>
 <div id="appScreen" style="display:none;width:100%;flex-direction:column;align-items:center;">
   <nav class="nav">
     <div class="logo">REAL<span>.</span>Writing</div>
@@ -198,13 +138,12 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
     <div class="tab" id="t3">🔤 쉐도잉</div>
     <div class="tab" id="t4">🎤 말하기</div>
     <div class="tab" id="t5">📝 마무리</div>
-    <div class="tab" id="t6">🎬 암기</div>
-    <div class="tab" id="t7">📊 리포트</div>
+    <div class="tab" id="t6">📊 리포트</div>
   </div>
 
   <!-- WRITING -->
   <div class="pg" id="pgWrite">
-    <div class="topic-card"><div class="ttag">TODAY'S TOPIC</div><div class="ttitle" id="topicTitle"></div><div class="tsub" id="topicSub"></div></div>
+    <div class="topic-card"><div class="ttag">TODAY'S TOPIC</div><div class="ttitle" id="topicTitle"></div><div style="font-size:13px;color:#5B5FFF;font-weight:600;margin-top:2px;" id="topicEn"></div><div class="tsub" id="topicSub"></div></div>
     <div class="sc" style="padding:13px 15px;">
       <div style="font-size:13px;font-weight:700;color:var(--sub);margin-bottom:4px">진행도</div>
       <div class="qprog"><div class="qdot on" id="qd1">1</div><div class="qline" id="ql1"></div><div class="qdot" id="qd2">2</div><div class="qline" id="ql2"></div><div class="qdot" id="qd3">3</div></div>
@@ -264,32 +203,6 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
     </div>
     <div class="fb red" id="fbWrapErr"></div>
   </div>
-
-  <div class="pg" id="pgMemory" style="display:none;">
-    <div class="sc on" style="border-color:#FF6B35;">
-      <div class="sc-h"><div class="snum" style="background:#FFF0EB;color:#FF6B35;">암기</div><div style="font-weight:700;font-size:15px;">외워서 말해봐요!</div></div>
-      <div style="font-size:13px;color:var(--sub);">완성 글을 읽고 기억한 뒤 말해봐요!</div>
-    </div>
-    <div id="memReadCard" class="sc" style="display:flex;flex-direction:column;gap:12px;">
-      <div style="font-size:13px;font-weight:700;color:var(--sub);">읽기</div>
-      <div id="memStoryText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;"></div>
-      <div style="display:flex;gap:8px;">
-        <button onclick="speakMemory()" style="flex:1;padding:12px;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;background:var(--g);color:#fff;">듣기</button>
-        <button onclick="startMemorize()" style="flex:1;padding:12px;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;background:#FF6B35;color:#fff;">외움어요! 숨기기</button>
-      </div>
-    </div>
-    <div id="memRecordCard" class="sc" style="display:none;flex-direction:column;gap:12px;">
-      <div style="font-size:13px;font-weight:700;color:var(--sub);">외워서 말하기</div>
-      <div style="background:#F8F8FF;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:13px;color:var(--sub);" id="memRecStatus">녹음 버튼을 눌러요!</div></div>
-      <button onclick="toggleMemRec()" id="memRecBtn" style="width:100%;padding:14px;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;">녹음 시작</button>
-      <div id="memRecResult" style="display:none;font-size:14px;padding:13px;border-radius:12px;line-height:1.7;"></div>
-      <button onclick="retryMemory()" id="memRetryBtn" style="display:none;width:100%;padding:12px;border:1.5px solid #FF6B35;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:#FF6B35;">다시 해벼게요</button>
-    </div>
-    <div id="memAnswerCard" class="sc" style="display:none;flex-direction:column;gap:10px;">
-      <div style="font-size:13px;font-weight:700;color:var(--sub);">정답 확인</div>
-      <div id="memAnswerText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;"></div>
-    </div>
-  </div>
   <!-- REPORT -->
   <div class="pg" id="pgReport" style="display:none;">
     <div class="sc on" style="border-color:#8B5CF6;box-shadow:0 0 0 3px #F3E8FF;">
@@ -334,7 +247,9 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 </div>
 
 <script>
-// Keys on server
+
+
+
 
 const LVCONF={
   1:{name:"Level 1",e:"🌱",col:"#F59E0B",bg:"#FEF3C7",guide:"알고 있는 영어 단어를 써봐요! 한 단어도 OK 😊",
@@ -350,12 +265,105 @@ const LVCONF={
 const TOPICS=[
   {ko:"내가 가장 좋아하는 음식",en:"My Favorite Food",guide:"맛, 언제 먹는지, 왜 좋아하는지"},
   {ko:"나의 가장 친한 친구",en:"My Best Friend",guide:"친구 특징, 같이하는 것, 좋은 점"},
-  {ko:"나의 주말",en:"My Weekend",guide:"무엇을 했는지, 어떠했는지, 느낌"},
-  {ko:"나의 반려동물",en:"My Pet",guide:"어떤 동물, 이름, 같이 하는 것"},
-  {ko:"내가 가보고 싶은 곳",en:"A Place I Want to Visit",guide:"어디, 왜, 무엇을 하고 싶은지"},
-  {ko:"내가 좋아하는 계절",en:"My Favorite Season",guide:"어떤 계절, 왜, 무엇을 하는지"},
-  {ko:"나의 꿈",en:"My Dream",guide:"무엇이 되고 싶은지, 왜, 어떻게"},
-  {ko:"오늘 하루",en:"My Day Today",guide:"아침/점심/저녁 무엇을 했는지"},
+  {ko:"나의 주말",en:"My Weekend",guide:"무엇을 했는지, 누구와, 기분이 어땠는지"},
+  {ko:"나의 애완동물",en:"My Pet",guide:"종류, 이름, 특징, 같이 하는 것"},
+  {ko:"내가 가고 싶은 곳",en:"A Place I Want to Visit",guide:"어디, 왜 가고 싶은지, 무엇을 하고 싶은지"},
+  {ko:"내가 좋아하는 계절",en:"My Favorite Season",guide:"계절 이름, 왜 좋아하는지, 계절에 하는 것"},
+  {ko:"나의 꿈",en:"My Dream",guide:"장래 희망, 이유, 어떻게 준비하는지"},
+  {ko:"오늘 하루",en:"My Day Today",guide:"오늘 한 일, 가장 기억에 남는 것, 기분"},
+  {ko:"우리 가족",en:"My Family",guide:"가족 구성원, 특징, 가족과 하는 활동"},
+  {ko:"우리 학교",en:"My School",guide:"학교 이름, 좋아하는 과목, 학교에서 즐거운 것"},
+  {ko:"나의 취미",en:"My Hobby",guide:"취미 이름, 언제 시작했는지, 왜 좋아하는지"},
+  {ko:"내가 좋아하는 영화",en:"My Favorite Movie",guide:"제목, 내용, 왜 좋아하는지"},
+  {ko:"건강과 운동",en:"My Health and Exercise",guide:"어떤 운동을 하는지, 얼마나 자주, 어떤 점이 좋은지"},
+  {ko:"나의 미래 직업",en:"My Future Job",guide:"어떤 직업, 왜 원하는지, 어떻게 준비하는지"},
+  {ko:"특별한 날",en:"A Special Day",guide:"어떤 날, 무슨 일이 있었는지, 기분이 어땠는지"},
+  {ko:"나의 좋아하는 음식점",en:"My Favorite Restaurant",guide:"음식점 이름, 어떤 음식, 누구와 가는지"},
+  {ko:"내가 좋아하는 책",en:"My Favorite Book",guide:"제목, 내용, 왜 좋아하는지"},
+  {ko:"나의 아침 루틴",en:"My Morning Routine",guide:"아침에 하는 것들, 순서, 가장 중요한 것"},
+  {ko:"내가 좋아하는 스포츠",en:"My Favorite Sport",guide:"스포츠 이름, 왜 좋아하는지, 언제 하는지"},
+  {ko:"나의 방",en:"My Room",guide:"방 꾸밈, 좋아하는 것, 방에서 하는 것"},
+  {ko:"내가 좋아하는 선생님",en:"My Favorite Teacher",guide:"선생님 특징, 왜 좋아하는지, 배운 것"},
+  {ko:"나의 생일",en:"My Birthday",guide:"언제인지, 어떻게 보내는지, 받고 싶은 선물"},
+  {ko:"여름 방학 계획",en:"My Summer Vacation Plan",guide:"어디 갈지, 무엇을 할지, 누구와"},
+  {ko:"겨울 방학 계획",en:"My Winter Vacation Plan",guide:"어디 갈지, 무엇을 할지, 누구와"},
+  {ko:"내가 좋아하는 음악",en:"My Favorite Music",guide:"장르, 가수, 왜 좋아하는지"},
+  {ko:"나의 스트레스 해소법",en:"How I Relieve Stress",guide:"방법, 왜 효과적인지, 언제 하는지"},
+  {ko:"내가 무서워하는 것",en:"Something I Am Afraid Of",guide:"무엇이 무서운지, 왜, 어떻게 극복하는지"},
+  {ko:"나의 가장 행복한 기억",en:"My Happiest Memory",guide:"언제, 무슨 일, 왜 행복했는지"},
+  {ko:"내가 배우고 싶은 것",en:"Something I Want to Learn",guide:"무엇을, 왜, 어떻게 배울지"},
+  {ko:"나의 롤모델",en:"My Role Model",guide:"누구인지, 왜 존경하는지, 배우고 싶은 점"},
+  {ko:"내가 좋아하는 계절 음식",en:"My Favorite Seasonal Food",guide:"어떤 계절, 어떤 음식, 왜 좋아하는지"},
+  {ko:"나의 통학길",en:"My Way to School",guide:"어떻게 가는지, 얼마나 걸리는지, 통학하면서 보는 것"},
+  {ko:"내가 좋아하는 색깔",en:"My Favorite Color",guide:"어떤 색, 왜 좋아하는지, 그 색의 물건"},
+  {ko:"나의 가장 친한 가족 구성원",en:"My Closest Family Member",guide:"누구인지, 왜 가까운지, 같이 하는 것"},
+  {ko:"내가 도전해보고 싶은 것",en:"Something I Want to Challenge",guide:"무엇을, 왜, 언제 도전할지"},
+  {ko:"나의 장점",en:"My Strengths",guide:"어떤 장점, 언제 도움이 되는지, 예시"},
+  {ko:"나의 단점과 개선 노력",en:"My Weaknesses and Improvement",guide:"어떤 단점, 어떻게 고치려는지"},
+  {ko:"내가 좋아하는 날씨",en:"My Favorite Weather",guide:"어떤 날씨, 왜 좋아하는지, 그 날씨에 하는 것"},
+  {ko:"나의 가장 좋아하는 동물",en:"My Favorite Animal",guide:"동물 이름, 특징, 왜 좋아하는지"},
+  {ko:"내가 최근에 읽은 책",en:"A Book I Recently Read",guide:"제목, 내용 요약, 느낀 점"},
+  {ko:"나의 꿈의 집",en:"My Dream House",guide:"어디에, 어떤 모습, 누구와 살고 싶은지"},
+  {ko:"내가 좋아하는 과목",en:"My Favorite Subject",guide:"과목 이름, 왜 좋아하는지, 재미있는 점"},
+  {ko:"내가 싫어하는 과목",en:"My Least Favorite Subject",guide:"과목 이름, 왜 어려운지, 어떻게 극복하는지"},
+  {ko:"나의 여행 경험",en:"My Travel Experience",guide:"어디 갔는지, 무엇을 했는지, 기억에 남는 것"},
+  {ko:"내가 좋아하는 TV 프로그램",en:"My Favorite TV Show",guide:"프로그램 이름, 내용, 왜 좋아하는지"},
+  {ko:"나의 용돈 관리",en:"How I Manage My Allowance",guide:"얼마나 받는지, 어떻게 쓰는지, 저축하는지"},
+  {ko:"내가 좋아하는 간식",en:"My Favorite Snack",guide:"간식 이름, 왜 좋아하는지, 언제 먹는지"},
+  {ko:"나의 학교 급식",en:"My School Lunch",guide:"어떤 음식이 나오는지, 좋아하는 메뉴, 친구들과 먹는 것"},
+  {ko:"내가 최근에 본 영화",en:"A Movie I Recently Watched",guide:"제목, 내용 요약, 느낀 점"},
+  {ko:"나의 영어 공부 방법",en:"How I Study English",guide:"어떻게 공부하는지, 어떤 점이 도움이 되는지"},
+  {ko:"내가 존경하는 위인",en:"A Historical Figure I Admire",guide:"누구인지, 무엇을 했는지, 왜 존경하는지"},
+  {ko:"나의 친구 관계",en:"My Friendships",guide:"친구가 몇 명인지, 어떻게 만났는지, 같이 하는 것"},
+  {ko:"내가 경험한 실수",en:"A Mistake I Made",guide:"어떤 실수, 무슨 일이 생겼는지, 배운 점"},
+  {ko:"나의 감사한 것들",en:"Things I Am Grateful For",guide:"무엇에 감사한지, 왜, 어떻게 표현하는지"},
+  {ko:"내가 좋아하는 명절",en:"My Favorite Holiday",guide:"명절 이름, 어떻게 보내는지, 좋아하는 이유"},
+  {ko:"나의 건강한 식습관",en:"My Healthy Eating Habits",guide:"어떤 음식을 먹는지, 왜 건강한지, 노력하는 것"},
+  {ko:"내가 해보고 싶은 아르바이트",en:"A Part-time Job I Want to Try",guide:"어떤 일, 왜 하고 싶은지, 무엇을 배울 수 있는지"},
+  {ko:"나의 스마트폰 사용 습관",en:"My Smartphone Habits",guide:"얼마나 사용하는지, 주로 무엇을 하는지, 좋은 점/나쁜 점"},
+  {ko:"내가 좋아하는 유튜브 채널",en:"My Favorite YouTube Channel",guide:"채널 이름, 어떤 내용, 왜 좋아하는지"},
+  {ko:"나의 환경 보호 노력",en:"My Efforts to Protect the Environment",guide:"어떤 노력을 하는지, 왜 중요한지"},
+  {ko:"내가 좋아하는 운동 선수",en:"My Favorite Athlete",guide:"이름, 어떤 스포츠, 왜 좋아하는지"},
+  {ko:"나의 수면 습관",en:"My Sleep Habits",guide:"몇 시에 자는지, 얼마나 자는지, 수면이 중요한 이유"},
+  {ko:"내가 좋아하는 패션 스타일",en:"My Fashion Style",guide:"어떤 옷을 좋아하는지, 왜, 특별한 아이템"},
+  {ko:"나의 장래 희망 도시",en:"My Dream City to Live In",guide:"어떤 도시, 왜 살고 싶은지, 그곳에서 하고 싶은 것"},
+  {ko:"내가 경험한 친절한 행동",en:"A Kind Act I Experienced",guide:"어떤 일이 있었는지, 누가, 어떤 느낌이었는지"},
+  {ko:"나의 가장 힘들었던 순간",en:"My Most Difficult Moment",guide:"어떤 상황, 어떻게 극복했는지, 배운 것"},
+  {ko:"내가 좋아하는 게임",en:"My Favorite Game",guide:"게임 이름, 어떻게 하는지, 왜 좋아하는지"},
+  {ko:"나의 소셜 미디어 사용",en:"My Social Media Use",guide:"어떤 것을 사용하는지, 얼마나, 좋은 점/나쁜 점"},
+  {ko:"내가 좋아하는 꽃이나 식물",en:"My Favorite Plant or Flower",guide:"이름, 특징, 왜 좋아하는지"},
+  {ko:"나의 학교 동아리 활동",en:"My School Club Activity",guide:"어떤 동아리, 무엇을 하는지, 좋아하는 점"},
+  {ko:"내가 좋아하는 한국 음식",en:"My Favorite Korean Food",guide:"음식 이름, 어떤 맛, 언제 먹는지"},
+  {ko:"나의 외국어 학습 경험",en:"My Foreign Language Learning",guide:"어떤 언어, 왜 배우는지, 어떤 점이 어려운지"},
+  {ko:"내가 좋아하는 캐릭터",en:"My Favorite Character",guide:"이름, 어디서 나오는지, 왜 좋아하는지"},
+  {ko:"나의 미래 여행 버킷리스트",en:"My Travel Bucket List",guide:"가고 싶은 나라들, 왜, 무엇을 하고 싶은지"},
+  {ko:"내가 좋아하는 날",en:"My Favorite Day of the Week",guide:"어떤 요일, 왜 좋아하는지, 그날 하는 것"},
+  {ko:"나의 학교 수학여행",en:"My School Field Trip",guide:"어디 갔는지, 무엇을 했는지, 기억에 남는 것"},
+  {ko:"내가 영향을 받은 말 또는 명언",en:"A Quote That Inspires Me",guide:"어떤 말, 누가 한 말, 왜 좋아하는지"},
+  {ko:"나의 요리 경험",en:"My Cooking Experience",guide:"어떤 음식을 만들었는지, 어떻게, 결과는"},
+  {ko:"내가 봉사활동을 한다면",en:"If I Could Do Volunteer Work",guide:"어떤 봉사, 왜 하고 싶은지, 어떤 도움이 될지"},
+  {ko:"나의 온라인 수업 경험",en:"My Online Class Experience",guide:"어떤 수업, 좋은 점, 어려운 점"},
+  {ko:"내가 좋아하는 브랜드",en:"My Favorite Brand",guide:"브랜드 이름, 어떤 제품, 왜 좋아하는지"},
+  {ko:"나의 독서 습관",en:"My Reading Habits",guide:"얼마나 자주 읽는지, 어떤 종류, 왜 읽는지"},
+  {ko:"내가 좋아하는 날씨의 활동",en:"Activities I Love in My Favorite Weather",guide:"날씨, 활동, 왜 좋은지"},
+  {ko:"나의 학교 친구들",en:"My School Friends",guide:"몇 명인지, 어떤 친구들, 같이 하는 것"},
+  {ko:"내가 좋아하는 디저트",en:"My Favorite Dessert",guide:"이름, 어떤 맛, 언제 먹는지"},
+  {ko:"나의 장래 결혼 상대방의 조건",en:"My Ideal Partner",guide:"어떤 성격, 왜 중요한지, 함께 하고 싶은 것"},
+  {ko:"내가 존경하는 부모님",en:"My Parents I Admire",guide:"어떤 분들인지, 왜 존경하는지, 배운 것"},
+  {ko:"나의 첫 번째 기억",en:"My Earliest Memory",guide:"무슨 기억, 언제, 왜 기억나는지"},
+  {ko:"내가 좋아하는 공원이나 장소",en:"My Favorite Park or Place",guide:"어디인지, 왜 좋아하는지, 거기서 하는 것"}
+,
+  {ko:"내가 좋아하는 전통 문화",en:"Korean Traditional Culture I Like",guide:"어떤 문화, 특징, 왜 좋아하는지"},
+  {ko:"나의 꿈의 여행지 TOP 3",en:"My Top 3 Dream Destinations",guide:"어떤 나라들, 왜 가고 싶은지"},
+  {ko:"내가 만약 슈퍼파워가 생긴다면",en:"If I Had a Superpower",guide:"어떤 능력, 왜 원하는지, 어떻게 사용할지"},
+  {ko:"나의 가장 좋아하는 명절 음식",en:"My Favorite Holiday Food",guide:"어떤 명절, 어떤 음식, 왜 좋아하는지"},
+  {ko:"내가 좋아하는 인터넷 밈이나 유행어",en:"Internet Trends I Like",guide:"어떤 것, 왜 재미있는지, 어떻게 사용하는지"},
+  {ko:"나의 학교생활 중 가장 재미있는 수업",en:"My Most Fun Class at School",guide:"어떤 수업, 무엇을 하는지, 왜 재미있는지"},
+  {ko:"내가 미래에 살고 싶은 나라",en:"A Country I Want to Live in the Future",guide:"어느 나라, 왜, 그곳에서 하고 싶은 것"},
+  {ko:"나의 가장 좋아하는 계절 활동",en:"My Favorite Seasonal Activity",guide:"어떤 계절, 어떤 활동, 왜 좋아하는지"},
+  {ko:"내가 좋아하는 한국 아이돌이나 가수",en:"My Favorite Korean Singer",guide:"이름, 어떤 음악, 왜 좋아하는지"},
+  {ko:"나의 학교 급식 중 가장 좋아하는 메뉴",en:"My Favorite School Lunch Menu",guide:"어떤 음식, 어떤 맛, 왜 좋아하는지"},
+  {ko:"내가 영어로 말하고 싶은 것",en:"Something I Want to Say in English",guide:"무엇을 말하고 싶은지, 왜, 어떻게 연습하는지"}
 ];
 
 const QS={
@@ -367,6 +375,100 @@ const QS={
   "My Favorite Season":["어떤 계절을 제일 좋아해요?","그 계절에 무엇을 해요?","그 계절이 왜 좋아요?"],
   "My Dream":["커서 무엇이 되고 싶어요?","왜 그 꿈을 갖게 됐어요?","그 꿈을 위해 무엇을 하고 있어요?"],
   "My Day Today":["오늘 아침에 무엇을 했어요?","학교에서 무엇을 했어요?","오늘 가장 기억에 남는 일은 뭐예요?"],
+,
+  "My Favorite Book":["내가 좋아하는 체잡은 무엇인가요?","그 체잡의 내용은 무엇인가요?","왕 체잡이 좋은 이유는 무엇인가요?"],
+  "My Morning Routine":["아침에 맨 먼저 무엇을 하나요?","아침에 어떤 음식을 먹나요?","학교 가기 전에 어떤 준비를 하나요?"],
+  "My Favorite Sport":["좋아하는 스포츠는 무엇인가요?","그 스포츠를 얼마나 자주 하나요?","그 스포츠의 어떤 점이 좋나요?"],
+  "My Room":["나의 방은 어떤 모습인가요?","방에서 주로 무엇을 하나요?","나의 방에서 가장 좋아하는 것은 무엇인가요?"],
+  "My Favorite Teacher":["가장 좋아하는 선생님은 누구인가요?","그 선생님의 수업에서 어떤 점이 좋나요?","그 선생님에게 배운 가장 중요한 것은 무엇인가요?"],
+  "My Birthday":["내 생일은 언제인가요?","생일에 보통 어떻게 보내나요?","받고 싶은 생일 선물은 무엇인가요?"],
+  "My Summer Vacation Plan":["이번 여름 방학에 어디에 가고 싶나요?","여름 방학 동안 무엇을 하고 싶나요?","여름 방학에 누구와 함께 시간을 보내고 싶나요?"],
+  "My Winter Vacation Plan":["겨울 방학 계획은 어떻게 되나요?","겨울 방학 동안 주로 무엇을 하고 싶나요?","겨울 방학 중 가장 기대되는 것은 무엇인가요?"],
+  "My Favorite Music":["어떤 종류의 음악을 좋아하나요?","좋아하는 가수나 그룹은 누구인가요?","음악을 주로 언제 듣나요?"],
+  "How I Relieve Stress":["스트레스를 받을 때 어떻게 헤소하나요?","가장 효과적인 스트레스 해소법은 무엇인가요?","스트레스를 헤소한 후 어떤 기분이 드나요?"],
+  "Something I Am Afraid Of":["가장 무서웨하는 것은 무엇인가요?","왼 그것이 무서운가요?","무서움을 어떻게 극복하려고 노력하나요?"],
+  "My Happiest Memory":["가장 행복했던 기억은 무엇인가요?","그 날 무슨 일이 있었나요?","그때 왜 그렇게 행복했나요?"],
+  "Something I Want to Learn":["앞으로 배워보고 싶은 것은 무엇인가요?","왜 그것을 배워보고 싶나요?","어떻게 배울 계획인가요?"],
+  "My Role Model":["유의 롤 모델은 누구인가요?","그 사람의 어떤 점이 예래별로 마음에 드나요?","그 사람에게서 배우고 싶은 점은 무엇인가요?"],
+  "My Favorite Seasonal Food":["계절에 따라 좋아하는 음식이 있나요?","그 음식은 어떤 맛이나요?","그 음식을 누구와 함께 먹나요?"],
+  "My Way to School":["학교에 어떻게 다니나요?","학교까지 얼마나 걸리나요?","등교길에 무엇을 하면서 가나요?"],
+  "My Favorite Color":["가장 좋아하는 색깔은 무엇인가요?","왜 그 색깔을 좋아하나요?","그 색깔의 어떤 물건을 가지고 있나요?"],
+  "My Closest Family Member":["가족 중 가장 친한 사람은 누구인가요?","그 사람과 주로 무엇을 하면서 시간을 보내나요?","그 사람이 친근하게 느께지는 이유는 무엇인가요?"],
+  "Something I Want to Challenge":["도전해보고 싶은 것이 있나요?","왜 그것에 도전하고 싶나요?","어떻게 준비할 계획인가요?"],
+  "My Strengths":["자신의 장점은 무엇인가요?","그 장점이 도움이 된 사례가 있나요?","장점을 더 발전시키기 위해 어떻게 하나요?"],
+  "My Weaknesses and Improvement":["자신의 단점은 무엇인가요?","그 단점을 어떻게 고치려고 노력하나요?","거기에서 배운 점은 무엇인가요?"],
+  "My Favorite Weather":["어떤 날씨를 가장 좋아하나요?","그 날씨에 보통 무엇을 하나요?","그 날씨가 왜 좋아하나요?"],
+  "My Favorite Animal":["가장 좋아하는 동물은 무엇인가요?","그 동물의 특징은 뉔엇인가요?","그 동물을 왜 좋아하나요?"],
+  "A Book I Recently Read":["최근에 읽은 체잡 이름은 무엇인가요?","그 체잡의 내용은 무엇인가요?","그 체잡을 읽고 느낌 점은 무엇인가요?"],
+  "My Dream House":["꾸의 집은 어때스 모습인가요?","그 집에서 뭐를 하고 싶나요?","기꾸에 하고 싶은 것은 무엇인가요?"],
+  "My Favorite Subject":["가장 좋아하는 과목은 무엇인가요?","그 과목에서 뭐가 가장 재미나요?","그 과목에서 잘하는 후 어떤 점이 도움이 되나요?"],
+  "My Least Favorite Subject":["가장 어려운 과목은 무엇인가요?","그 과목이 어로운 이유는 무엇인가요?","어떻게 그 과목을 극복하려고 노력하나요?"],
+  "My Travel Experience":["지금까지 갔던 곳 중 가장 기억에 남는 여행지는 어딘가요?","그곳에서 무엇을 했나요?","그 여행에서 가장 기억에 남는 것은 무엇인가요?"],
+  "My Favorite TV Show":["좋아하는 TV 프로그램은 무엇인가요?","그 프로그램은 어떤 내용인가요?","왜 그 프로그램을 취좋아하나요?"],
+  "How I Manage My Allowance":["한 달에 용돈을 얼마나 받나요?","용돈을 주로 어떤 곳에 쓰나요?","저축도 하나요?"],
+  "My Favorite Snack":["가장 좋아하는 간식은 무엇인가요?","그 간식을 주로 언제 먹나요?","그 간식의 어떤 점이 맛있나요?"],
+  "My School Lunch":["학교 급식에서 가장 좋아하는 메뉴는 무엇인가요?","급식을 누구와 함께 먹나요?","학교 급식에서 어떤 점이 좋나요?"],
+  "A Movie I Recently Watched":["최근에 본 영화 제목은 무엇인가요?","그 영화의 내용은 무엇인가요?","그 영화를 보고 느낌 점은 무엇인가요?"],
+  "How I Study English":["영어를 어떻게 공부하나요?","가장 도움이 되는 영어 공부 방법은 무엇인가요?","영어 공부에서 가장 어려운 부분은 무엇인가요?"],
+  "A Historical Figure I Admire":["존경하는 역사적 인물은 누구인가요?","그 사람은 어떤 업적을 남겼나요?","그 사람에게서 어떤 점을 배우고 싶나요?"],
+  "My Friendships":["친한 친구가 몇 명이나 있나요?","친구들과 보통 무엇을 하면서 시간을 보내나요?","좋은 친구랑의 특징은 무엇이라고 생각하나요?"],
+  "A Mistake I Made":["과거에 한 실수 중 기억에 남는 것은 무엇인가요?","그 실수로 어떤 일이 생겼나요?","그 실수에서 뭐를 배웠나요?"],
+  "Things I Am Grateful For":["감사한 일들이 띌가요?","가장 감사하는 것은 무엇인가요?","감사하는 마음을 어떻게 표현하나요?"],
+  "My Favorite Holiday":["가장 좋아하는 명절은 무엇인가요?","그 명절에 보통 어떻게 보내나요?","그 명절에 먹는 특별한 음식이 있나요?"],
+  "My Healthy Eating Habits":["건강을 위해 어떤 음식을 먹나요?","얼마나 자주 대습을 먹나요?","걸강한 식습관을 유지하는 것이 엄마나 어렵나요?"],
+  "A Part-time Job I Want to Try":["해보고 싶은 아르바이트는 무엇인가요?","왜 그 시다를 해보고 싶나요?","그 일에서 뭐를 배울 수 있다고 생각하나요?"],
+  "My Smartphone Habits":["하루에 파드폰을 얼마나 사용하나요?","파드폰으로 주로 무엇을 하나요?","파드폰 사용의 어떤 점이 좋고 나쁜가요?"],
+  "My Favorite YouTube Channel":["좋아하는 유튜브 채널은 무엇인가요?","그 채널에서는 주로 어떤 내용을 다나요?","그 채널에서 가장 재미있었던 콘텐츠는 무엇인가요?"],
+  "My Efforts to Protect the Environment":["환경을 위해 어떤 노력을 하나요?","그 노력이 왜 중요하다고 생각하나요?","더 검간한 환경을 위해 묶을 수 있나요?"],
+  "My Favorite Athlete":["좋아하는 운동 선수는 누구인가요?","그 선수는 어떤 종목에서 활동하나요?","그 선수를 왜 존경하나요?"],
+  "My Sleep Habits":["보통 몇 시에 잠자리에 드나요?","하루에 얼마나 자나요?","충분한 수면이 왜 중요하다고 생각하나요?"],
+  "My Fashion Style":["자신의 패션 스타일은 어때거나요?","평소에 어떤 옵을 즐겨 입나요?","프패션이 자신감에 어떤 영향을 미치나요?"],
+  "My Dream City to Live In":["장래에 살고 싶은 도시는 어딘가요?","그 도시의 어떤 점이 마음에 드나요?","그곳에서 뭐를 하며 살고 싶나요?"],
+  "A Kind Act I Experienced":["남들이 한 친절한 행동에 감동받은 적이 있나요?","그때 어떤 일이 있었나요?","그 경험에서 뭐를 느껋나요?"],
+  "My Most Difficult Moment":["지금까지 가장 힘들었던 순간은 언제였나요?","그때 어떤 일이 있었나요?","그 험든 순간을 어떻게 극복했나요?"],
+  "My Favorite Game":["가장 좋아하는 게임은 무엇인가요?","그 게임을 어떻게 하는지 설명해주세요!","그 게임의 어떤 점이 재미있나요?"],
+  "My Social Media Use":["주로 어떤 소셜미디어를 사용하나요?","얼마나 자주 사용하나요?","소셜미디어의 정실한 이점과 단점은 무엇인가요?"],
+  "My Favorite Plant or Flower":["가장 좋아하는 식물이나 꽃은 무엇인가요?","그 식물의 특징은 무엇인가요?","그 식물을 왜 좋아하나요?"],
+  "My School Club Activity":["어떤 동아리에 활동하나요?","그 동아리에서 주로 뭐를 하나요?","그 동아리 활동에서 어떤 점이 좋나요?"],
+  "My Favorite Korean Food":["가장 좋아하는 한국 음식은 무엇인가요?","그 음식은 어떤 맛인가요?","그 음식을 얼마나 자주 먹나요?"],
+  "My Foreign Language Learning":["어떤 외국어를 공부하나요?","그 언어를 왜 배우고 싶었나요?","그 언어를 배울 때 가장 어려운 부분은 무엇인가요?"],
+  "My Favorite Character":["가장 좋아하는 캐릭터는 누구인가요?","그 캐릭터는 어떤 작품에 나오나요?","그 캐릭터를 왜 좋아하나요?"],
+  "My Travel Bucket List":["꽔등 가고 싶은 나라나 도시는 어딘인가요?","그 장소들에서 무엇을 하고 싶나요?","그 여행을 위해 어떻게 준비하나요?"],
+  "My Favorite Day of the Week":["일주일 중 가장 좋아하는 요일은 때인가요?","그 요일에 보통 무엇을 하나요?","왜 그 요일을 가장 좋아하나요?"],
+  "My School Field Trip":["가장 기억에 남는 수학여행은 어디였나요?","그곳에서 무엇을 했나요?","그 수학여행에서 가장 인상 깊았던 것은 무엇인가요?"],
+  "A Quote That Inspires Me":["좋아하는 명언이나 말이 있나요?","그 말이 왜 마음에 드나요?","그 말이 살아가는 데 어떻게 도움이 되나요?"],
+  "My Cooking Experience":["지금까지 요리를 해본 적이 있나요?","어떤 음식을 만들었나요?","그 요리 경험에서 뭐를 배웠나요?"],
+  "If I Could Do Volunteer Work":["만약 봉사활동을 한다면 어떤 일을 하고 싶나요?","왜 그 봉사를 하고 싶나요?","그 봉사를 통해 세상에 어떤 도움이 될 수 있을까요?"],
+  "My Online Class Experience":["온라인 수업을 들어본 적이 있나요?","온라인 수업의 어떤 점이 좋았나요?","온라인 수업에서 가장 어려운 점은 무엇인가요?"],
+  "My Favorite Brand":["가장 좋아하는 브랜드는 무엇인가요?","그 브랜드의 어떤 제품을 좋아하나요?","그 브랜드를 왜 신룂하나요?"],
+  "My Reading Habits":["얼마나 자주 체잡을 읽나요?","주로 어떤 종류의 체잡을 읽나요?","독서가 재미있는 이유는 무엇인가요?"],
+  "Activities I Love in My Favorite Weather":["어떤 날씨를 가장 좋아하나요?","그 날씨에 보통 무엇을 하나요?","그 날씨와 활동이 즐거운 이유는 무엇인가요?"],
+  "My School Friends":["학교에 친요운 친구들이 몇 명이나 있나요?","그들과 주로 무엇을 하면서 시간을 보내나요?","학교 친구들이 안준다면 어떤 점이 좋나요?"],
+  "My Favorite Dessert":["가장 좋아하는 디저트는 무엇인가요?","그 디저트를 주로 언제 먹나요?","그 디저트를 왜 좋아하나요?"],
+  "My Ideal Partner":["이상적인 연인의 조건은 무엇인가요?","어떤 성격을 가진 사람이 좋나요?","함께 하고 싶은 것들은 무엇인가요?"],
+  "My Parents I Admire":["부모님을 존경하는 이유는 무엇인가요?","부모님이 어떤 가르침을 주셨나요?","부모님처럼 닮고 싶은 점은 무엇인가요?"],
+  "My Earliest Memory":["가장 오래된 어린 시절 기억은 무엇인가요?","그 기억이 대략 몇 살 때인가요?","왜 그 기억이 아직도 선명하게 남나요?"],
+  "My Favorite Park or Place":["자주 가는 코이나 좋아하는 장소는 어딘가요?","그곳에서 보통 무엇을 하나요?","그 장소에 얼마나 자주 가나요?"],
+  "Korean Traditional Culture I Like":["좋아하는 한국 전통 문화는 무엇인가요?","그 문화의 특징은 무엇인가요?","그 문화에 대해 자바롭게 생각하는 이유는 무엇인가요?"],
+  "My Top 3 Dream Destinations":["꽔등 가고 싶은 여행지 TOP 3는 어딘가요?","그중 가장 가고 싶은 곳은 어딘가요?","그 여행지들에서 무엇을 하고 싶나요?"],
+  "If I Had a Superpower":["만약 특수한 능력이 생긴다면 어떤 것을 갖고 싶나요?","그 능력으로 무엇을 하고 싶나요?","그 능력을 어떻게 사용될 것인가요?"],
+  "My Favorite Holiday Food":["명절에 먹는 음식 중 가장 좋아하는 것은 무엇인가요?","그 음식을 보통 누가 만드나요?","그 명절 음식에 대한 특별한 기억이 있나요?"],
+  "Internet Trends I Like":["요즘 좋아하는 인터넷 유행이나 밀은 무엇인가요?","그것이 왜 재미있나요?","친구들과 그것에 대해 어떻게 이야기하나요?"],
+  "My Most Fun Class at School":["학교에서 가장 재미있는 수업은 무엇인가요?","그 수업에서 뭐를 주로 하나요?","그 수업이 재미있는 이유는 무엇인가요?"],
+  "A Country I Want to Live in the Future":["장래에 살고 싶은 나라는 어딘가요?","그 나라의 어떤 점이 마음에 드나요?","그곳에서 어떤 일을 하며 살고 싶나요?"],
+  "My Favorite Seasonal Activity":["어떤 계절에 하는 활동을 좋아하나요?","그 활동을 보통 누구와 하나요?","그 활동이 즐거운 이유는 무엇인가요?"],
+  "My Favorite Korean Singer":["좋아하는 한국 가수나 그룹은 누구인가요?","그들의 음악 주 장르는 무엇인가요?","그들의 어떤 노래를 가장 좋아하나요?"],
+  "My Favorite School Lunch Menu":["학교 급식 메뉴 중 가장 좋아하는 것은 무엇인가요?","그 메뉴의 맛은 어때나요?","그 메뉴가 나오는 날 얼마나 기대되나요?"],
+  "Something I Want to Say in English":["영어로 꾸꼾 말하고 싶은 것은 무엇인가요?","그 말을 어떻게 또 얰습하나요?","영어가 능숫해지면 어떤 이점이 있을가요?"]
+,
+  "My Family":["우리 가족은 몇 명인가요?","가족과 주로 무엇을 하면서 시간을 보내나요?","가족 중 가장 마음에 드는 사람은 누구인가요?"],
+  "My School":["지금 다니는 학교 이름은 무엇인가요?","학교에서 가장 좋아하는 과목은 무엇인가요?","학교에서 가장 즐각운 시간은 언제인가요?"],
+  "My Hobby":["좋아하는 취미는 무엇인가요?","그 취미를 여제 시작했나요?","취미에서 가장 재미있는 점은 무엇인가요?"],
+  "My Favorite Movie":["좋아하는 영화 제목은 무엇인가요?","그 영화의 내용을 간단히 설명해볼글요?","그 영화를 왜 좋아하나요?"],
+  "My Health and Exercise":["건강을 위해 어떤 운동을 하나요?","얼마나 자주 운동하나요?","건강한 식습관을 위해 또 나시는 노력은 무엇인가요?"],
+  "My Future Job":["장래희망은 무엇인가요?","그 직업을 왜 원하나요?","그 꾸을 이루기 위해 지금 어떻게 노력하나요?"],
+  "A Special Day":["가장 특별했던 날은 언제였나요?","그날 무슨 일이 있었나요?","그날이 왜 특별하다고 느껴나요?"],
+  "My Favorite Restaurant":["좋아하는 음식점 이름은 무엇인가요?","그곳에서 주로 어떤 음식을 먹나요?","그 음식점에서 가장 맛있는 메뉴는 무엇인가요?"]
 };
 
 let lv=null,topic=null,qs=[],score=0,qIdx=0,state='start';
@@ -389,18 +491,18 @@ function startApp(){
   document.getElementById('hintBtn').style.display='flex';
   topic=TOPICS[Math.floor(Math.random()*TOPICS.length)];
   qs=QS[topic.en];
-  document.getElementById('topicTitle').textContent=`"${topic.ko}"`;
+  document.getElementById('topicTitle').textContent=`"${topic.ko}"`;document.getElementById('topicEn').textContent=topic.en;
   document.getElementById('topicSub').textContent=`📌 ${topic.guide}`;
   loadQ();
 }
 
 async function claude(sys,usr,max=700){
-  const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:max,system:sys,messages:[{role:'user',content:usr}]})});
+  const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:max,system:sys,messages:[{role:'user',content:usr}]})});
   if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e?.error?.message||'HTTP '+r.status);}
   return (await r.json()).content?.[0]?.text||'';
 }
 
-// TTS
+// ── ELEVENLABS TTS (natural voice) ──
 function removeEmoji(t){
   return t.replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]+/g,'').replace(/[\u2600-\u27BF]/g,'').replace(/[ ]+/g,' ').trim();
 }
@@ -418,26 +520,19 @@ async function speak(text){
       currentAudio.onended=()=>{URL.revokeObjectURL(url);currentAudio=null;};
       return;
     }
-  }catch(e){console.warn('TTS fallback:',e);}
+  }catch(e){console.warn('TTS:',e);}
   window.speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(cl);
   u.lang='en-US';u.rate=0.82;
   const ds=()=>{const vs=window.speechSynthesis.getVoices();const v=vs.find(v=>v.name==='Samantha')||vs.find(v=>v.lang==='en-US');if(v)u.voice=v;window.speechSynthesis.speak(u);};
   window.speechSynthesis.getVoices().length>0?ds():(window.speechSynthesis.onvoiceschanged=ds);
 }
-
 function addScore(n){score+=n;document.getElementById('navScore').textContent=`⭐ ${score}점`;}
 function err(id,msg){const e=document.getElementById(id);e.innerHTML='⚠️ '+msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),5000);}
 function ld(id,on){document.getElementById(id).classList.toggle('show',on);}
 function setBtn(on,txt,cls=''){const b=document.getElementById('mainBtn');b.disabled=!on;document.getElementById('btnTxt').textContent=txt;b.className='btn '+(cls||'');}
 
 function loadQ(){
-  document.getElementById('qNum').textContent='Q'+(qIdx+1);
-  document.getElementById('qTxt').textContent=qs[qIdx];
-  document.getElementById('qLbl').textContent=`질문 ${qIdx+1}/3`;
-  for(let i=1;i<=3;i++){const d=document.getElementById('qd'+i);d.className='qdot'+(i-1<qIdx?' ok':i-1===qIdx?' on':'');}
-  if(qIdx>0)document.getElementById('ql1').classList.add('ok');
-  if(qIdx>1)document.getElementById('ql2').classList.add('ok');
   var TH={
     'My Favorite Food':{1:['ex: pizza / I like pizza','ex: I eat it every day','ex: yummy! / I love it'],2:['ex: My favorite food is pizza.','ex: I usually eat it on weekends.','ex: It is very delicious!'],3:['ex: My favorite food is pizza because it is cheesy.','ex: I usually eat it with my family.','ex: I love it because it tastes amazing.'],4:['ex: Pizza remains my all-time favorite food.','ex: I typically enjoy it on weekends.','ex: Not only does it taste great, it brings wonderful memories.']},
     'My Best Friend':{1:['ex: Tom / My friend is Tom','ex: We play together','ex: kind / funny'],2:['ex: My best friend is Tom.','ex: We play soccer together.','ex: He is very kind and funny.'],3:['ex: My best friend and I have been close for years.','ex: We usually play soccer and games.','ex: I like him because he is always kind.'],4:['ex: My closest friend has been by my side for years.','ex: We spend most of our free time together.','ex: What I admire is his kindness and great humor.']},
@@ -446,14 +541,117 @@ function loadQ(){
     'A Place I Want to Visit':{1:['ex: Japan / I want to go to Japan','ex: I want to go there','ex: eat sushi / see temples'],2:['ex: I want to visit Japan.','ex: Because it looks very fun.','ex: I want to eat sushi and see Mount Fuji.'],3:['ex: I have always wanted to visit Japan.','ex: I want to go because the culture is fascinating.','ex: I would love to eat sushi and explore Tokyo.'],4:['ex: Japan has long been on my travel wish list.','ex: Its blend of tradition and modernity fascinates me.','ex: I want to experience the cuisine and temples there.']},
     'My Favorite Season':{1:['ex: summer / I like summer','ex: I swim','ex: fun / hot'],2:['ex: My favorite season is summer.','ex: I swim and play outside.','ex: I like it because it is warm and fun.'],3:['ex: My favorite season is summer.','ex: I usually swim and go on picnics.','ex: I love it because there are lots of activities.'],4:['ex: Summer is my favorite season of the year.','ex: I spend my days swimming and hiking.','ex: The warm weather creates endless opportunities.']},
     'My Dream':{1:['ex: teacher / I want to be a teacher','ex: I want to help','ex: I study hard'],2:['ex: I want to be a teacher.','ex: Because I want to help children.','ex: I study hard every day.'],3:['ex: My dream is to become an English teacher.','ex: I chose this because I love helping others.','ex: I practice English every day.'],4:['ex: My goal is to become an English teacher.','ex: This dream was inspired by my love of languages.','ex: I am actively studying for this career.']},
-    'My Day Today':{1:['ex: I ate breakfast','ex: I studied','ex: it was fun'],2:['ex: I ate breakfast with my family.','ex: I studied math and played with friends.','ex: The best part was lunch with friends.'],3:['ex: This morning I had breakfast with my family.','ex: At school I studied hard and played during recess.','ex: The most memorable moment was winning a game.'],4:['ex: I started my morning with breakfast.','ex: The school day was productive and engaging.','ex: The highlight was a great talk with my teacher.']}
-  };
+    'My Day Today':{1:['ex: I ate breakfast','ex: I studied','ex: it was fun'],2:['ex: I ate breakfast with my family.','ex: I studied math and played with friends.','ex: The best part was lunch with friends.'],3:['ex: This morning I had breakfast with my family.','ex: At school I studied hard and played during recess.','ex: The most memorable moment was winning a game.'],4:['ex: I started my morning with breakfast.','ex: The school day was productive and engaging.','ex: The highlight was a great talk with my teacher.']},
+    'My Family':{1:['ex: mom, dad, sister','ex: We eat together','ex: kind / funny'],2:['ex: I have a mom, dad, and sister.','ex: We have dinner together every night.','ex: My family is very kind and warm.'],3:['ex: My family has four members including my parents and sister.','ex: We love having dinner and watching movies together.','ex: My mom is the most caring person in my life.'],4:['ex: My family of four shares a warm and loving bond.','ex: We cherish our nightly dinners and weekend outings.','ex: My parents have always been my greatest source of support.']},
+    'My School':{1:['ex: school name','ex: I like math','ex: fun / exciting'],2:['ex: I go to OO Middle School.','ex: My favorite subject is English.','ex: I enjoy being with my friends at school.'],3:['ex: I attend OO Middle School in Incheon.','ex: My favorite subject is English because it is fun and useful.','ex: I love spending time with my friends during lunch and recess.'],4:['ex: I am a student at OO Middle School in Incheon.','ex: English is my favorite subject as it opens doors to the world.','ex: The friendships I have built at school are truly invaluable.']},
+    'My Hobby':{1:['ex: drawing / gaming','ex: every day','ex: fun / relaxing'],2:['ex: My hobby is drawing.','ex: I do it almost every day after school.','ex: It makes me feel relaxed and happy.'],3:['ex: My favorite hobby is drawing portraits of people.','ex: I practice for about an hour every day after school.','ex: It helps me relax and express my creativity.'],4:['ex: My primary hobby is creating detailed portrait drawings.','ex: I dedicate at least an hour each day to refining my technique.','ex: This hobby not only relaxes me but also nurtures my artistic growth.']},
+    'My Favorite Movie':{1:['ex: movie name','ex: funny / exciting','ex: I watch it often'],2:['ex: My favorite movie is Spider-Man.','ex: It is very exciting and funny.','ex: I have watched it more than five times.'],3:['ex: My all-time favorite movie is Spider-Man: No Way Home.','ex: The story is thrilling and the special effects are amazing.','ex: I have watched it over five times and never get bored.'],4:['ex: My absolute favorite film is Spider-Man: No Way Home.','ex: Its compelling storyline and breathtaking visual effects captivate me every time.','ex: Despite having seen it numerous times, I always discover something new.']},
+    'My Health and Exercise':{1:['ex: running / swimming','ex: three times a week','ex: healthy / strong'],2:['ex: I exercise by running three times a week.','ex: I also eat vegetables and drink lots of water.','ex: Exercise makes me feel strong and healthy.'],3:['ex: I maintain my health by jogging three times a week.','ex: I also try to eat balanced meals and drink enough water daily.','ex: Regular exercise gives me energy and keeps me in a good mood.'],4:['ex: I prioritize my health through regular jogging and a balanced diet.','ex: I run three times a week and consciously avoid junk food.','ex: Maintaining this routine has significantly improved my energy and focus.']},
+    'My Future Job':{1:['ex: doctor / teacher','ex: help people','ex: I study hard'],2:['ex: I want to be a doctor in the future.','ex: I want to help sick people get better.','ex: I study science hard to achieve my goal.'],3:['ex: My dream is to become a pediatric doctor someday.','ex: I chose this path because I want to help children who are ill.','ex: I study biology and science diligently to pursue this dream.'],4:['ex: My aspiration is to become a dedicated pediatric physician.','ex: This dream was inspired by witnessing how doctors helped my younger sibling recover.','ex: I am actively preparing by excelling in sciences and volunteering at clinics.']},
+    'A Special Day':{1:['ex: birthday / holiday','ex: happy / excited','ex: family / friends'],2:['ex: My most special day was my birthday last year.','ex: My family threw a surprise party for me.','ex: I felt so happy and loved that day.'],3:['ex: One of my most memorable days was my birthday last spring.','ex: My family surprised me with a party and my favorite cake.','ex: The joy and love I felt that day is something I will never forget.'],4:['ex: The most cherished day of my recent memory was my birthday celebration last spring.','ex: My family orchestrated a heartfelt surprise that left me completely speechless.','ex: The overwhelming sense of love and gratitude I experienced that day remains with me still.']},
+    'My Favorite Restaurant':{1:['ex: restaurant name','ex: pizza / chicken','ex: delicious / yummy'],2:['ex: My favorite restaurant is OO Chicken.','ex: I always order the crispy fried chicken there.','ex: The food is always delicious and fresh.'],3:['ex: My favorite restaurant is a local chicken place called OO Chicken.','ex: I always order the signature crispy fried chicken with pickles.','ex: The flavor is absolutely amazing and the portions are very generous.'],4:['ex: My go-to dining destination is a beloved local spot called OO Chicken.','ex: I always order their signature crispy fried chicken, which is perfectly seasoned.','ex: The consistently outstanding quality and generous portions keep me coming back every week.']},
+    'My Favorite Book':{1:['ex: 책 이름','ex: I like reading','ex: 자주 읽어요'],2:['ex: 책 이름.','ex: I like reading.','ex: 자주 읽어요.'],3:['ex: 책 이름 and it is very special to me.','ex: I like reading and I enjoy every moment.','ex: 자주 읽어요 because it makes me happy.'],4:['ex: 책 이름, which has always been meaningful to me.','ex: I like reading, and this has shaped who I am.','ex: 자주 읽어요, and I deeply value this experience.']},
+    'My Morning Routine':{1:['ex: I wake up early','ex: I eat breakfast','ex: I get ready for school'],2:['ex: I wake up early.','ex: I eat breakfast.','ex: I get ready for school.'],3:['ex: I wake up early and it is very special to me.','ex: I eat breakfast and I enjoy every moment.','ex: I get ready for school because it makes me happy.'],4:['ex: I wake up early, which has always been meaningful to me.','ex: I eat breakfast, and this has shaped who I am.','ex: I get ready for school, and I deeply value this experience.']},
+    'My Favorite Sport':{1:['ex: soccer / basketball','ex: I play it often','ex: it is fun and exciting'],2:['ex: Soccer / basketball.','ex: I play it often.','ex: It is fun and exciting.'],3:['ex: Soccer / basketball and it is very special to me.','ex: I play it often and I enjoy every moment.','ex: It is fun and exciting because it makes me happy.'],4:['ex: Soccer / basketball, which has always been meaningful to me.','ex: I play it often, and this has shaped who I am.','ex: It is fun and exciting, and I deeply value this experience.']},
+    'My Room':{1:['ex: my room is small','ex: I have a desk and bed','ex: I like my room'],2:['ex: My room is small.','ex: I have a desk and bed.','ex: I like my room.'],3:['ex: My room is small and it is very special to me.','ex: I have a desk and bed and I enjoy every moment.','ex: I like my room because it makes me happy.'],4:['ex: My room is small, which has always been meaningful to me.','ex: I have a desk and bed, and this has shaped who I am.','ex: I like my room, and I deeply value this experience.']},
+    'My Favorite Teacher':{1:['ex: kind / funny','ex: I like the class','ex: I learned a lot'],2:['ex: Kind / funny.','ex: I like the class.','ex: I learned a lot.'],3:['ex: Kind / funny and it is very special to me.','ex: I like the class and I enjoy every moment.','ex: I learned a lot because it makes me happy.'],4:['ex: Kind / funny, which has always been meaningful to me.','ex: I like the class, and this has shaped who I am.','ex: I learned a lot, and I deeply value this experience.']},
+    'My Birthday':{1:['ex: my birthday is in March','ex: I celebrate with family','ex: I get presents'],2:['ex: My birthday is in march.','ex: I celebrate with family.','ex: I get presents.'],3:['ex: My birthday is in march and it is very special to me.','ex: I celebrate with family and I enjoy every moment.','ex: I get presents because it makes me happy.'],4:['ex: My birthday is in march, which has always been meaningful to me.','ex: I celebrate with family, and this has shaped who I am.','ex: I get presents, and I deeply value this experience.']},
+    'My Summer Vacation Plan':{1:['ex: I want to go to the beach','ex: I will swim and rest','ex: it will be fun'],2:['ex: I want to go to the beach.','ex: I will swim and rest.','ex: It will be fun.'],3:['ex: I want to go to the beach and it is very special to me.','ex: I will swim and rest and I enjoy every moment.','ex: It will be fun because it makes me happy.'],4:['ex: I want to go to the beach, which has always been meaningful to me.','ex: I will swim and rest, and this has shaped who I am.','ex: It will be fun, and I deeply value this experience.']},
+    'My Winter Vacation Plan':{1:['ex: I want to stay home','ex: I will read and rest','ex: it will be relaxing'],2:['ex: I want to stay home.','ex: I will read and rest.','ex: It will be relaxing.'],3:['ex: I want to stay home and it is very special to me.','ex: I will read and rest and I enjoy every moment.','ex: It will be relaxing because it makes me happy.'],4:['ex: I want to stay home, which has always been meaningful to me.','ex: I will read and rest, and this has shaped who I am.','ex: It will be relaxing, and I deeply value this experience.']},
+    'My Favorite Music':{1:['ex: K-pop / pop music','ex: I listen every day','ex: it makes me happy'],2:['ex: K-pop / pop music.','ex: I listen every day.','ex: It makes me happy.'],3:['ex: K-pop / pop music and it is very special to me.','ex: I listen every day and I enjoy every moment.','ex: It makes me happy because it makes me happy.'],4:['ex: K-pop / pop music, which has always been meaningful to me.','ex: I listen every day, and this has shaped who I am.','ex: It makes me happy, and I deeply value this experience.']},
+    'How I Relieve Stress':{1:['ex: I listen to music','ex: I go for a walk','ex: it helps me feel better'],2:['ex: I listen to music.','ex: I go for a walk.','ex: It helps me feel better.'],3:['ex: I listen to music and it is very special to me.','ex: I go for a walk and I enjoy every moment.','ex: It helps me feel better because it makes me happy.'],4:['ex: I listen to music, which has always been meaningful to me.','ex: I go for a walk, and this has shaped who I am.','ex: It helps me feel better, and I deeply value this experience.']},
+    'Something I Am Afraid Of':{1:['ex: I am afraid of spiders','ex: they are scary to me','ex: I try to be brave'],2:['ex: I am afraid of spiders.','ex: They are scary to me.','ex: I try to be brave.'],3:['ex: I am afraid of spiders and it is very special to me.','ex: They are scary to me and I enjoy every moment.','ex: I try to be brave because it makes me happy.'],4:['ex: I am afraid of spiders, which has always been meaningful to me.','ex: They are scary to me, and this has shaped who I am.','ex: I try to be brave, and I deeply value this experience.']},
+    'My Happiest Memory':{1:['ex: my birthday last year','ex: my family surprised me','ex: I felt so happy'],2:['ex: My birthday last year.','ex: My family surprised me.','ex: I felt so happy.'],3:['ex: My birthday last year and it is very special to me.','ex: My family surprised me and I enjoy every moment.','ex: I felt so happy because it makes me happy.'],4:['ex: My birthday last year, which has always been meaningful to me.','ex: My family surprised me, and this has shaped who I am.','ex: I felt so happy, and I deeply value this experience.']},
+    'Something I Want to Learn':{1:['ex: I want to learn guitar','ex: it sounds beautiful','ex: I will practice hard'],2:['ex: I want to learn guitar.','ex: It sounds beautiful.','ex: I will practice hard.'],3:['ex: I want to learn guitar and it is very special to me.','ex: It sounds beautiful and I enjoy every moment.','ex: I will practice hard because it makes me happy.'],4:['ex: I want to learn guitar, which has always been meaningful to me.','ex: It sounds beautiful, and this has shaped who I am.','ex: I will practice hard, and I deeply value this experience.']},
+    'My Role Model':{1:['ex: my mom / a famous person','ex: she is kind and strong','ex: I want to be like her'],2:['ex: My mom / a famous person.','ex: She is kind and strong.','ex: I want to be like her.'],3:['ex: My mom / a famous person and it is very special to me.','ex: She is kind and strong and I enjoy every moment.','ex: I want to be like her because it makes me happy.'],4:['ex: My mom / a famous person, which has always been meaningful to me.','ex: She is kind and strong, and this has shaped who I am.','ex: I want to be like her, and I deeply value this experience.']},
+    'My Favorite Seasonal Food':{1:['ex: hot chocolate in winter','ex: I drink it every day','ex: it warms me up'],2:['ex: Hot chocolate in winter.','ex: I drink it every day.','ex: It warms me up.'],3:['ex: Hot chocolate in winter and it is very special to me.','ex: I drink it every day and I enjoy every moment.','ex: It warms me up because it makes me happy.'],4:['ex: Hot chocolate in winter, which has always been meaningful to me.','ex: I drink it every day, and this has shaped who I am.','ex: It warms me up, and I deeply value this experience.']},
+    'My Way to School':{1:['ex: I take the bus','ex: it takes 20 minutes','ex: I listen to music on the way'],2:['ex: I take the bus.','ex: It takes 20 minutes.','ex: I listen to music on the way.'],3:['ex: I take the bus and it is very special to me.','ex: It takes 20 minutes and I enjoy every moment.','ex: I listen to music on the way because it makes me happy.'],4:['ex: I take the bus, which has always been meaningful to me.','ex: It takes 20 minutes, and this has shaped who I am.','ex: I listen to music on the way, and I deeply value this experience.']},
+    'My Favorite Color':{1:['ex: blue / red','ex: it makes me feel calm','ex: I have many blue things'],2:['ex: Blue / red.','ex: It makes me feel calm.','ex: I have many blue things.'],3:['ex: Blue / red and it is very special to me.','ex: It makes me feel calm and I enjoy every moment.','ex: I have many blue things because it makes me happy.'],4:['ex: Blue / red, which has always been meaningful to me.','ex: It makes me feel calm, and this has shaped who I am.','ex: I have many blue things, and I deeply value this experience.']},
+    'My Closest Family Member':{1:['ex: my mom / my sister','ex: she is always there for me','ex: I love spending time with her'],2:['ex: My mom / my sister.','ex: She is always there for me.','ex: I love spending time with her.'],3:['ex: My mom / my sister and it is very special to me.','ex: She is always there for me and I enjoy every moment.','ex: I love spending time with her because it makes me happy.'],4:['ex: My mom / my sister, which has always been meaningful to me.','ex: She is always there for me, and this has shaped who I am.','ex: I love spending time with her, and I deeply value this experience.']},
+    'Something I Want to Challenge':{1:['ex: I want to run a marathon','ex: it will be hard but fun','ex: I will train hard'],2:['ex: I want to run a marathon.','ex: It will be hard but fun.','ex: I will train hard.'],3:['ex: I want to run a marathon and it is very special to me.','ex: It will be hard but fun and I enjoy every moment.','ex: I will train hard because it makes me happy.'],4:['ex: I want to run a marathon, which has always been meaningful to me.','ex: It will be hard but fun, and this has shaped who I am.','ex: I will train hard, and I deeply value this experience.']},
+    'My Strengths':{1:['ex: I am good at listening','ex: I help my friends often','ex: people trust me'],2:['ex: I am good at listening.','ex: I help my friends often.','ex: People trust me.'],3:['ex: I am good at listening and it is very special to me.','ex: I help my friends often and I enjoy every moment.','ex: People trust me because it makes me happy.'],4:['ex: I am good at listening, which has always been meaningful to me.','ex: I help my friends often, and this has shaped who I am.','ex: People trust me, and I deeply value this experience.']},
+    'My Weaknesses and Improvement':{1:['ex: I am sometimes lazy','ex: I am trying to be more active','ex: I make daily schedules'],2:['ex: I am sometimes lazy.','ex: I am trying to be more active.','ex: I make daily schedules.'],3:['ex: I am sometimes lazy and it is very special to me.','ex: I am trying to be more active and I enjoy every moment.','ex: I make daily schedules because it makes me happy.'],4:['ex: I am sometimes lazy, which has always been meaningful to me.','ex: I am trying to be more active, and this has shaped who I am.','ex: I make daily schedules, and I deeply value this experience.']},
+    'My Favorite Weather':{1:['ex: sunny / rainy','ex: I feel happy in this weather','ex: I go outside and play'],2:['ex: Sunny / rainy.','ex: I feel happy in this weather.','ex: I go outside and play.'],3:['ex: Sunny / rainy and it is very special to me.','ex: I feel happy in this weather and I enjoy every moment.','ex: I go outside and play because it makes me happy.'],4:['ex: Sunny / rainy, which has always been meaningful to me.','ex: I feel happy in this weather, and this has shaped who I am.','ex: I go outside and play, and I deeply value this experience.']},
+    'My Favorite Animal':{1:['ex: dogs / cats','ex: they are cute and friendly','ex: I want one as a pet'],2:['ex: Dogs / cats.','ex: They are cute and friendly.','ex: I want one as a pet.'],3:['ex: Dogs / cats and it is very special to me.','ex: They are cute and friendly and I enjoy every moment.','ex: I want one as a pet because it makes me happy.'],4:['ex: Dogs / cats, which has always been meaningful to me.','ex: They are cute and friendly, and this has shaped who I am.','ex: I want one as a pet, and I deeply value this experience.']},
+    'A Book I Recently Read':{1:['ex: Harry Potter','ex: it is about a young wizard','ex: I loved the story'],2:['ex: Harry Potter.','ex: It is about a young wizard.','ex: I loved the story.'],3:['ex: Harry Potter and it is very special to me.','ex: It is about a young wizard and I enjoy every moment.','ex: I loved the story because it makes me happy.'],4:['ex: Harry Potter, which has always been meaningful to me.','ex: It is about a young wizard, and this has shaped who I am.','ex: I loved the story, and I deeply value this experience.']},
+    'My Dream House':{1:['ex: a big house with a garden','ex: I want a pool too','ex: I will live there with my family'],2:['ex: A big house with a garden.','ex: I want a pool too.','ex: I will live there with my family.'],3:['ex: A big house with a garden and it is very special to me.','ex: I want a pool too and I enjoy every moment.','ex: I will live there with my family because it makes me happy.'],4:['ex: A big house with a garden, which has always been meaningful to me.','ex: I want a pool too, and this has shaped who I am.','ex: I will live there with my family, and I deeply value this experience.']},
+    'My Favorite Subject':{1:['ex: English / science','ex: the teacher is fun','ex: I am good at it'],2:['ex: English / science.','ex: The teacher is fun.','ex: I am good at it.'],3:['ex: English / science and it is very special to me.','ex: The teacher is fun and I enjoy every moment.','ex: I am good at it because it makes me happy.'],4:['ex: English / science, which has always been meaningful to me.','ex: The teacher is fun, and this has shaped who I am.','ex: I am good at it, and I deeply value this experience.']},
+    'My Least Favorite Subject':{1:['ex: math / PE','ex: it is hard for me','ex: I am working hard to improve'],2:['ex: Math / pe.','ex: It is hard for me.','ex: I am working hard to improve.'],3:['ex: Math / pe and it is very special to me.','ex: It is hard for me and I enjoy every moment.','ex: I am working hard to improve because it makes me happy.'],4:['ex: Math / pe, which has always been meaningful to me.','ex: It is hard for me, and this has shaped who I am.','ex: I am working hard to improve, and I deeply value this experience.']},
+    'My Travel Experience':{1:['ex: I went to Jeju Island','ex: I saw beautiful beaches','ex: it was amazing'],2:['ex: I went to Jeju Island.','ex: I saw beautiful beaches.','ex: It was amazing.'],3:['ex: I went to Jeju Island and it is very special to me.','ex: I saw beautiful beaches and I enjoy every moment.','ex: It was amazing because it makes me happy.'],4:['ex: I went to Jeju Island, which has always been meaningful to me.','ex: I saw beautiful beaches, and this has shaped who I am.','ex: It was amazing, and I deeply value this experience.']},
+    'My Favorite TV Show':{1:['ex: a fun variety show','ex: it is very funny','ex: I watch it every week'],2:['ex: A fun variety show.','ex: It is very funny.','ex: I watch it every week.'],3:['ex: A fun variety show and it is very special to me.','ex: It is very funny and I enjoy every moment.','ex: I watch it every week because it makes me happy.'],4:['ex: A fun variety show, which has always been meaningful to me.','ex: It is very funny, and this has shaped who I am.','ex: I watch it every week, and I deeply value this experience.']},
+    'How I Manage My Allowance':{1:['ex: I get 10000 won a week','ex: I save half of it','ex: I spend wisely'],2:['ex: I get 10000 won a week.','ex: I save half of it.','ex: I spend wisely.'],3:['ex: I get 10000 won a week and it is very special to me.','ex: I save half of it and I enjoy every moment.','ex: I spend wisely because it makes me happy.'],4:['ex: I get 10000 won a week, which has always been meaningful to me.','ex: I save half of it, and this has shaped who I am.','ex: I spend wisely, and I deeply value this experience.']},
+    'My Favorite Snack':{1:['ex: chips / chocolate','ex: I eat it after school','ex: it is delicious'],2:['ex: Chips / chocolate.','ex: I eat it after school.','ex: It is delicious.'],3:['ex: Chips / chocolate and it is very special to me.','ex: I eat it after school and I enjoy every moment.','ex: It is delicious because it makes me happy.'],4:['ex: Chips / chocolate, which has always been meaningful to me.','ex: I eat it after school, and this has shaped who I am.','ex: It is delicious, and I deeply value this experience.']},
+    'My School Lunch':{1:['ex: I like the kimchi stew','ex: it is warm and tasty','ex: I eat with my friends'],2:['ex: I like the kimchi stew.','ex: It is warm and tasty.','ex: I eat with my friends.'],3:['ex: I like the kimchi stew and it is very special to me.','ex: It is warm and tasty and I enjoy every moment.','ex: I eat with my friends because it makes me happy.'],4:['ex: I like the kimchi stew, which has always been meaningful to me.','ex: It is warm and tasty, and this has shaped who I am.','ex: I eat with my friends, and I deeply value this experience.']},
+    'A Movie I Recently Watched':{1:['ex: an action movie','ex: it was very exciting','ex: I recommend it'],2:['ex: An action movie.','ex: It was very exciting.','ex: I recommend it.'],3:['ex: An action movie and it is very special to me.','ex: It was very exciting and I enjoy every moment.','ex: I recommend it because it makes me happy.'],4:['ex: An action movie, which has always been meaningful to me.','ex: It was very exciting, and this has shaped who I am.','ex: I recommend it, and I deeply value this experience.']},
+    'How I Study English':{1:['ex: I watch English videos','ex: I practice speaking daily','ex: it is getting better'],2:['ex: I watch English videos.','ex: I practice speaking daily.','ex: It is getting better.'],3:['ex: I watch English videos and it is very special to me.','ex: I practice speaking daily and I enjoy every moment.','ex: It is getting better because it makes me happy.'],4:['ex: I watch English videos, which has always been meaningful to me.','ex: I practice speaking daily, and this has shaped who I am.','ex: It is getting better, and I deeply value this experience.']},
+    'A Historical Figure I Admire':{1:['ex: King Sejong','ex: he created Hangeul','ex: I admire his wisdom'],2:['ex: King Sejong.','ex: He created hangeul.','ex: I admire his wisdom.'],3:['ex: King Sejong and it is very special to me.','ex: He created hangeul and I enjoy every moment.','ex: I admire his wisdom because it makes me happy.'],4:['ex: King Sejong, which has always been meaningful to me.','ex: He created hangeul, and this has shaped who I am.','ex: I admire his wisdom, and I deeply value this experience.']},
+    'My Friendships':{1:['ex: I have three close friends','ex: we study together','ex: they are very important to me'],2:['ex: I have three close friends.','ex: We study together.','ex: They are very important to me.'],3:['ex: I have three close friends and it is very special to me.','ex: We study together and I enjoy every moment.','ex: They are very important to me because it makes me happy.'],4:['ex: I have three close friends, which has always been meaningful to me.','ex: We study together, and this has shaped who I am.','ex: They are very important to me, and I deeply value this experience.']},
+    'A Mistake I Made':{1:['ex: I forgot my homework','ex: my teacher was disappointed','ex: I learned to be more careful'],2:['ex: I forgot my homework.','ex: My teacher was disappointed.','ex: I learned to be more careful.'],3:['ex: I forgot my homework and it is very special to me.','ex: My teacher was disappointed and I enjoy every moment.','ex: I learned to be more careful because it makes me happy.'],4:['ex: I forgot my homework, which has always been meaningful to me.','ex: My teacher was disappointed, and this has shaped who I am.','ex: I learned to be more careful, and I deeply value this experience.']},
+    'Things I Am Grateful For':{1:['ex: my family and health','ex: they support me always','ex: I feel very lucky'],2:['ex: My family and health.','ex: They support me always.','ex: I feel very lucky.'],3:['ex: My family and health and it is very special to me.','ex: They support me always and I enjoy every moment.','ex: I feel very lucky because it makes me happy.'],4:['ex: My family and health, which has always been meaningful to me.','ex: They support me always, and this has shaped who I am.','ex: I feel very lucky, and I deeply value this experience.']},
+    'My Favorite Holiday':{1:['ex: Chuseok / Christmas','ex: I spend time with family','ex: we eat special food'],2:['ex: Chuseok / Christmas.','ex: I spend time with family.','ex: We eat special food.'],3:['ex: Chuseok / Christmas and it is very special to me.','ex: I spend time with family and I enjoy every moment.','ex: We eat special food because it makes me happy.'],4:['ex: Chuseok / Christmas, which has always been meaningful to me.','ex: I spend time with family, and this has shaped who I am.','ex: We eat special food, and I deeply value this experience.']},
+    'My Healthy Eating Habits':{1:['ex: I eat vegetables every day','ex: I drink lots of water','ex: I avoid junk food'],2:['ex: I eat vegetables every day.','ex: I drink lots of water.','ex: I avoid junk food.'],3:['ex: I eat vegetables every day and it is very special to me.','ex: I drink lots of water and I enjoy every moment.','ex: I avoid junk food because it makes me happy.'],4:['ex: I eat vegetables every day, which has always been meaningful to me.','ex: I drink lots of water, and this has shaped who I am.','ex: I avoid junk food, and I deeply value this experience.']},
+    'A Part-time Job I Want to Try':{1:['ex: a cafe / bookstore','ex: I want to earn money','ex: I would learn responsibility'],2:['ex: A cafe / bookstore.','ex: I want to earn money.','ex: I would learn responsibility.'],3:['ex: A cafe / bookstore and it is very special to me.','ex: I want to earn money and I enjoy every moment.','ex: I would learn responsibility because it makes me happy.'],4:['ex: A cafe / bookstore, which has always been meaningful to me.','ex: I want to earn money, and this has shaped who I am.','ex: I would learn responsibility, and I deeply value this experience.']},
+    'My Smartphone Habits':{1:['ex: I use it 2 hours a day','ex: I watch videos and chat','ex: I try to limit my usage'],2:['ex: I use it 2 hours a day.','ex: I watch videos and chat.','ex: I try to limit my usage.'],3:['ex: I use it 2 hours a day and it is very special to me.','ex: I watch videos and chat and I enjoy every moment.','ex: I try to limit my usage because it makes me happy.'],4:['ex: I use it 2 hours a day, which has always been meaningful to me.','ex: I watch videos and chat, and this has shaped who I am.','ex: I try to limit my usage, and I deeply value this experience.']},
+    'My Favorite YouTube Channel':{1:['ex: a cooking channel','ex: it teaches fun recipes','ex: I watch it every day'],2:['ex: A cooking channel.','ex: It teaches fun recipes.','ex: I watch it every day.'],3:['ex: A cooking channel and it is very special to me.','ex: It teaches fun recipes and I enjoy every moment.','ex: I watch it every day because it makes me happy.'],4:['ex: A cooking channel, which has always been meaningful to me.','ex: It teaches fun recipes, and this has shaped who I am.','ex: I watch it every day, and I deeply value this experience.']},
+    'My Efforts to Protect the Environment':{1:['ex: I recycle every day','ex: I use reusable bags','ex: small actions matter'],2:['ex: I recycle every day.','ex: I use reusable bags.','ex: Small actions matter.'],3:['ex: I recycle every day and it is very special to me.','ex: I use reusable bags and I enjoy every moment.','ex: Small actions matter because it makes me happy.'],4:['ex: I recycle every day, which has always been meaningful to me.','ex: I use reusable bags, and this has shaped who I am.','ex: Small actions matter, and I deeply value this experience.']},
+    'My Favorite Athlete':{1:['ex: Son Heung-min','ex: he plays soccer for Korea','ex: I admire his hard work'],2:['ex: Son Heung-min.','ex: He plays soccer for korea.','ex: I admire his hard work.'],3:['ex: Son Heung-min and it is very special to me.','ex: He plays soccer for korea and I enjoy every moment.','ex: I admire his hard work because it makes me happy.'],4:['ex: Son Heung-min, which has always been meaningful to me.','ex: He plays soccer for korea, and this has shaped who I am.','ex: I admire his hard work, and I deeply value this experience.']},
+    'My Sleep Habits':{1:['ex: I sleep at 11pm','ex: I sleep 8 hours a night','ex: good sleep is important'],2:['ex: I sleep at 11pm.','ex: I sleep 8 hours a night.','ex: Good sleep is important.'],3:['ex: I sleep at 11pm and it is very special to me.','ex: I sleep 8 hours a night and I enjoy every moment.','ex: Good sleep is important because it makes me happy.'],4:['ex: I sleep at 11pm, which has always been meaningful to me.','ex: I sleep 8 hours a night, and this has shaped who I am.','ex: Good sleep is important, and I deeply value this experience.']},
+    'My Fashion Style':{1:['ex: casual and comfortable','ex: I like jeans and hoodies','ex: I feel confident in my style'],2:['ex: Casual and comfortable.','ex: I like jeans and hoodies.','ex: I feel confident in my style.'],3:['ex: Casual and comfortable and it is very special to me.','ex: I like jeans and hoodies and I enjoy every moment.','ex: I feel confident in my style because it makes me happy.'],4:['ex: Casual and comfortable, which has always been meaningful to me.','ex: I like jeans and hoodies, and this has shaped who I am.','ex: I feel confident in my style, and I deeply value this experience.']},
+    'My Dream City to Live In':{1:['ex: Seoul / New York','ex: it is exciting and busy','ex: there are many opportunities'],2:['ex: Seoul / New York.','ex: It is exciting and busy.','ex: There are many opportunities.'],3:['ex: Seoul / New York and it is very special to me.','ex: It is exciting and busy and I enjoy every moment.','ex: There are many opportunities because it makes me happy.'],4:['ex: Seoul / New York, which has always been meaningful to me.','ex: It is exciting and busy, and this has shaped who I am.','ex: There are many opportunities, and I deeply value this experience.']},
+    'A Kind Act I Experienced':{1:['ex: a stranger helped me','ex: I was lost and confused','ex: it made me feel warm'],2:['ex: A stranger helped me.','ex: I was lost and confused.','ex: It made me feel warm.'],3:['ex: A stranger helped me and it is very special to me.','ex: I was lost and confused and I enjoy every moment.','ex: It made me feel warm because it makes me happy.'],4:['ex: A stranger helped me, which has always been meaningful to me.','ex: I was lost and confused, and this has shaped who I am.','ex: It made me feel warm, and I deeply value this experience.']},
+    'My Most Difficult Moment':{1:['ex: I failed an exam once','ex: I studied harder after that','ex: I never give up'],2:['ex: I failed an exam once.','ex: I studied harder after that.','ex: I never give up.'],3:['ex: I failed an exam once and it is very special to me.','ex: I studied harder after that and I enjoy every moment.','ex: I never give up because it makes me happy.'],4:['ex: I failed an exam once, which has always been meaningful to me.','ex: I studied harder after that, and this has shaped who I am.','ex: I never give up, and I deeply value this experience.']},
+    'My Favorite Game':{1:['ex: Minecraft / mobile games','ex: I play on weekends','ex: it is fun and creative'],2:['ex: Minecraft / mobile games.','ex: I play on weekends.','ex: It is fun and creative.'],3:['ex: Minecraft / mobile games and it is very special to me.','ex: I play on weekends and I enjoy every moment.','ex: It is fun and creative because it makes me happy.'],4:['ex: Minecraft / mobile games, which has always been meaningful to me.','ex: I play on weekends, and this has shaped who I am.','ex: It is fun and creative, and I deeply value this experience.']},
+    'My Social Media Use':{1:['ex: I use Instagram','ex: I share photos with friends','ex: I try to use it wisely'],2:['ex: I use Instagram.','ex: I share photos with friends.','ex: I try to use it wisely.'],3:['ex: I use Instagram and it is very special to me.','ex: I share photos with friends and I enjoy every moment.','ex: I try to use it wisely because it makes me happy.'],4:['ex: I use Instagram, which has always been meaningful to me.','ex: I share photos with friends, and this has shaped who I am.','ex: I try to use it wisely, and I deeply value this experience.']},
+    'My Favorite Plant or Flower':{1:['ex: roses / sunflowers','ex: they are beautiful and bright','ex: I want to grow them'],2:['ex: Roses / sunflowers.','ex: They are beautiful and bright.','ex: I want to grow them.'],3:['ex: Roses / sunflowers and it is very special to me.','ex: They are beautiful and bright and I enjoy every moment.','ex: I want to grow them because it makes me happy.'],4:['ex: Roses / sunflowers, which has always been meaningful to me.','ex: They are beautiful and bright, and this has shaped who I am.','ex: I want to grow them, and I deeply value this experience.']},
+    'My School Club Activity':{1:['ex: I am in the art club','ex: we meet twice a week','ex: I love creating art'],2:['ex: I am in the art club.','ex: We meet twice a week.','ex: I love creating art.'],3:['ex: I am in the art club and it is very special to me.','ex: We meet twice a week and I enjoy every moment.','ex: I love creating art because it makes me happy.'],4:['ex: I am in the art club, which has always been meaningful to me.','ex: We meet twice a week, and this has shaped who I am.','ex: I love creating art, and I deeply value this experience.']},
+    'My Favorite Korean Food':{1:['ex: tteokbokki / bibimbap','ex: it is spicy and delicious','ex: I eat it often'],2:['ex: Tteokbokki / bibimbap.','ex: It is spicy and delicious.','ex: I eat it often.'],3:['ex: Tteokbokki / bibimbap and it is very special to me.','ex: It is spicy and delicious and I enjoy every moment.','ex: I eat it often because it makes me happy.'],4:['ex: Tteokbokki / bibimbap, which has always been meaningful to me.','ex: It is spicy and delicious, and this has shaped who I am.','ex: I eat it often, and I deeply value this experience.']},
+    'My Foreign Language Learning':{1:['ex: I study English','ex: I practice speaking every day','ex: it is challenging but fun'],2:['ex: I study English.','ex: I practice speaking every day.','ex: It is challenging but fun.'],3:['ex: I study English and it is very special to me.','ex: I practice speaking every day and I enjoy every moment.','ex: It is challenging but fun because it makes me happy.'],4:['ex: I study English, which has always been meaningful to me.','ex: I practice speaking every day, and this has shaped who I am.','ex: It is challenging but fun, and I deeply value this experience.']},
+    'My Favorite Character':{1:['ex: SpongeBob / Totoro','ex: he is funny and kind','ex: I love watching the show'],2:['ex: SpongeBob / Totoro.','ex: He is funny and kind.','ex: I love watching the show.'],3:['ex: SpongeBob / Totoro and it is very special to me.','ex: He is funny and kind and I enjoy every moment.','ex: I love watching the show because it makes me happy.'],4:['ex: SpongeBob / Totoro, which has always been meaningful to me.','ex: He is funny and kind, and this has shaped who I am.','ex: I love watching the show, and I deeply value this experience.']},
+    'My Travel Bucket List':{1:['ex: Japan / Europe / Hawaii','ex: I want to see different cultures','ex: I am saving money'],2:['ex: Japan / Europe / Hawaii.','ex: I want to see different cultures.','ex: I am saving money.'],3:['ex: Japan / Europe / Hawaii and it is very special to me.','ex: I want to see different cultures and I enjoy every moment.','ex: I am saving money because it makes me happy.'],4:['ex: Japan / Europe / Hawaii, which has always been meaningful to me.','ex: I want to see different cultures, and this has shaped who I am.','ex: I am saving money, and I deeply value this experience.']},
+    'My Favorite Day of the Week':{1:['ex: Friday / Saturday','ex: there is no school','ex: I can relax and play'],2:['ex: Friday / Saturday.','ex: There is no school.','ex: I can relax and play.'],3:['ex: Friday / Saturday and it is very special to me.','ex: There is no school and I enjoy every moment.','ex: I can relax and play because it makes me happy.'],4:['ex: Friday / Saturday, which has always been meaningful to me.','ex: There is no school, and this has shaped who I am.','ex: I can relax and play, and I deeply value this experience.']},
+    'My School Field Trip':{1:['ex: I went to a museum','ex: I saw many interesting things','ex: it was educational'],2:['ex: I went to a museum.','ex: I saw many interesting things.','ex: It was educational.'],3:['ex: I went to a museum and it is very special to me.','ex: I saw many interesting things and I enjoy every moment.','ex: It was educational because it makes me happy.'],4:['ex: I went to a museum, which has always been meaningful to me.','ex: I saw many interesting things, and this has shaped who I am.','ex: It was educational, and I deeply value this experience.']},
+    'A Quote That Inspires Me':{1:['ex: never give up','ex: it motivates me to keep going','ex: I think of it when I am tired'],2:['ex: Never give up.','ex: It motivates me to keep going.','ex: I think of it when I am tired.'],3:['ex: Never give up and it is very special to me.','ex: It motivates me to keep going and I enjoy every moment.','ex: I think of it when I am tired because it makes me happy.'],4:['ex: Never give up, which has always been meaningful to me.','ex: It motivates me to keep going, and this has shaped who I am.','ex: I think of it when I am tired, and I deeply value this experience.']},
+    'My Cooking Experience':{1:['ex: I made fried rice once','ex: I added eggs and vegetables','ex: it tasted good'],2:['ex: I made fried rice once.','ex: I added eggs and vegetables.','ex: It tasted good.'],3:['ex: I made fried rice once and it is very special to me.','ex: I added eggs and vegetables and I enjoy every moment.','ex: It tasted good because it makes me happy.'],4:['ex: I made fried rice once, which has always been meaningful to me.','ex: I added eggs and vegetables, and this has shaped who I am.','ex: It tasted good, and I deeply value this experience.']},
+    'If I Could Do Volunteer Work':{1:['ex: I want to help elderly people','ex: they need care and attention','ex: I feel happy helping others'],2:['ex: I want to help elderly people.','ex: They need care and attention.','ex: I feel happy helping others.'],3:['ex: I want to help elderly people and it is very special to me.','ex: They need care and attention and I enjoy every moment.','ex: I feel happy helping others because it makes me happy.'],4:['ex: I want to help elderly people, which has always been meaningful to me.','ex: They need care and attention, and this has shaped who I am.','ex: I feel happy helping others, and I deeply value this experience.']},
+    'My Online Class Experience':{1:['ex: I had online classes last year','ex: it was convenient but lonely','ex: I prefer face to face'],2:['ex: I had online classes last year.','ex: It was convenient but lonely.','ex: I prefer face to face.'],3:['ex: I had online classes last year and it is very special to me.','ex: It was convenient but lonely and I enjoy every moment.','ex: I prefer face to face because it makes me happy.'],4:['ex: I had online classes last year, which has always been meaningful to me.','ex: It was convenient but lonely, and this has shaped who I am.','ex: I prefer face to face, and I deeply value this experience.']},
+    'My Favorite Brand':{1:['ex: Nike / Apple','ex: the quality is great','ex: I trust the brand'],2:['ex: Nike / Apple.','ex: The quality is great.','ex: I trust the brand.'],3:['ex: Nike / Apple and it is very special to me.','ex: The quality is great and I enjoy every moment.','ex: I trust the brand because it makes me happy.'],4:['ex: Nike / Apple, which has always been meaningful to me.','ex: The quality is great, and this has shaped who I am.','ex: I trust the brand, and I deeply value this experience.']},
+    'My Reading Habits':{1:['ex: I read before bed','ex: I read about 30 minutes','ex: it helps me relax'],2:['ex: I read before bed.','ex: I read about 30 minutes.','ex: It helps me relax.'],3:['ex: I read before bed and it is very special to me.','ex: I read about 30 minutes and I enjoy every moment.','ex: It helps me relax because it makes me happy.'],4:['ex: I read before bed, which has always been meaningful to me.','ex: I read about 30 minutes, and this has shaped who I am.','ex: It helps me relax, and I deeply value this experience.']},
+    'Activities I Love in My Favorite Weather':{1:['ex: I love hiking on sunny days','ex: the view is beautiful','ex: I feel free outside'],2:['ex: I love hiking on sunny days.','ex: The view is beautiful.','ex: I feel free outside.'],3:['ex: I love hiking on sunny days and it is very special to me.','ex: The view is beautiful and I enjoy every moment.','ex: I feel free outside because it makes me happy.'],4:['ex: I love hiking on sunny days, which has always been meaningful to me.','ex: The view is beautiful, and this has shaped who I am.','ex: I feel free outside, and I deeply value this experience.']},
+    'My School Friends':{1:['ex: I have many friends at school','ex: we eat lunch together','ex: they make school fun'],2:['ex: I have many friends at school.','ex: We eat lunch together.','ex: They make school fun.'],3:['ex: I have many friends at school and it is very special to me.','ex: We eat lunch together and I enjoy every moment.','ex: They make school fun because it makes me happy.'],4:['ex: I have many friends at school, which has always been meaningful to me.','ex: We eat lunch together, and this has shaped who I am.','ex: They make school fun, and I deeply value this experience.']},
+    'My Favorite Dessert':{1:['ex: ice cream / cake','ex: I eat it on special days','ex: it is sweet and delicious'],2:['ex: Ice cream / cake.','ex: I eat it on special days.','ex: It is sweet and delicious.'],3:['ex: Ice cream / cake and it is very special to me.','ex: I eat it on special days and I enjoy every moment.','ex: It is sweet and delicious because it makes me happy.'],4:['ex: Ice cream / cake, which has always been meaningful to me.','ex: I eat it on special days, and this has shaped who I am.','ex: It is sweet and delicious, and I deeply value this experience.']},
+    'My Ideal Partner':{1:['ex: kind and honest','ex: someone who makes me laugh','ex: we would support each other'],2:['ex: Kind and honest.','ex: Someone who makes me laugh.','ex: We would support each other.'],3:['ex: Kind and honest and it is very special to me.','ex: Someone who makes me laugh and I enjoy every moment.','ex: We would support each other because it makes me happy.'],4:['ex: Kind and honest, which has always been meaningful to me.','ex: Someone who makes me laugh, and this has shaped who I am.','ex: We would support each other, and I deeply value this experience.']},
+    'My Parents I Admire':{1:['ex: my parents work very hard','ex: they always support me','ex: I want to make them proud'],2:['ex: My parents work very hard.','ex: They always support me.','ex: I want to make them proud.'],3:['ex: My parents work very hard and it is very special to me.','ex: They always support me and I enjoy every moment.','ex: I want to make them proud because it makes me happy.'],4:['ex: My parents work very hard, which has always been meaningful to me.','ex: They always support me, and this has shaped who I am.','ex: I want to make them proud, and I deeply value this experience.']},
+    'My Earliest Memory':{1:['ex: I remember a family trip','ex: I was about 5 years old','ex: it was a happy day'],2:['ex: I remember a family trip.','ex: I was about 5 years old.','ex: It was a happy day.'],3:['ex: I remember a family trip and it is very special to me.','ex: I was about 5 years old and I enjoy every moment.','ex: It was a happy day because it makes me happy.'],4:['ex: I remember a family trip, which has always been meaningful to me.','ex: I was about 5 years old, and this has shaped who I am.','ex: It was a happy day, and I deeply value this experience.']},
+    'My Favorite Park or Place':{1:['ex: Han River Park','ex: I go there to relax','ex: the view is beautiful'],2:['ex: Han River Park.','ex: I go there to relax.','ex: The view is beautiful.'],3:['ex: Han River Park and it is very special to me.','ex: I go there to relax and I enjoy every moment.','ex: The view is beautiful because it makes me happy.'],4:['ex: Han River Park, which has always been meaningful to me.','ex: I go there to relax, and this has shaped who I am.','ex: The view is beautiful, and I deeply value this experience.']},
+    'Korean Traditional Culture I Like':{1:['ex: Hanbok / traditional music','ex: it is beautiful and unique','ex: I am proud of it'],2:['ex: Hanbok / traditional music.','ex: It is beautiful and unique.','ex: I am proud of it.'],3:['ex: Hanbok / traditional music and it is very special to me.','ex: It is beautiful and unique and I enjoy every moment.','ex: I am proud of it because it makes me happy.'],4:['ex: Hanbok / traditional music, which has always been meaningful to me.','ex: It is beautiful and unique, and this has shaped who I am.','ex: I am proud of it, and I deeply value this experience.']},
+    'My Top 3 Dream Destinations':{1:['ex: Japan, Paris, Hawaii','ex: each place is unique','ex: I will visit them someday'],2:['ex: Japan, Paris, Hawaii.','ex: Each place is unique.','ex: I will visit them someday.'],3:['ex: Japan, Paris, Hawaii and it is very special to me.','ex: Each place is unique and I enjoy every moment.','ex: I will visit them someday because it makes me happy.'],4:['ex: Japan, Paris, Hawaii, which has always been meaningful to me.','ex: Each place is unique, and this has shaped who I am.','ex: I will visit them someday, and I deeply value this experience.']},
+    'If I Had a Superpower':{1:['ex: I would fly','ex: I could travel anywhere','ex: I would help people'],2:['ex: I would fly.','ex: I could travel anywhere.','ex: I would help people.'],3:['ex: I would fly and it is very special to me.','ex: I could travel anywhere and I enjoy every moment.','ex: I would help people because it makes me happy.'],4:['ex: I would fly, which has always been meaningful to me.','ex: I could travel anywhere, and this has shaped who I am.','ex: I would help people, and I deeply value this experience.']},
+    'My Favorite Holiday Food':{1:['ex: jeon / galbi at Chuseok','ex: my family makes it together','ex: it tastes like home'],2:['ex: Jeon / galbi at chuseok.','ex: My family makes it together.','ex: It tastes like home.'],3:['ex: Jeon / galbi at chuseok and it is very special to me.','ex: My family makes it together and I enjoy every moment.','ex: It tastes like home because it makes me happy.'],4:['ex: Jeon / galbi at chuseok, which has always been meaningful to me.','ex: My family makes it together, and this has shaped who I am.','ex: It tastes like home, and I deeply value this experience.']},
+    'Internet Trends I Like':{1:['ex: funny memes / challenges','ex: they make me laugh','ex: I share them with friends'],2:['ex: Funny memes / challenges.','ex: They make me laugh.','ex: I share them with friends.'],3:['ex: Funny memes / challenges and it is very special to me.','ex: They make me laugh and I enjoy every moment.','ex: I share them with friends because it makes me happy.'],4:['ex: Funny memes / challenges, which has always been meaningful to me.','ex: They make me laugh, and this has shaped who I am.','ex: I share them with friends, and I deeply value this experience.']},
+    'My Most Fun Class at School':{1:['ex: art class / PE','ex: we do creative activities','ex: time flies by quickly'],2:['ex: Art class / pe.','ex: We do creative activities.','ex: Time flies by quickly.'],3:['ex: Art class / pe and it is very special to me.','ex: We do creative activities and I enjoy every moment.','ex: Time flies by quickly because it makes me happy.'],4:['ex: Art class / pe, which has always been meaningful to me.','ex: We do creative activities, and this has shaped who I am.','ex: Time flies by quickly, and I deeply value this experience.']},
+    'A Country I Want to Live in the Future':{1:['ex: Canada / Australia','ex: it is clean and safe','ex: people are friendly'],2:['ex: Canada / Australia.','ex: It is clean and safe.','ex: People are friendly.'],3:['ex: Canada / Australia and it is very special to me.','ex: It is clean and safe and I enjoy every moment.','ex: People are friendly because it makes me happy.'],4:['ex: Canada / Australia, which has always been meaningful to me.','ex: It is clean and safe, and this has shaped who I am.','ex: People are friendly, and I deeply value this experience.']},
+    'My Favorite Seasonal Activity':{1:['ex: swimming in summer','ex: I go to the pool','ex: it is refreshing'],2:['ex: Swimming in summer.','ex: I go to the pool.','ex: It is refreshing.'],3:['ex: Swimming in summer and it is very special to me.','ex: I go to the pool and I enjoy every moment.','ex: It is refreshing because it makes me happy.'],4:['ex: Swimming in summer, which has always been meaningful to me.','ex: I go to the pool, and this has shaped who I am.','ex: It is refreshing, and I deeply value this experience.']},
+    'My Favorite Korean Singer':{1:['ex: BTS / IU','ex: the music is amazing','ex: I listen every day'],2:['ex: BTS / IU.','ex: The music is amazing.','ex: I listen every day.'],3:['ex: BTS / IU and it is very special to me.','ex: The music is amazing and I enjoy every moment.','ex: I listen every day because it makes me happy.'],4:['ex: BTS / IU, which has always been meaningful to me.','ex: The music is amazing, and this has shaped who I am.','ex: I listen every day, and I deeply value this experience.']},
+    'My Favorite School Lunch Menu':{1:['ex: I love curry rice day','ex: it is warm and filling','ex: everyone looks forward to it'],2:['ex: I love curry rice day.','ex: It is warm and filling.','ex: Everyone looks forward to it.'],3:['ex: I love curry rice day and it is very special to me.','ex: It is warm and filling and I enjoy every moment.','ex: Everyone looks forward to it because it makes me happy.'],4:['ex: I love curry rice day, which has always been meaningful to me.','ex: It is warm and filling, and this has shaped who I am.','ex: Everyone looks forward to it, and I deeply value this experience.']},
+    'Something I Want to Say in English':{1:['ex: I want to introduce myself','ex: I practice every day','ex: English opens many doors'],2:['ex: I want to introduce myself.','ex: I practice every day.','ex: English opens many doors.'],3:['ex: I want to introduce myself and it is very special to me.','ex: I practice every day and I enjoy every moment.','ex: English opens many doors because it makes me happy.'],4:['ex: I want to introduce myself, which has always been meaningful to me.','ex: I practice every day, and this has shaped who I am.','ex: English opens many doors, and I deeply value this experience.']}
+  }
   var th=TH[topic.en]||{};
   var h=((th[lv])||[])[qIdx]||'';
   var lhEl=document.getElementById('lvHint');
   if(h){lhEl.textContent='✏️ '+h;lhEl.style.display='block';}
   else{lhEl.style.display='none';}
-    state='start';setBtn(true,'시작하기 →');
+
+  document.getElementById('qNum').textContent='Q'+(qIdx+1);
+  document.getElementById('qTxt').textContent=qs[qIdx];
+  document.getElementById('qLbl').textContent=`질문 ${qIdx+1}/3`;
+  for(let i=1;i<=3;i++){const d=document.getElementById('qd'+i);d.className='qdot'+(i-1<qIdx?' ok':i-1===qIdx?' on':'');}
+  if(qIdx>0)document.getElementById('ql1').classList.add('ok');
+  if(qIdx>1)document.getElementById('ql2').classList.add('ok');
+  const hints={1:["예: 'pizza' 또는 'I like pizza'","예: 'Tom'","예: 'Good!' 또는 'Very fun!'"],2:["예: 'My favorite food is pizza.'","예: 'I play soccer with Tom.'","예: 'It is very delicious!'"],3:["예: 'My favorite food is pizza because it is cheesy.'","예: 'I usually play with Tom after school.'","예: 'I like it because it tastes amazing.'"],4:["예: 'Among all foods, pizza is my all-time favorite.'","예: 'Tom and I spend most of our free time together.'","예: 'Not only does it taste great, it also brings happy memories.'"]};
+  const h=hints[lv]?.[qIdx]||'';
+  const lhEl=document.getElementById('lvHint');
+  if(h){lhEl.textContent='✏️ '+h;lhEl.style.display='block';}else lhEl.style.display='none';
+  state='start';setBtn(true,'시작하기 →');
 }
 
 async function go(){
@@ -468,7 +666,6 @@ async function go(){
   else if(state==='nextSpeak')await nextSpeak();
   else if(state==='goWrap')goWrap();
   else if(state==='submitWrap')await submitWrap();
-  else if(state==='goMemory')goMemory();
   else if(state==='finish')finish();
 }
 
@@ -593,18 +790,15 @@ function startShadowRec(){
     const ok=oW.length===0||mc>=Math.max(1,Math.floor(oW.length*0.4));
     res.style.display='block';
     if(ok){
-      res.style.background='var(--gl)';
-      res.style.color='#166534';
+      res.style.background='var(--gl)';res.style.color='#166534';
       res.textContent='OK! "'+said+'" 잘했어요!';
       addScore(10);
       const ov=document.getElementById('shadowOk');
       document.getElementById('shadowOkIcon').textContent='⭕';
       document.getElementById('shadowOkSub').textContent='"'+said+'" 완벽해요!';
-      ov.classList.add('show');
-      setTimeout(()=>ov.classList.remove('show'),2000);
+      ov.classList.add('show');setTimeout(()=>ov.classList.remove('show'),2000);
     }else{
-      res.style.background='#FEF3C7';
-      res.style.color='#92400E';
+      res.style.background='#FEF3C7';res.style.color='#92400E';
       res.textContent='다시 해봐요! 들린 말: "'+said+'"';
     }
   };
@@ -704,7 +898,7 @@ async function submitWrap(){
     addScore(30);
     // SAVE
     saveRecord(txt);
-    state='goMemory';setBtn(true,'암기 훈련하기','orange');
+    state='finish';setBtn(true,'🎊 오늘 학습 완료!','green');
   }catch(e){err('fbWrapErr',e.message);setBtn(true,'제출하고 저장하기 💾','green');}
   finally{ld('ldWrap',false);}
 }
@@ -896,13 +1090,13 @@ NEXT: [one specific thing to practice next time, in Korean]`,
 
 // ── UI HELPERS ──
 function showPg(name){
-  ['pgWrite','pgStory','pgShadow','pgSpeak','pgWrap','pgMemory','pgReport'].forEach((id,i)=>{
-    document.getElementById(id).style.display=(['write','story','shadow','speak','wrap','memory','report'][i]===name?'flex':'none');
+  ['pgWrite','pgStory','pgShadow','pgSpeak','pgWrap','pgReport'].forEach((id,i)=>{
+    document.getElementById(id).style.display=(['write','story','shadow','speak','wrap','report'][i]===name?'flex':'none');
   });
   document.getElementById('hintBtn').style.display=(name==='write'&&qIdx<3&&state!=='goStory')?'flex':'none';
 }
 
-function tabOn(id){['t1','t2','t3','t4','t5','t6','t7'].forEach(t=>{var el=document.getElementById(t);if(el)el.className='tab'+(t===id?' on':'');});}
+function tabOn(id){['t1','t2','t3','t4','t5','t6'].forEach(t=>document.getElementById(t).className='tab'+(t===id?' on':''));}
 
 function showModal(emoji,title,sub,btnTxt,cb){
   document.getElementById('mEmoji').textContent=emoji;
@@ -914,6 +1108,5 @@ function showModal(emoji,title,sub,btnTxt,cb){
 }
 function hideModal(){document.getElementById('modal').classList.remove('show');}
 </script>
-<script src="/app.js"></script>
 </body>
 </html>
