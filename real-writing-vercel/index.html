@@ -198,12 +198,13 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
     <div class="tab" id="t3">🔤 쉐도잉</div>
     <div class="tab" id="t4">🎤 말하기</div>
     <div class="tab" id="t5">📝 마무리</div>
-    <div class="tab" id="t6">📊 리포트</div>
+    <div class="tab" id="t6">🎬 암기</div>
+    <div class="tab" id="t7">📊 리포트</div>
   </div>
 
   <!-- WRITING -->
   <div class="pg" id="pgWrite">
-    <div class="topic-card"><div class="ttag">TODAY'S TOPIC</div><div class="ttitle" id="topicTitle"></div><div style="font-size:13px;color:#5B5FFF;font-weight:600;margin-top:2px;" id="topicEn"></div><div class="tsub" id="topicSub"></div></div>
+    <div class="topic-card"><div class="ttag">TODAY'S TOPIC</div><div class="ttitle" id="topicTitle"></div><div class="tsub" id="topicSub"></div></div>
     <div class="sc" style="padding:13px 15px;">
       <div style="font-size:13px;font-weight:700;color:var(--sub);margin-bottom:4px">진행도</div>
       <div class="qprog"><div class="qdot on" id="qd1">1</div><div class="qline" id="ql1"></div><div class="qdot" id="qd2">2</div><div class="qline" id="ql2"></div><div class="qdot" id="qd3">3</div></div>
@@ -263,6 +264,32 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
     </div>
     <div class="fb red" id="fbWrapErr"></div>
   </div>
+
+  <div class="pg" id="pgMemory" style="display:none;">
+    <div class="sc on" style="border-color:#FF6B35;">
+      <div class="sc-h"><div class="snum" style="background:#FFF0EB;color:#FF6B35;">암기</div><div style="font-weight:700;font-size:15px;">외워서 말해봐요!</div></div>
+      <div style="font-size:13px;color:var(--sub);">완성 글을 읽고 기억한 뒤 말해봐요!</div>
+    </div>
+    <div id="memReadCard" class="sc" style="display:flex;flex-direction:column;gap:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">읽기</div>
+      <div id="memStoryText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;"></div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="speakMemory()" style="flex:1;padding:12px;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;background:var(--g);color:#fff;">듣기</button>
+        <button onclick="startMemorize()" style="flex:1;padding:12px;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;background:#FF6B35;color:#fff;">외움어요! 숨기기</button>
+      </div>
+    </div>
+    <div id="memRecordCard" class="sc" style="display:none;flex-direction:column;gap:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">외워서 말하기</div>
+      <div style="background:#F8F8FF;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:13px;color:var(--sub);" id="memRecStatus">녹음 버튼을 눌러요!</div></div>
+      <button onclick="toggleMemRec()" id="memRecBtn" style="width:100%;padding:14px;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;background:#FF6B35;color:#fff;">녹음 시작</button>
+      <div id="memRecResult" style="display:none;font-size:14px;padding:13px;border-radius:12px;line-height:1.7;"></div>
+      <button onclick="retryMemory()" id="memRetryBtn" style="display:none;width:100%;padding:12px;border:1.5px solid #FF6B35;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:#FF6B35;">다시 해벼게요</button>
+    </div>
+    <div id="memAnswerCard" class="sc" style="display:none;flex-direction:column;gap:10px;">
+      <div style="font-size:13px;font-weight:700;color:var(--sub);">정답 확인</div>
+      <div id="memAnswerText" style="font-size:15px;font-weight:600;color:#14532D;line-height:1.9;background:#F0FDF4;padding:14px 16px;border-radius:12px;"></div>
+    </div>
+  </div>
   <!-- REPORT -->
   <div class="pg" id="pgReport" style="display:none;">
     <div class="sc on" style="border-color:#8B5CF6;box-shadow:0 0 0 3px #F3E8FF;">
@@ -307,9 +334,7 @@ textarea:disabled,input[type=text]:disabled{background:#F3F4F6;color:#9CA3AF;}
 </div>
 
 <script>
-
-
-
+// Keys on server
 
 const LVCONF={
   1:{name:"Level 1",e:"🌱",col:"#F59E0B",bg:"#FEF3C7",guide:"알고 있는 영어 단어를 써봐요! 한 단어도 OK 😊",
@@ -411,8 +436,7 @@ const TOPICS=[
   {ko:"나의 장래 결혼 상대방의 조건",en:"My Ideal Partner",guide:"어떤 성격, 왜 중요한지, 함께 하고 싶은 것"},
   {ko:"내가 존경하는 부모님",en:"My Parents I Admire",guide:"어떤 분들인지, 왜 존경하는지, 배운 것"},
   {ko:"나의 첫 번째 기억",en:"My Earliest Memory",guide:"무슨 기억, 언제, 왜 기억나는지"},
-  {ko:"내가 좋아하는 공원이나 장소",en:"My Favorite Park or Place",guide:"어디인지, 왜 좋아하는지, 거기서 하는 것"}
-,
+  {ko:"내가 좋아하는 공원이나 장소",en:"My Favorite Park or Place",guide:"어디인지, 왜 좋아하는지, 거기서 하는 것"},
   {ko:"내가 좋아하는 전통 문화",en:"Korean Traditional Culture I Like",guide:"어떤 문화, 특징, 왜 좋아하는지"},
   {ko:"나의 꿈의 여행지 TOP 3",en:"My Top 3 Dream Destinations",guide:"어떤 나라들, 왜 가고 싶은지"},
   {ko:"내가 만약 슈퍼파워가 생긴다면",en:"If I Had a Superpower",guide:"어떤 능력, 왜 원하는지, 어떻게 사용할지"},
@@ -427,108 +451,106 @@ const TOPICS=[
 ];
 
 const QS={
-  "My Favorite Food":["가장 좋아하는 음식이 뭐예요?","그 음식을 언제 자주 먹어요?","그 음식이 왜 좋아요?"],
-  "My Best Friend":["가장 친한 친구 이름이 뭐예요?","그 친구와 무엇을 같이 해요?","그 친구의 어떤 점이 좋아요?"],
-  "My Weekend":["이번 주말에 무엇을 했어요?","누구랑 같이 했어요?","기분이 어땠어요?"],
-  "My Pet":["어떤 동물을 키워요?","그 동물 이름이 뭐예요?","그 동물과 무엇을 해요?"],
-  "A Place I Want to Visit":["어디에 가고 싶어요?","왜 그곳에 가고 싶어요?","거기서 무엇을 하고 싶어요?"],
-  "My Favorite Season":["어떤 계절을 제일 좋아해요?","그 계절에 무엇을 해요?","그 계절이 왜 좋아요?"],
-  "My Dream":["커서 무엇이 되고 싶어요?","왜 그 꿈을 갖게 됐어요?","그 꿈을 위해 무엇을 하고 있어요?"],
-  "My Day Today":["오늘 아침에 무엇을 했어요?","학교에서 무엇을 했어요?","오늘 가장 기억에 남는 일은 뭐예요?"],
-,
-  "My Favorite Book":["내가 좋아하는 체잡은 무엇인가요?","그 체잡의 내용은 무엇인가요?","왕 체잡이 좋은 이유는 무엇인가요?"],
-  "My Morning Routine":["아침에 맨 먼저 무엇을 하나요?","아침에 어떤 음식을 먹나요?","학교 가기 전에 어떤 준비를 하나요?"],
-  "My Favorite Sport":["좋아하는 스포츠는 무엇인가요?","그 스포츠를 얼마나 자주 하나요?","그 스포츠의 어떤 점이 좋나요?"],
-  "My Room":["나의 방은 어떤 모습인가요?","방에서 주로 무엇을 하나요?","나의 방에서 가장 좋아하는 것은 무엇인가요?"],
-  "My Favorite Teacher":["가장 좋아하는 선생님은 누구인가요?","그 선생님의 수업에서 어떤 점이 좋나요?","그 선생님에게 배운 가장 중요한 것은 무엇인가요?"],
-  "My Birthday":["내 생일은 언제인가요?","생일에 보통 어떻게 보내나요?","받고 싶은 생일 선물은 무엇인가요?"],
-  "My Summer Vacation Plan":["이번 여름 방학에 어디에 가고 싶나요?","여름 방학 동안 무엇을 하고 싶나요?","여름 방학에 누구와 함께 시간을 보내고 싶나요?"],
-  "My Winter Vacation Plan":["겨울 방학 계획은 어떻게 되나요?","겨울 방학 동안 주로 무엇을 하고 싶나요?","겨울 방학 중 가장 기대되는 것은 무엇인가요?"],
-  "My Favorite Music":["어떤 종류의 음악을 좋아하나요?","좋아하는 가수나 그룹은 누구인가요?","음악을 주로 언제 듣나요?"],
-  "How I Relieve Stress":["스트레스를 받을 때 어떻게 헤소하나요?","가장 효과적인 스트레스 해소법은 무엇인가요?","스트레스를 헤소한 후 어떤 기분이 드나요?"],
-  "Something I Am Afraid Of":["가장 무서웨하는 것은 무엇인가요?","왼 그것이 무서운가요?","무서움을 어떻게 극복하려고 노력하나요?"],
-  "My Happiest Memory":["가장 행복했던 기억은 무엇인가요?","그 날 무슨 일이 있었나요?","그때 왜 그렇게 행복했나요?"],
-  "Something I Want to Learn":["앞으로 배워보고 싶은 것은 무엇인가요?","왜 그것을 배워보고 싶나요?","어떻게 배울 계획인가요?"],
-  "My Role Model":["유의 롤 모델은 누구인가요?","그 사람의 어떤 점이 예래별로 마음에 드나요?","그 사람에게서 배우고 싶은 점은 무엇인가요?"],
-  "My Favorite Seasonal Food":["계절에 따라 좋아하는 음식이 있나요?","그 음식은 어떤 맛이나요?","그 음식을 누구와 함께 먹나요?"],
-  "My Way to School":["학교에 어떻게 다니나요?","학교까지 얼마나 걸리나요?","등교길에 무엇을 하면서 가나요?"],
-  "My Favorite Color":["가장 좋아하는 색깔은 무엇인가요?","왜 그 색깔을 좋아하나요?","그 색깔의 어떤 물건을 가지고 있나요?"],
-  "My Closest Family Member":["가족 중 가장 친한 사람은 누구인가요?","그 사람과 주로 무엇을 하면서 시간을 보내나요?","그 사람이 친근하게 느께지는 이유는 무엇인가요?"],
-  "Something I Want to Challenge":["도전해보고 싶은 것이 있나요?","왜 그것에 도전하고 싶나요?","어떻게 준비할 계획인가요?"],
-  "My Strengths":["자신의 장점은 무엇인가요?","그 장점이 도움이 된 사례가 있나요?","장점을 더 발전시키기 위해 어떻게 하나요?"],
-  "My Weaknesses and Improvement":["자신의 단점은 무엇인가요?","그 단점을 어떻게 고치려고 노력하나요?","거기에서 배운 점은 무엇인가요?"],
-  "My Favorite Weather":["어떤 날씨를 가장 좋아하나요?","그 날씨에 보통 무엇을 하나요?","그 날씨가 왜 좋아하나요?"],
-  "My Favorite Animal":["가장 좋아하는 동물은 무엇인가요?","그 동물의 특징은 뉔엇인가요?","그 동물을 왜 좋아하나요?"],
-  "A Book I Recently Read":["최근에 읽은 체잡 이름은 무엇인가요?","그 체잡의 내용은 무엇인가요?","그 체잡을 읽고 느낌 점은 무엇인가요?"],
-  "My Dream House":["꾸의 집은 어때스 모습인가요?","그 집에서 뭐를 하고 싶나요?","기꾸에 하고 싶은 것은 무엇인가요?"],
-  "My Favorite Subject":["가장 좋아하는 과목은 무엇인가요?","그 과목에서 뭐가 가장 재미나요?","그 과목에서 잘하는 후 어떤 점이 도움이 되나요?"],
-  "My Least Favorite Subject":["가장 어려운 과목은 무엇인가요?","그 과목이 어로운 이유는 무엇인가요?","어떻게 그 과목을 극복하려고 노력하나요?"],
-  "My Travel Experience":["지금까지 갔던 곳 중 가장 기억에 남는 여행지는 어딘가요?","그곳에서 무엇을 했나요?","그 여행에서 가장 기억에 남는 것은 무엇인가요?"],
-  "My Favorite TV Show":["좋아하는 TV 프로그램은 무엇인가요?","그 프로그램은 어떤 내용인가요?","왜 그 프로그램을 취좋아하나요?"],
-  "How I Manage My Allowance":["한 달에 용돈을 얼마나 받나요?","용돈을 주로 어떤 곳에 쓰나요?","저축도 하나요?"],
-  "My Favorite Snack":["가장 좋아하는 간식은 무엇인가요?","그 간식을 주로 언제 먹나요?","그 간식의 어떤 점이 맛있나요?"],
-  "My School Lunch":["학교 급식에서 가장 좋아하는 메뉴는 무엇인가요?","급식을 누구와 함께 먹나요?","학교 급식에서 어떤 점이 좋나요?"],
-  "A Movie I Recently Watched":["최근에 본 영화 제목은 무엇인가요?","그 영화의 내용은 무엇인가요?","그 영화를 보고 느낌 점은 무엇인가요?"],
-  "How I Study English":["영어를 어떻게 공부하나요?","가장 도움이 되는 영어 공부 방법은 무엇인가요?","영어 공부에서 가장 어려운 부분은 무엇인가요?"],
-  "A Historical Figure I Admire":["존경하는 역사적 인물은 누구인가요?","그 사람은 어떤 업적을 남겼나요?","그 사람에게서 어떤 점을 배우고 싶나요?"],
-  "My Friendships":["친한 친구가 몇 명이나 있나요?","친구들과 보통 무엇을 하면서 시간을 보내나요?","좋은 친구랑의 특징은 무엇이라고 생각하나요?"],
-  "A Mistake I Made":["과거에 한 실수 중 기억에 남는 것은 무엇인가요?","그 실수로 어떤 일이 생겼나요?","그 실수에서 뭐를 배웠나요?"],
-  "Things I Am Grateful For":["감사한 일들이 띌가요?","가장 감사하는 것은 무엇인가요?","감사하는 마음을 어떻게 표현하나요?"],
-  "My Favorite Holiday":["가장 좋아하는 명절은 무엇인가요?","그 명절에 보통 어떻게 보내나요?","그 명절에 먹는 특별한 음식이 있나요?"],
-  "My Healthy Eating Habits":["건강을 위해 어떤 음식을 먹나요?","얼마나 자주 대습을 먹나요?","걸강한 식습관을 유지하는 것이 엄마나 어렵나요?"],
-  "A Part-time Job I Want to Try":["해보고 싶은 아르바이트는 무엇인가요?","왜 그 시다를 해보고 싶나요?","그 일에서 뭐를 배울 수 있다고 생각하나요?"],
-  "My Smartphone Habits":["하루에 파드폰을 얼마나 사용하나요?","파드폰으로 주로 무엇을 하나요?","파드폰 사용의 어떤 점이 좋고 나쁜가요?"],
-  "My Favorite YouTube Channel":["좋아하는 유튜브 채널은 무엇인가요?","그 채널에서는 주로 어떤 내용을 다나요?","그 채널에서 가장 재미있었던 콘텐츠는 무엇인가요?"],
-  "My Efforts to Protect the Environment":["환경을 위해 어떤 노력을 하나요?","그 노력이 왜 중요하다고 생각하나요?","더 검간한 환경을 위해 묶을 수 있나요?"],
-  "My Favorite Athlete":["좋아하는 운동 선수는 누구인가요?","그 선수는 어떤 종목에서 활동하나요?","그 선수를 왜 존경하나요?"],
-  "My Sleep Habits":["보통 몇 시에 잠자리에 드나요?","하루에 얼마나 자나요?","충분한 수면이 왜 중요하다고 생각하나요?"],
-  "My Fashion Style":["자신의 패션 스타일은 어때거나요?","평소에 어떤 옵을 즐겨 입나요?","프패션이 자신감에 어떤 영향을 미치나요?"],
-  "My Dream City to Live In":["장래에 살고 싶은 도시는 어딘가요?","그 도시의 어떤 점이 마음에 드나요?","그곳에서 뭐를 하며 살고 싶나요?"],
-  "A Kind Act I Experienced":["남들이 한 친절한 행동에 감동받은 적이 있나요?","그때 어떤 일이 있었나요?","그 경험에서 뭐를 느껋나요?"],
-  "My Most Difficult Moment":["지금까지 가장 힘들었던 순간은 언제였나요?","그때 어떤 일이 있었나요?","그 험든 순간을 어떻게 극복했나요?"],
-  "My Favorite Game":["가장 좋아하는 게임은 무엇인가요?","그 게임을 어떻게 하는지 설명해주세요!","그 게임의 어떤 점이 재미있나요?"],
-  "My Social Media Use":["주로 어떤 소셜미디어를 사용하나요?","얼마나 자주 사용하나요?","소셜미디어의 정실한 이점과 단점은 무엇인가요?"],
-  "My Favorite Plant or Flower":["가장 좋아하는 식물이나 꽃은 무엇인가요?","그 식물의 특징은 무엇인가요?","그 식물을 왜 좋아하나요?"],
-  "My School Club Activity":["어떤 동아리에 활동하나요?","그 동아리에서 주로 뭐를 하나요?","그 동아리 활동에서 어떤 점이 좋나요?"],
-  "My Favorite Korean Food":["가장 좋아하는 한국 음식은 무엇인가요?","그 음식은 어떤 맛인가요?","그 음식을 얼마나 자주 먹나요?"],
-  "My Foreign Language Learning":["어떤 외국어를 공부하나요?","그 언어를 왜 배우고 싶었나요?","그 언어를 배울 때 가장 어려운 부분은 무엇인가요?"],
-  "My Favorite Character":["가장 좋아하는 캐릭터는 누구인가요?","그 캐릭터는 어떤 작품에 나오나요?","그 캐릭터를 왜 좋아하나요?"],
-  "My Travel Bucket List":["꽔등 가고 싶은 나라나 도시는 어딘인가요?","그 장소들에서 무엇을 하고 싶나요?","그 여행을 위해 어떻게 준비하나요?"],
-  "My Favorite Day of the Week":["일주일 중 가장 좋아하는 요일은 때인가요?","그 요일에 보통 무엇을 하나요?","왜 그 요일을 가장 좋아하나요?"],
-  "My School Field Trip":["가장 기억에 남는 수학여행은 어디였나요?","그곳에서 무엇을 했나요?","그 수학여행에서 가장 인상 깊았던 것은 무엇인가요?"],
-  "A Quote That Inspires Me":["좋아하는 명언이나 말이 있나요?","그 말이 왜 마음에 드나요?","그 말이 살아가는 데 어떻게 도움이 되나요?"],
-  "My Cooking Experience":["지금까지 요리를 해본 적이 있나요?","어떤 음식을 만들었나요?","그 요리 경험에서 뭐를 배웠나요?"],
-  "If I Could Do Volunteer Work":["만약 봉사활동을 한다면 어떤 일을 하고 싶나요?","왜 그 봉사를 하고 싶나요?","그 봉사를 통해 세상에 어떤 도움이 될 수 있을까요?"],
-  "My Online Class Experience":["온라인 수업을 들어본 적이 있나요?","온라인 수업의 어떤 점이 좋았나요?","온라인 수업에서 가장 어려운 점은 무엇인가요?"],
-  "My Favorite Brand":["가장 좋아하는 브랜드는 무엇인가요?","그 브랜드의 어떤 제품을 좋아하나요?","그 브랜드를 왜 신룂하나요?"],
-  "My Reading Habits":["얼마나 자주 체잡을 읽나요?","주로 어떤 종류의 체잡을 읽나요?","독서가 재미있는 이유는 무엇인가요?"],
-  "Activities I Love in My Favorite Weather":["어떤 날씨를 가장 좋아하나요?","그 날씨에 보통 무엇을 하나요?","그 날씨와 활동이 즐거운 이유는 무엇인가요?"],
-  "My School Friends":["학교에 친요운 친구들이 몇 명이나 있나요?","그들과 주로 무엇을 하면서 시간을 보내나요?","학교 친구들이 안준다면 어떤 점이 좋나요?"],
-  "My Favorite Dessert":["가장 좋아하는 디저트는 무엇인가요?","그 디저트를 주로 언제 먹나요?","그 디저트를 왜 좋아하나요?"],
-  "My Ideal Partner":["이상적인 연인의 조건은 무엇인가요?","어떤 성격을 가진 사람이 좋나요?","함께 하고 싶은 것들은 무엇인가요?"],
-  "My Parents I Admire":["부모님을 존경하는 이유는 무엇인가요?","부모님이 어떤 가르침을 주셨나요?","부모님처럼 닮고 싶은 점은 무엇인가요?"],
-  "My Earliest Memory":["가장 오래된 어린 시절 기억은 무엇인가요?","그 기억이 대략 몇 살 때인가요?","왜 그 기억이 아직도 선명하게 남나요?"],
-  "My Favorite Park or Place":["자주 가는 코이나 좋아하는 장소는 어딘가요?","그곳에서 보통 무엇을 하나요?","그 장소에 얼마나 자주 가나요?"],
-  "Korean Traditional Culture I Like":["좋아하는 한국 전통 문화는 무엇인가요?","그 문화의 특징은 무엇인가요?","그 문화에 대해 자바롭게 생각하는 이유는 무엇인가요?"],
-  "My Top 3 Dream Destinations":["꽔등 가고 싶은 여행지 TOP 3는 어딘가요?","그중 가장 가고 싶은 곳은 어딘가요?","그 여행지들에서 무엇을 하고 싶나요?"],
-  "If I Had a Superpower":["만약 특수한 능력이 생긴다면 어떤 것을 갖고 싶나요?","그 능력으로 무엇을 하고 싶나요?","그 능력을 어떻게 사용될 것인가요?"],
-  "My Favorite Holiday Food":["명절에 먹는 음식 중 가장 좋아하는 것은 무엇인가요?","그 음식을 보통 누가 만드나요?","그 명절 음식에 대한 특별한 기억이 있나요?"],
-  "Internet Trends I Like":["요즘 좋아하는 인터넷 유행이나 밀은 무엇인가요?","그것이 왜 재미있나요?","친구들과 그것에 대해 어떻게 이야기하나요?"],
-  "My Most Fun Class at School":["학교에서 가장 재미있는 수업은 무엇인가요?","그 수업에서 뭐를 주로 하나요?","그 수업이 재미있는 이유는 무엇인가요?"],
-  "A Country I Want to Live in the Future":["장래에 살고 싶은 나라는 어딘가요?","그 나라의 어떤 점이 마음에 드나요?","그곳에서 어떤 일을 하며 살고 싶나요?"],
-  "My Favorite Seasonal Activity":["어떤 계절에 하는 활동을 좋아하나요?","그 활동을 보통 누구와 하나요?","그 활동이 즐거운 이유는 무엇인가요?"],
-  "My Favorite Korean Singer":["좋아하는 한국 가수나 그룹은 누구인가요?","그들의 음악 주 장르는 무엇인가요?","그들의 어떤 노래를 가장 좋아하나요?"],
-  "My Favorite School Lunch Menu":["학교 급식 메뉴 중 가장 좋아하는 것은 무엇인가요?","그 메뉴의 맛은 어때나요?","그 메뉴가 나오는 날 얼마나 기대되나요?"],
-  "Something I Want to Say in English":["영어로 꾸꼾 말하고 싶은 것은 무엇인가요?","그 말을 어떻게 또 얰습하나요?","영어가 능숫해지면 어떤 이점이 있을가요?"]
-,
-  "My Family":["우리 가족은 몇 명인가요?","가족과 주로 무엇을 하면서 시간을 보내나요?","가족 중 가장 마음에 드는 사람은 누구인가요?"],
-  "My School":["지금 다니는 학교 이름은 무엇인가요?","학교에서 가장 좋아하는 과목은 무엇인가요?","학교에서 가장 즐각운 시간은 언제인가요?"],
-  "My Hobby":["좋아하는 취미는 무엇인가요?","그 취미를 여제 시작했나요?","취미에서 가장 재미있는 점은 무엇인가요?"],
-  "My Favorite Movie":["좋아하는 영화 제목은 무엇인가요?","그 영화의 내용을 간단히 설명해볼글요?","그 영화를 왜 좋아하나요?"],
-  "My Health and Exercise":["건강을 위해 어떤 운동을 하나요?","얼마나 자주 운동하나요?","건강한 식습관을 위해 또 나시는 노력은 무엇인가요?"],
-  "My Future Job":["장래희망은 무엇인가요?","그 직업을 왜 원하나요?","그 꾸을 이루기 위해 지금 어떻게 노력하나요?"],
-  "A Special Day":["가장 특별했던 날은 언제였나요?","그날 무슨 일이 있었나요?","그날이 왜 특별하다고 느껴나요?"],
-  "My Favorite Restaurant":["좋아하는 음식점 이름은 무엇인가요?","그곳에서 주로 어떤 음식을 먹나요?","그 음식점에서 가장 맛있는 메뉴는 무엇인가요?"]
+  "My Favorite Food":["What is your favorite food?","When do you usually eat it?","Why do you like it?"],
+  "My Best Friend":["What is your best friend's name?","What do you do together?","What do you like about your friend?"],
+  "My Weekend":["What did you do last weekend?","Who were you with?","How did you feel?"],
+  "My Pet":["What pet do you have?","What is your pet's name?","What do you do with your pet?"],
+  "A Place I Want to Visit":["Where do you want to go?","Why do you want to go there?","What do you want to do there?"],
+  "My Favorite Season":["What season do you like best?","What do you do in that season?","Why do you like it?"],
+  "My Dream":["What do you want to be when you grow up?","Why do you want to be that?","What are you doing to reach that dream?"],
+  "My Day Today":["What did you do this morning?","What did you do at school?","What was the most memorable thing today?"],
+  "My Family":["How many people are in your family?","What do you usually do together as a family?","Who is your favorite person in your family?"],
+  "My School":["What is the name of your school?","What is your favorite subject at school?","When is the most fun time at school?"],
+  "My Hobby":["What is your hobby?","When did you start that hobby?","What is the most fun part of that hobby?"],
+  "My Favorite Movie":["What is your favorite movie?","Can you briefly describe what it's about?","Why do you like that movie?"],
+  "My Health and Exercise":["What exercise do you do to stay healthy?","How often do you exercise?","What else do you do for healthy eating habits?"],
+  "My Future Job":["What job do you want to have in the future?","Why do you want that job?","What are you doing now to achieve that goal?"],
+  "A Special Day":["What was the most special day for you?","What happened that day?","Why was that day so special?"],
+  "My Favorite Restaurant":["What is the name of your favorite restaurant?","What kind of food do you usually eat there?","What is the most delicious menu item there?"],
+  "My Favorite Book":["What is your favorite book?","What is it about?","Why do you like that book?"],
+  "My Morning Routine":["What is the first thing you do in the morning?","What do you eat for breakfast?","How do you get ready before school?"],
+  "My Favorite Sport":["What sport do you like?","How often do you play it?","What do you like about that sport?"],
+  "My Room":["What does your room look like?","What do you usually do in your room?","What is your favorite thing in your room?"],
+  "My Favorite Teacher":["Who is your favorite teacher?","What do you like about that teacher's class?","What is the most important thing you learned from that teacher?"],
+  "My Birthday":["When is your birthday?","How do you usually spend your birthday?","What birthday gift do you want?"],
+  "My Summer Vacation Plan":["Where do you want to go this summer vacation?","What do you want to do during summer vacation?","Who do you want to spend summer vacation with?"],
+  "My Winter Vacation Plan":["What are your plans for winter vacation?","What do you want to do during winter vacation?","What are you most looking forward to?"],
+  "My Favorite Music":["What kind of music do you like?","Who is your favorite singer or band?","When do you usually listen to music?"],
+  "How I Relieve Stress":["What do you do when you feel stressed?","What is the best way for you to relax?","How do you feel after you relax?"],
+  "Something I Am Afraid Of":["What are you most afraid of?","Why is it scary to you?","How do you try to overcome that fear?"],
+  "My Happiest Memory":["What is your happiest memory?","What happened that day?","Why were you so happy?"],
+  "Something I Want to Learn":["What do you want to learn in the future?","Why do you want to learn it?","How do you plan to learn it?"],
+  "My Role Model":["Who is your role model?","What do you like about that person?","What do you want to learn from that person?"],
+  "My Favorite Seasonal Food":["Is there a food you like depending on the season?","What does that food taste like?","Who do you usually eat it with?"],
+  "My Way to School":["How do you get to school?","How long does it take?","What do you do on your way to school?"],
+  "My Favorite Color":["What is your favorite color?","Why do you like that color?","What things do you own in that color?"],
+  "My Closest Family Member":["Who are you closest to in your family?","What do you usually do together?","Why do you feel close to that person?"],
+  "Something I Want to Challenge":["Is there something you want to try?","Why do you want to challenge yourself with it?","How do you plan to prepare for it?"],
+  "My Strengths":["What is your strength?","Can you give an example of when it helped you?","How do you try to improve it further?"],
+  "My Weaknesses and Improvement":["What is your weakness?","How do you try to fix it?","What did you learn from it?"],
+  "My Favorite Weather":["What kind of weather do you like best?","What do you usually do in that weather?","Why do you like that weather?"],
+  "My Favorite Animal":["What is your favorite animal?","What are its special features?","Why do you like that animal?"],
+  "A Book I Recently Read":["What is the title of a book you read recently?","What is it about?","What did you feel after reading it?"],
+  "My Dream House":["What does your dream house look like?","What do you want to do in that house?","What would you like to have in your dream house?"],
+  "My Favorite Subject":["What is your favorite subject?","What is the most fun part of that subject?","How does being good at it help you?"],
+  "My Least Favorite Subject":["What is your most difficult subject?","Why is that subject difficult?","How do you try to improve in that subject?"],
+  "My Travel Experience":["What is the most memorable place you have visited?","What did you do there?","What do you remember most about that trip?"],
+  "My Favorite TV Show":["What TV show do you like?","What is it about?","Why do you like that show?"],
+  "How I Manage My Allowance":["How much allowance do you get each month?","What do you usually spend it on?","Do you save some of it?"],
+  "My Favorite Snack":["What is your favorite snack?","When do you usually eat it?","What makes it so tasty?"],
+  "My School Lunch":["What is your favorite school lunch menu?","Who do you usually eat lunch with?","What do you like about school lunch?"],
+  "A Movie I Recently Watched":["What is the title of a movie you watched recently?","What is it about?","How did you feel after watching it?"],
+  "How I Study English":["How do you study English?","What is the most helpful way to study English?","What is the hardest part of studying English?"],
+  "A Historical Figure I Admire":["Which historical figure do you admire?","What did that person achieve?","What do you want to learn from that person?"],
+  "My Friendships":["How many close friends do you have?","What do you usually do with your friends?","What do you think makes a good friend?"],
+  "A Mistake I Made":["What is a mistake you remember making?","What happened because of it?","What did you learn from it?"],
+  "Things I Am Grateful For":["What things are you grateful for?","What are you most grateful for?","How do you show your gratitude?"],
+  "My Favorite Holiday":["What is your favorite holiday?","How do you usually spend that holiday?","Is there special food you eat on that holiday?"],
+  "My Healthy Eating Habits":["What foods do you eat to stay healthy?","How often do you eat snacks?","Is it hard to keep healthy eating habits?"],
+  "A Part-time Job I Want to Try":["What part-time job do you want to try?","Why do you want to try that job?","What do you think you could learn from it?"],
+  "My Smartphone Habits":["How much time do you spend on your phone each day?","What do you usually do on your phone?","What are the good and bad points of using a phone?"],
+  "My Favorite YouTube Channel":["What YouTube channel do you like?","What kind of content does it have?","What was the most fun video you watched on it?"],
+  "My Efforts to Protect the Environment":["What do you do to protect the environment?","Why do you think it is important?","What else could you do for a healthier environment?"],
+  "My Favorite Athlete":["Which athlete do you like?","What sport does that athlete play?","Why do you admire that athlete?"],
+  "My Sleep Habits":["What time do you usually go to bed?","How many hours do you sleep each day?","Why do you think enough sleep is important?"],
+  "My Fashion Style":["What is your fashion style?","What kind of clothes do you usually wear?","How does fashion affect your confidence?"],
+  "My Dream City to Live In":["What city do you want to live in someday?","What do you like about that city?","What do you want to do there?"],
+  "A Kind Act I Experienced":["Have you ever been touched by someone's kindness?","What happened?","How did that experience make you feel?"],
+  "My Most Difficult Moment":["What was the hardest moment in your life so far?","What happened?","How did you get through that hard time?"],
+  "My Favorite Game":["What is your favorite game?","Can you explain how to play it?","What makes that game fun?"],
+  "My Social Media Use":["What social media do you usually use?","How often do you use it?","What are the good and bad points of social media?"],
+  "My Favorite Plant or Flower":["What is your favorite plant or flower?","What are its special features?","Why do you like it?"],
+  "My School Club Activity":["What club are you in?","What do you usually do in that club?","What do you like about that club activity?"],
+  "My Favorite Korean Food":["What is your favorite Korean food?","What does it taste like?","How often do you eat it?"],
+  "My Foreign Language Learning":["What foreign language are you learning?","Why did you want to learn it?","What is the hardest part of learning that language?"],
+  "My Favorite Character":["Who is your favorite character?","What show or work is the character from?","Why do you like that character?"],
+  "My Travel Bucket List":["What countries or cities do you want to visit?","Which place do you want to go to most?","What do you want to do in those places?"],
+  "My Favorite Day of the Week":["What is your favorite day of the week?","What do you usually do on that day?","Why do you like that day the most?"],
+  "My School Field Trip":["What is the most memorable school trip you've been on?","What did you do there?","What was the most impressive part of that trip?"],
+  "A Quote That Inspires Me":["Do you have a favorite quote or saying?","Why do you like that quote?","How does it help you in life?"],
+  "My Cooking Experience":["Have you ever cooked before?","What did you make?","What did you learn from that experience?"],
+  "If I Could Do Volunteer Work":["If you could do volunteer work, what would you do?","Why do you want to do that volunteer work?","How could it help the world?"],
+  "My Online Class Experience":["Have you ever taken an online class?","What did you like about online classes?","What is the hardest part of online classes?"],
+  "My Favorite Brand":["What is your favorite brand?","What products from that brand do you like?","Why do you trust that brand?"],
+  "My Reading Habits":["How often do you read books?","What kind of books do you usually read?","Why is reading fun for you?"],
+  "Activities I Love in My Favorite Weather":["What weather do you like best?","What do you usually do in that weather?","Why is that weather good for those activities?"],
+  "My School Friends":["How many close friends do you have at school?","What do you usually do with them?","What do you like about your school friends?"],
+  "My Favorite Dessert":["What is your favorite dessert?","When do you usually eat it?","Why do you like that dessert?"],
+  "My Ideal Partner":["What qualities do you want in an ideal partner?","What kind of personality do you like?","What do you want to do together?"],
+  "My Parents I Admire":["Why do you admire your parents?","What have your parents taught you?","What do you want to be like them in?"],
+  "My Earliest Memory":["What is your earliest childhood memory?","About how old were you?","Why do you still remember it clearly?"],
+  "My Favorite Park or Place":["What place do you often go to or like?","What do you usually do there?","How often do you go there?"],
+  "Korean Traditional Culture I Like":["What Korean traditional culture do you like?","What are its special features?","Why do you find that culture interesting?"],
+  "My Top 3 Dream Destinations":["What are your top 3 places to visit?","Which place do you want to go to the most?","What do you want to do at those places?"],
+  "If I Had a Superpower":["If you had a superpower, what would it be?","What would you do with that power?","How would you use that power?"],
+  "My Favorite Holiday Food":["What holiday food do you like best?","Who usually makes it?","Do you have a special memory about that holiday food?"],
+  "Internet Trends I Like":["What internet trend do you like these days?","Why is it interesting?","How do you talk about it with your friends?"],
+  "My Most Fun Class at School":["What is the most fun class at school?","What do you usually do in that class?","Why is that class fun?"],
+  "A Country I Want to Live in the Future":["What country do you want to live in someday?","What do you like about that country?","What kind of life do you want to live there?"],
+  "My Favorite Seasonal Activity":["What season activity do you enjoy?","Who do you usually do it with?","Why is that activity fun?"],
+  "My Favorite Korean Singer":["Which Korean singer or group do you like?","What genre of music do they make?","Which of their songs do you like the most?"],
+  "My Favorite School Lunch Menu":["What is your favorite school lunch menu?","How does it taste?","How excited are you on the day that menu is served?"],
+  "Something I Want to Say in English":["What do you often want to say in English?","How do you practice saying it?","What good things might happen if you get better at English?"]
 };
 
 let lv=null,topic=null,qs=[],score=0,qIdx=0,state='start';
@@ -551,7 +573,7 @@ function startApp(){
   document.getElementById('hintBtn').style.display='flex';
   topic=TOPICS[Math.floor(Math.random()*TOPICS.length)];
   qs=QS[topic.en];
-  document.getElementById('topicTitle').textContent=`"${topic.ko}"`;document.getElementById('topicEn').textContent=topic.en;
+  document.getElementById('topicTitle').textContent=`"${topic.ko}"`;
   document.getElementById('topicSub').textContent=`📌 ${topic.guide}`;
   loadQ();
 }
@@ -562,7 +584,7 @@ async function claude(sys,usr,max=700){
   return (await r.json()).content?.[0]?.text||'';
 }
 
-// ── ELEVENLABS TTS (natural voice) ──
+// TTS
 function removeEmoji(t){
   return t.replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]+/g,'').replace(/[\u2600-\u27BF]/g,'').replace(/[ ]+/g,' ').trim();
 }
@@ -580,19 +602,26 @@ async function speak(text){
       currentAudio.onended=()=>{URL.revokeObjectURL(url);currentAudio=null;};
       return;
     }
-  }catch(e){console.warn('TTS:',e);}
+  }catch(e){console.warn('TTS fallback:',e);}
   window.speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(cl);
   u.lang='en-US';u.rate=0.82;
   const ds=()=>{const vs=window.speechSynthesis.getVoices();const v=vs.find(v=>v.name==='Samantha')||vs.find(v=>v.lang==='en-US');if(v)u.voice=v;window.speechSynthesis.speak(u);};
   window.speechSynthesis.getVoices().length>0?ds():(window.speechSynthesis.onvoiceschanged=ds);
 }
+
 function addScore(n){score+=n;document.getElementById('navScore').textContent=`⭐ ${score}점`;}
 function err(id,msg){const e=document.getElementById(id);e.innerHTML='⚠️ '+msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),5000);}
 function ld(id,on){document.getElementById(id).classList.toggle('show',on);}
 function setBtn(on,txt,cls=''){const b=document.getElementById('mainBtn');b.disabled=!on;document.getElementById('btnTxt').textContent=txt;b.className='btn '+(cls||'');}
 
 function loadQ(){
+  document.getElementById('qNum').textContent='Q'+(qIdx+1);
+  document.getElementById('qTxt').textContent=qs[qIdx];
+  document.getElementById('qLbl').textContent=`질문 ${qIdx+1}/3`;
+  for(let i=1;i<=3;i++){const d=document.getElementById('qd'+i);d.className='qdot'+(i-1<qIdx?' ok':i-1===qIdx?' on':'');}
+  if(qIdx>0)document.getElementById('ql1').classList.add('ok');
+  if(qIdx>1)document.getElementById('ql2').classList.add('ok');
   var TH={
     'My Favorite Food':{1:['ex: pizza / I like pizza','ex: I eat it every day','ex: yummy! / I love it'],2:['ex: My favorite food is pizza.','ex: I usually eat it on weekends.','ex: It is very delicious!'],3:['ex: My favorite food is pizza because it is cheesy.','ex: I usually eat it with my family.','ex: I love it because it tastes amazing.'],4:['ex: Pizza remains my all-time favorite food.','ex: I typically enjoy it on weekends.','ex: Not only does it taste great, it brings wonderful memories.']},
     'My Best Friend':{1:['ex: Tom / My friend is Tom','ex: We play together','ex: kind / funny'],2:['ex: My best friend is Tom.','ex: We play soccer together.','ex: He is very kind and funny.'],3:['ex: My best friend and I have been close for years.','ex: We usually play soccer and games.','ex: I like him because he is always kind.'],4:['ex: My closest friend has been by my side for years.','ex: We spend most of our free time together.','ex: What I admire is his kindness and great humor.']},
@@ -694,24 +723,13 @@ function loadQ(){
     'My Favorite Korean Singer':{1:['ex: BTS / IU','ex: the music is amazing','ex: I listen every day'],2:['ex: BTS / IU.','ex: The music is amazing.','ex: I listen every day.'],3:['ex: BTS / IU and it is very special to me.','ex: The music is amazing and I enjoy every moment.','ex: I listen every day because it makes me happy.'],4:['ex: BTS / IU, which has always been meaningful to me.','ex: The music is amazing, and this has shaped who I am.','ex: I listen every day, and I deeply value this experience.']},
     'My Favorite School Lunch Menu':{1:['ex: I love curry rice day','ex: it is warm and filling','ex: everyone looks forward to it'],2:['ex: I love curry rice day.','ex: It is warm and filling.','ex: Everyone looks forward to it.'],3:['ex: I love curry rice day and it is very special to me.','ex: It is warm and filling and I enjoy every moment.','ex: Everyone looks forward to it because it makes me happy.'],4:['ex: I love curry rice day, which has always been meaningful to me.','ex: It is warm and filling, and this has shaped who I am.','ex: Everyone looks forward to it, and I deeply value this experience.']},
     'Something I Want to Say in English':{1:['ex: I want to introduce myself','ex: I practice every day','ex: English opens many doors'],2:['ex: I want to introduce myself.','ex: I practice every day.','ex: English opens many doors.'],3:['ex: I want to introduce myself and it is very special to me.','ex: I practice every day and I enjoy every moment.','ex: English opens many doors because it makes me happy.'],4:['ex: I want to introduce myself, which has always been meaningful to me.','ex: I practice every day, and this has shaped who I am.','ex: English opens many doors, and I deeply value this experience.']}
-  }
+  };
   var th=TH[topic.en]||{};
   var h=((th[lv])||[])[qIdx]||'';
   var lhEl=document.getElementById('lvHint');
   if(h){lhEl.textContent='✏️ '+h;lhEl.style.display='block';}
   else{lhEl.style.display='none';}
-
-  document.getElementById('qNum').textContent='Q'+(qIdx+1);
-  document.getElementById('qTxt').textContent=qs[qIdx];
-  document.getElementById('qLbl').textContent=`질문 ${qIdx+1}/3`;
-  for(let i=1;i<=3;i++){const d=document.getElementById('qd'+i);d.className='qdot'+(i-1<qIdx?' ok':i-1===qIdx?' on':'');}
-  if(qIdx>0)document.getElementById('ql1').classList.add('ok');
-  if(qIdx>1)document.getElementById('ql2').classList.add('ok');
-  const hints={1:["예: 'pizza' 또는 'I like pizza'","예: 'Tom'","예: 'Good!' 또는 'Very fun!'"],2:["예: 'My favorite food is pizza.'","예: 'I play soccer with Tom.'","예: 'It is very delicious!'"],3:["예: 'My favorite food is pizza because it is cheesy.'","예: 'I usually play with Tom after school.'","예: 'I like it because it tastes amazing.'"],4:["예: 'Among all foods, pizza is my all-time favorite.'","예: 'Tom and I spend most of our free time together.'","예: 'Not only does it taste great, it also brings happy memories.'"]};
-  const h=hints[lv]?.[qIdx]||'';
-  const lhEl=document.getElementById('lvHint');
-  if(h){lhEl.textContent='✏️ '+h;lhEl.style.display='block';}else lhEl.style.display='none';
-  state='start';setBtn(true,'시작하기 →');
+    state='start';setBtn(true,'시작하기 →');
 }
 
 async function go(){
@@ -726,6 +744,7 @@ async function go(){
   else if(state==='nextSpeak')await nextSpeak();
   else if(state==='goWrap')goWrap();
   else if(state==='submitWrap')await submitWrap();
+  else if(state==='goMemory')goMemory();
   else if(state==='finish')finish();
 }
 
@@ -850,15 +869,18 @@ function startShadowRec(){
     const ok=oW.length===0||mc>=Math.max(1,Math.floor(oW.length*0.4));
     res.style.display='block';
     if(ok){
-      res.style.background='var(--gl)';res.style.color='#166534';
+      res.style.background='var(--gl)';
+      res.style.color='#166534';
       res.textContent='OK! "'+said+'" 잘했어요!';
       addScore(10);
       const ov=document.getElementById('shadowOk');
       document.getElementById('shadowOkIcon').textContent='⭕';
       document.getElementById('shadowOkSub').textContent='"'+said+'" 완벽해요!';
-      ov.classList.add('show');setTimeout(()=>ov.classList.remove('show'),2000);
+      ov.classList.add('show');
+      setTimeout(()=>ov.classList.remove('show'),2000);
     }else{
-      res.style.background='#FEF3C7';res.style.color='#92400E';
+      res.style.background='#FEF3C7';
+      res.style.color='#92400E';
       res.textContent='다시 해봐요! 들린 말: "'+said+'"';
     }
   };
@@ -958,7 +980,7 @@ async function submitWrap(){
     addScore(30);
     // SAVE
     saveRecord(txt);
-    state='finish';setBtn(true,'🎊 오늘 학습 완료!','green');
+    state='goMemory';setBtn(true,'암기 훈련하기','orange');
   }catch(e){err('fbWrapErr',e.message);setBtn(true,'제출하고 저장하기 💾','green');}
   finally{ld('ldWrap',false);}
 }
@@ -1150,13 +1172,13 @@ NEXT: [one specific thing to practice next time, in Korean]`,
 
 // ── UI HELPERS ──
 function showPg(name){
-  ['pgWrite','pgStory','pgShadow','pgSpeak','pgWrap','pgReport'].forEach((id,i)=>{
-    document.getElementById(id).style.display=(['write','story','shadow','speak','wrap','report'][i]===name?'flex':'none');
+  ['pgWrite','pgStory','pgShadow','pgSpeak','pgWrap','pgMemory','pgReport'].forEach((id,i)=>{
+    document.getElementById(id).style.display=(['write','story','shadow','speak','wrap','memory','report'][i]===name?'flex':'none');
   });
   document.getElementById('hintBtn').style.display=(name==='write'&&qIdx<3&&state!=='goStory')?'flex':'none';
 }
 
-function tabOn(id){['t1','t2','t3','t4','t5','t6'].forEach(t=>document.getElementById(t).className='tab'+(t===id?' on':''));}
+function tabOn(id){['t1','t2','t3','t4','t5','t6','t7'].forEach(t=>{var el=document.getElementById(t);if(el)el.className='tab'+(t===id?' on':'');});}
 
 function showModal(emoji,title,sub,btnTxt,cb){
   document.getElementById('mEmoji').textContent=emoji;
